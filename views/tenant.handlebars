@@ -1,0 +1,35 @@
+<body>
+    <h1>{{title}}</h1>
+    <h3>Today's Date: {{today}}</h2>
+    <main>
+        <div class="nav">
+            <ul>
+                <li><a href="/tenant" class="active">Dashboard</a></li>
+                <li><a href="/pay">Pay Rent</a></li>
+                <li><a href="/submitworkorder">Submit Work Order</a></li>
+                <li><a href="/workorders">View Work Orders</a></li>
+                <li><a href="/payments">Previous Payments</a></li>
+                <li><a href="/logout" class="logout">Log Out</a></li>
+            </ul>
+        </div>
+        <div class="infos">
+            <ul>
+                <li class="rentDueBox">
+                    <p>Rent Due:</p>
+                    <p>${{rentDue}}</p> 
+                    <p>Due Date:</p>
+                    <p>{{dateDue}}</p>
+                </li>
+                <li class="workOrderBox">
+                    <p>Active Work Orders:</p>
+                    <p>{{numWorkOrders}}</p>
+                </li>
+                <li class="historyBox">
+                    <p>Previous Payments:</p>
+                    <p>{{payment1}}</p>
+                    <p>{{payment2}}</p>
+                </li>
+            </ul>
+        </div>
+    </main>
+</body>

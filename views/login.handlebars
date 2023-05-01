@@ -1,0 +1,19 @@
+<body>
+    <header>
+        <a href="/register">Click here to register!</a>
+    </header>
+    <h1>{{title}}</h1>
+    <main>
+        {{#if error}}
+            <div id="error">{{info}}</div>
+        {{/if}}
+        <form action="/login" id ="login-form" method="POST">
+            <label for="emailAddressInput">Email:</label>
+            <input id ="emailAddressInput" type="email" name="emailAddressInput" placeholder="Email..." />
+            <br>
+            <label for="passwordInput">Password:</label>
+            <input id ="passwordInput" type="password" name="passwordInput" placeholder="Password..." />
+            <input type="submit"></input>
+        </form>
+    </main>
+</body>

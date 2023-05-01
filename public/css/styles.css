@@ -1,0 +1,193 @@
+/* You will create a CSS stylesheet in /public/css/lab10.css; this file should have at least 10 rulesets.  You will need to utilize all 10 rulesets on each of the pages (not every page has to use all 10 rulesets each but all 10 rulesets must be utilized by the various pages in your application).  So you can have some rulesets for one page, some for another page but there needs to be at least 10 total rulesets that are used between all the pages.  */
+* {
+    font-family: sans-serif;
+}
+
+body {
+  background-color: #111;
+  color: #fff;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2em;
+    color: #fff;
+    margin-bottom: 1em;
+}
+h3 {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 1em;
+}
+  
+main {
+  margin: 1em;
+}
+
+header {
+  background-color: #333;
+  padding: 1em;
+}
+
+footer {
+  background-color: #333;
+  position: fixed;
+  bottom: 0;
+  padding: 1em;
+  text-align: center;
+}
+
+a {
+  color: rgb(180, 0, 204);
+  text-decoration: none;
+  text-align: center;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+  display: block;
+  margin: 0.5em 0;
+  padding: 0.5em;
+  font-size: 1em;
+  border: 1px solid #555;
+  border-radius: 0.25em;
+  background-color: #222;
+  color: #fff;
+}
+
+input[type="submit"] {
+  display: block;
+  margin: 1em auto;
+  padding: 0.5em 1em;
+  font-size: 1em;
+  background-color: rgb(180, 0, 204);
+  color: #fff;
+  border: none;
+  border-radius: 0.25em;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: rgb(132, 0, 150);
+}
+
+.error {
+  color: #f00;
+}
+
+#error {
+  background-color: #fdd;
+  color: #f00;
+  padding: 1em;
+  margin: 1em 0;
+}
+
+#login-form,
+#registration-form {
+  width:60%;
+  max-width: 25em;
+  margin: 1em auto;
+  padding: 1em;
+  border: 1px solid #555;
+  border-radius: 0.25em;
+  background-color: #222;
+  color: #fff;
+}
+
+.nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 20%;
+  background-color: #414141;
+  border-radius: 5px;
+  height: 80%; 
+  position: fixed; 
+  overflow: auto; 
+}
+
+.nav li a {
+  display: block;
+  color: #ffffff;
+  margin: 5px;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: 0.25s;
+  border-radius: 5px;
+}
+
+.nav li a:hover {
+  background-color: #555;
+  color: white;
+}
+
+.active {
+  background-color: #0084ff;
+  color: white;
+}
+
+.infos {
+  margin-left:25%;
+  padding-left: 15px;
+  height:80%;
+}
+
+.infos ul{
+  display: grid;
+  border-radius: 5px;
+  list-style-type: none;
+  grid-template-columns: 48% 48%;
+  grid-template-rows: 48% 48%;
+  grid-gap: 10px;
+  background-color: #414141;
+  color: #ffffff;
+  margin: 0 auto;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  height: 80%; 
+  width: 65%;
+  position: fixed; 
+}
+
+.infos li {
+  color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 150%;
+  overflow:hidden ; 
+  
+  display: inline-block;
+  color: #FFFFFF;
+  margin: 5px;
+  padding: 8px 16px;
+  width: relative 50%;
+  text-decoration: none;
+  transition: 0.25s;
+  border-radius: 5px;
+}
+
+.rentDueBox {
+  background-color: #04AA6D;
+}
+.workOrderBox {
+  background-color: #ffbc6f;
+}
+.historyBox {
+  background-color: #b06bff;
+}
+
+.logout {
+  background-color: rgb(238, 90, 90);
+  color: white;
+}
+
+.logout:hover {
+  background-color: rgb(100, 0, 0);
+}

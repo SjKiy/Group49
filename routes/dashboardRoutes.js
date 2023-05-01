@@ -30,7 +30,7 @@ router
         err += m + ', '
       }
       err = err.substring(0, err.length - 2);
-      return res.status(400).render('register', {error: true, info: err});
+      return res.status(400).render('register', {title: 'Register', error: true, info: err});
     }
     const firstName = firstNameInput.trim();
     const lastName = lastNameInput.trim();
@@ -58,15 +58,17 @@ router
         str += m + ", ";
       }
       str = str.substring(0, str.length - 2);
-      return res.status(400).render('register', {error: true, info: err});
+      return res.status(400).render('register', {title: 'Register', error: true, info: err});
     }
-    try {
-      const added = await createUser(firstName,lastName,emailAddress,password,roleInput);
-      if (added.insertedUser) {return res.status(200).redirect('/login')}
-      else return res.status(500).render('error', {info: "Internal Server Error"});
-    } catch (error) {
-      return res.status(400).render('register', {error: true, info: error});
-    }
+
+    // IMPLEMENT WITH USER DATA CREATEUSER
+    // try {
+    //   const added = await createUser(firstName,lastName,emailAddress,password,roleInput);
+    //   if (added.insertedUser) {return res.status(200).redirect('/login')}
+    //   else return res.status(500).render('error', {info: "Internal Server Error"});
+    // } catch (error) {
+    //   return res.status(400).render('register', {title: 'Register', error: true, info: error});
+    // }
   });
 
 // login page get and post
@@ -74,14 +76,14 @@ router
   .route('/login')
   .get(async (req, res) => {
     //code here for GET
-    return res.status(200).render('login');
+    return res.status(200).render('login', {title: 'Login'});
   })
   .post(async (req, res) => {
     //code here for POST
     let err='';
     let {emailAddressInput, passwordInput} = req.body;
     if (!emailAddressInput || !passwordInput) {
-      return res.status(400).render('login', {error: true, info: "Email or Password not provided"});
+      return res.status(400).render('login', {title: 'Login', error: true, info: "Email or Password not provided"});
     }
     const email = emailAddressInput.trim().toLowerCase();
     const password = passwordInput.trim();
@@ -91,22 +93,50 @@ router
     else if (!/[A-Z]/.test(password)) err += "Invalid Password";
     else if (!/\d/.test(password)) err += "Invalid Password";
     else if (!/[\W_]/.test(password)) err += "Invalid Password";
-    if (err) return res.status(400).render('login', {error: true, info: err});
-    try {
-      const checked = await checkUser(email, password);
-      req.session.user= {firstName: checked.firstName, lastName: checked.lastName, emailAddress: checked.emailAddress, role: checked.role}
-      if (checked.role === 'admin') return res.status(200).redirect('/admin');
-      if (checked.role === 'user') return res.status(200).redirect('/protected');
-    } catch (error) {
-      return res.status(400).render('login', {error: true, info: error});
-    }
+    if (err) return res.status(400).render('login', {title: 'Login', error: true, info: err});
+    
+    // IMPLEMENT WITH USER DATA CHECKUSER
+    // try {
+    //   const checked = await checkUser(email, password);
+    //   req.session.user= {firstName: checked.firstName, lastName: checked.lastName, emailAddress: checked.emailAddress, role: checked.role}
+    //   if (checked.role === 'admin') return res.status(200).redirect('/admin');
+    //   if (checked.role === 'user') return res.status(200).redirect('/protected');
+    // } catch (error) {
+    //   return res.status(400).render('login', {title: 'Login', error: true, info: error});
+    // }
   });
 
+//goes to tenant dashboard
 router.route('/tenant').get(async (req, res) => {
   //TODO
-  
+    return res.status(200).render('tenant', {title: 'Tenant Dashboard'});
 });
 
+//goes to payment page
+router.route('/pay').get(async (req, res) => {
+    //TODO
+
+});
+
+//goes to submit work order page
+router.route('/submitworkorder').get(async (req, res) => {
+    //TODO
+
+});
+
+//goes to all work order page
+router.route('/workorders').get(async (req, res) => {
+    //TODO
+
+});
+
+//goes to previous payment page
+router.route('/payments').get(async (req, res) => {
+    //TODO
+
+});
+
+//goes to landlord dashboard
 router.route('/landlord').get(async (req, res) => {
   //TODO
   
