@@ -1,6 +1,7 @@
 import {Router} from 'express';
 const router = Router();
 
+
 // get home page
 router.route('/').get(async (req, res) => {
     //TODO
@@ -50,7 +51,7 @@ router
     if (!/\d/.test(password)) err.push("Password must contain at least one digit");
     if (!/[\W_]/.test(password)) err.push("Password must contain at least one special character");
     if (confirmPassword !== password) err.push("Passwords must match");
-    if (roleInput !== 'admin' && roleInput !== 'user') err.push("Role must be 'admin' or 'user'");
+    if (roleInput !== 'tenant' && roleInput !== 'landlord') err.push("Role must be 'tenant' or 'landlord'");
     if (err.length >= 1) {
       let str = "";
       for (const m of err) {
