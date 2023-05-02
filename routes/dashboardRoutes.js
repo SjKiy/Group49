@@ -6,7 +6,7 @@ import { create, getActiveWorkOrders } from '../data/apartment.js';
 const router = Router();
 
 
-// get home page
+//get home page
 router.route('/').get(async (req, res) => {
     //TODO
 });
@@ -16,7 +16,7 @@ router
   .route('/register')
   .get(async (req, res) => {
     //code here for GET
-    return res.status(200).render('register');
+    return res.status(200).render('register', {title: "Register"});
   })
   .post(async (req, res) => {
     //code here for POST
@@ -157,7 +157,7 @@ router.route('/error').get(async (req, res) => {
 router.route('/logout').get(async (req, res) => {
   //code here for GET
   req.session.destroy();
-  return res.status(200).render('logout')
+  return res.status(200).render('logout', {title: 'Logged Out'})
 });
 
 
