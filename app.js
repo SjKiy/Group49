@@ -11,11 +11,19 @@ const __dirname = dirname(__filename);
 
 // TESTING
 import {create} from './data/apartment.js';
+import {workCreate} from './data/workOrder.js';
 async function main(){
     let apt 
     try{
-        apt = await create("Apt 1", 1500, 16500, 800, 1,1, "Nice", true, [], [])
+        apt = await create("Apt 1", 1500, 16500, "2021-02-01", 800, 1,1, "Nice", true, [], [])
         console.log(apt);
+    }
+    catch(e){
+        console.log(e);
+    }
+    try{
+        const work = await workCreate("apt 1", "Plumbing", "Open", "Fix the sink", ["hi"], "2021-02-01", "2021-02-02");
+        console.log(work);
     }
     catch(e){
         console.log(e);

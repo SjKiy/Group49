@@ -117,13 +117,14 @@ export const createUser = async (
 
 
   if (accountType.toLowerCase() !== "landlord" && accountType.toLowerCase() !== "tenant"){
-    throw "Error: accountType can be either landlord or user.";
+    throw "Error: accountType can be either landlord or tenant.";
   }
  
 
 
 
-  const saltRounds = await bcrpytjs.genSalt(16);
+  // const saltRounds = await bcrpytjs.genSalt(16);
+  const saltRounds = await bcrpytjs.genSalt(5);
   let newHashPassword = await bcrpytjs.hash(password, saltRounds);
 
   firstName = firstName.trim();
@@ -139,7 +140,7 @@ export const createUser = async (
     password: newHashPassword,
     // password: password,
     accountType: accountType.toLowerCase(),
-    apartments: [],
+    // apartments: [] i took this out for now cause the update one process in the end
   }
   let emailCheck = await user();
   let dupEmail = await emailCheck.findOne({emailAddress})
@@ -158,7 +159,19 @@ export const createUser = async (
 
   // return UserID;
 
+  let apartments = await apartment();
+  const newId = apartments._id;
+
+  // const newId = aptCollected._id.toString();
+
+  let insertAptInfo = await userCollected.updateOne({_id: new ObjectId(UserID)}, {$push: {apartments: new ObjectId(newId)}});
+  if (!insertAptInfo.acknowledged){
+    throw "Error: Apartment was not able to be added";
+  }
+
+
   return {insertedUser: true};
+
 
 
 };
@@ -256,7 +269,30 @@ export const checkUser = async (emailAddress, password) => {
 
 export const getAptByUser = async (id) => {
   //returns apt object that is assigned to given tenant
-  //return with _id as a string
+  if (!id){
+    throw "Error: Id does not exist";
+  }
+  if (typeof id !== "string"){
+    throw "Error: Id has to be a string";
+  }
+  if (id.trim() === ' '){
+    throw "Error: Id can be empty";
+  }
+  if (id.replaceAll(" ", "") === ''){
+    throw "Error: Id cannot be empty";
+  }
+  if (id.length === ''){
+    throw "Error: Id can't be empty";
+  }
+  for (let i = 0; i < id.length; i++){
+    if (!id && typeof id !== "string" ){
+      throw "Error: Id must exist and be a string";
+    }
+  }
+  id = id.trim();
+  if (!ObjectId.isValid(id)){
+    throw "Error: Invalid Object Id";
+  }
   return {rentRemaining: 1000, rentDate: "Nov 12"}
 };
 
