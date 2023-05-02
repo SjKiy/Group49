@@ -381,52 +381,52 @@ export const assignAptToUser = async (id, aptId ) => {
 // };
 
 
-
-export const getAptByUser = async (id) => {
+//come back to this
+export const getAptByUser = async (aptId) => {
   //returns apt object that is assigned to given tenant
-  if (!id){
+  if (!aptId){
     throw "Error: Id does not exist";
   }
-  if (typeof id !== "string"){
+  if (typeof aptId !== "string"){
     throw "Error: Id has to be a string";
   }
-  if (id.trim() === ' '){
+  if (aptId.trim() === ' '){
     throw "Error: Id can be empty";
   }
-  if (id.replaceAll(" ", "") === ''){
+  if (aptId.replaceAll(" ", "") === ''){
     throw "Error: Id cannot be empty";
   }
-  if (id.length === ''){
+  if (aptId.length === ''){
     throw "Error: Id can't be empty";
   }
-  for (let i = 0; i < id.length; i++){
-    if (!id && typeof id !== "string" ){
+  for (let i = 0; i < aptId.length; i++){
+    if (!aptId && typeof aptId !== "string" ){
       throw "Error: Id must exist and be a string";
     }
   }
-  id = id.trim();
-  if (!ObjectId.isValid(id)){
+  aptId = aptId.trim();
+  if (!ObjectId.isValid(aptId)){
     throw "Error: Invalid Object Id";
   }
 
-  let userTenant = await user();
-  let userTenantInfo = await userTenant.findOne({_id: new ObjectId(id)});
-  if (!userTenantInfo){
-    throw "Error: User does not exist";
-  }
-  let aptId = userTenantInfo.apartments;
-  let aptCollected = await apartment();
-  let aptInfo = await aptCollected.findOne({_id: new ObjectId(aptId)});
-  if (!aptInfo){
-    throw "Error: Apartment does not exist";
-  }
-  return aptInfo;
+  // let userTenant = await user();
+  // let userTenantInfo = await userTenant.findOne({_id: new ObjectId(id)});
+  // if (!userTenantInfo){
+  //   throw "Error: User does not exist";
+  // }
+  // let aptId = userTenantInfo.apartments;
+  // let aptCollected = await apartment();
+  // let aptInfo = await aptCollected.findOne({_id: new ObjectId(aptId)});
+  // if (!aptInfo){
+  //   throw "Error: Apartment does not exist";
+  // }
+  // return aptInfo;
 
 
   // return {rentRemaining: 1000, rentDate: "Nov 12"}
 };
 
-
+//come back to this
 export const getAllAptLandlord = async (id) => {
   if (!id){
     throw "Error: Id does not exist";

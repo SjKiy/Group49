@@ -67,12 +67,22 @@ const create = async (
         workOrders: workOrders,
 
     };
+
+    
+    let aptNum = await apartment();
+    let dupAptNum = await aptNum.findOne({aptNumber});
+
+    if(dupAptNum){
+      throw "Error: Dupilcate apartment number";
+    }
+
     const insertInfo = await aptCollection.insertOne(newApt);
     if (insertInfo.insertedCount === 0) throw 'Could not add apartment';
 
     const newId = insertInfo.insertedId;
 
     return insertInfo
+
 
 };
 

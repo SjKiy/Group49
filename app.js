@@ -14,6 +14,7 @@ import {create} from './data/apartment.js';
 import {getAptbyId} from './data/apartment.js';
 import {workCreate} from './data/workOrder.js';
 import * as user from './data/user.js';
+import * as payment from './data/payments.js';
 import { apartment } from './config/mongoCollections.js';
 // async function main(){
     // let apt 
@@ -26,7 +27,7 @@ import { apartment } from './config/mongoCollections.js';
     // }
     // let apt2 
     // try{
-    //     apt2 = await create("Apt 2", 1500, 16500, "2021-02-01", 800, 1,1, "Nice", true, [], [])
+    //     apt2 = await create("Apt 3", 1500, 16500, "2021-02-01", 800, 1,1, "Nice", true, [], [])
     //     console.log(apt2);
     // }
     // catch(e){
@@ -122,6 +123,14 @@ import { apartment } from './config/mongoCollections.js';
 //   console.log(user4);
 // } catch (e) {
 //   console.error(e); 
+
+// try {
+//   let pay1 = await payment.createpayment("64513be1813378a0fbab7edd", "6451769ef9e4a9b3311d09fc", 1500, "05/02/23",)
+
+//   console.log(pay1);
+// } catch (e) {
+//   console.error(e); 
+// }
 // }
 
 // main();
