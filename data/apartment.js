@@ -30,6 +30,24 @@ const create = async (
     if (isNUllOrUndefined(workOrders)) throw 'You must provide a list of work orders';
     aptNumber = aptNumber.trim();
     description = description.trim();
+    if(aptNumber === "") throw 'You must provide an apartment number';
+    //so they can't spam the id part
+    if(aptNumber.lenght > 26) throw 'Apartment number must be less than 26 characters';
+    if(typeof aptNumber !== 'string') throw 'Apartment number must be a string';
+    if(typeof rentCost !== 'number') throw 'Rent cost must be a number';
+    if(typeof rentRemaining !== 'number') throw 'Rent remaining must be a number';
+    if(typeof size !== 'number') throw 'Size must be a number';
+    if(typeof bedNum !== 'number') throw 'Number of beds must be a number';
+    if(typeof bathNum !== 'number') throw 'Number of baths must be a number';
+    if(typeof description !== 'string') throw 'Description must be a string';
+    if(description === "") throw 'You must provide a description';
+    if(description.lenght > 100) throw 'Description must be less than 1000 characters';
+    if(typeof isVacant !== 'boolean') throw 'Vacancy status must be a boolean';
+    //more error checking with thedsr later
+    if(!Array.isArray(tenants)) throw 'Tenants must be an array';
+    if(!Array.isArray(workOrders)) throw 'Work orders must be an array';
+    if(tenants.length > bedNum*2 ) throw 'Too many tenants for this apartment';
+
     
 
 
