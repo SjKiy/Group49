@@ -256,6 +256,7 @@ export const checkUser = async (emailAddress, password) => {
 
 export const getAptByUser = async (id) => {
   //returns apt object that is assigned to given tenant
+  //return with _id as a string
   return {rentRemaining: 1000, rentDate: "Nov 12"}
 };
 

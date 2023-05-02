@@ -113,17 +113,23 @@ router
 //goes to tenant dashboard
 router.route('/tenant').get(async (req, res) => {
   //TODO fix when session is set up
-    const apt = await getAptByUser(/*req.session.user._id*/)
+    const apt = await getAptByUser(req.session.user._id)
     const active = await getActiveWorkOrders(/*apt._id*/)
-    const pastPays = await getPaymentsByUser(/*req.session.user._id*/)
+    const pastPays = await getPaymentsByUser(req.session.user._id)
     return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt.rentRemaining, rentDate: apt.rentDate, numWorkOrders: active, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
 });
 
-//goes to payment page
-router.route('/pay').get(async (req, res) => {
-    //TODO
+//Payment page get(go to page) put(submit update to rent);
+router
+    .route('/pay')
+    .get(async (req, res) => {
+        //TODO
+        return res.status(200).render('pay', {title: "Payment Portal"});
+    })
+    .post(async (req, res) => {
 
-});
+    }
+);
 
 //goes to submit work order page
 router.route('/submitworkorder').get(async (req, res) => {
