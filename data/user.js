@@ -2,7 +2,7 @@
 import { ObjectId } from 'mongodb';
 import { apartment } from '../config/mongoCollections.js';
 
-import {users} from '../config/mongoCollections.js'
+import {user} from '../config/mongoCollections.js'
 import bcrpytjs from "bcryptjs";
 // import e from 'express';
 
@@ -12,8 +12,7 @@ export const createUser = async (
   lastName,
   emailAddress,
   password,
-  accountType,
-  apartments,
+  accountType
 ) => {
   ///add the empty part. for all criteriassss!!!!!!!!!!!!!!!!!
   if (firstName === undefined || firstName === null || lastName === undefined || lastName === null || emailAddress === undefined || emailAddress === null || password === undefined || password === null || accountType === undefined || accountType === null ){
@@ -140,22 +139,22 @@ export const createUser = async (
     password: newHashPassword,
     // password: password,
     accountType: accountType.toLowerCase(),
-    apartments,
+    apartments: [],
   }
-  let emailCheck = await users();
+  let emailCheck = await user();
   let dupEmail = await emailCheck.findOne({emailAddress})
   if (dupEmail){
     throw "Error: Duplicate email."
   }
   
-  const userCollected = await users();
+  const userCollected = await user();
   let insertUserInfo = await userCollected.insertOne(userToCreate);
   if (!insertUserInfo.acknowledged || !insertUserInfo.insertedId ){
     throw "Error: User was not able to be added";
   }
   const UserID = insertUserInfo.insertedId.toString();
   // const USER =  await get(UserID);
-  // const userACollected = await users();
+  // const userACollected = await user();
 
   // return UserID;
 
@@ -228,13 +227,13 @@ export const checkUser = async (emailAddress, password) => {
   //   accountType: accountType.toLowerCase()
   // }
 
-  let queryEmail = await users();
+  let queryEmail = await user();
   let Email = await queryEmail.findOne({emailAddress})
   if (!Email){
     throw "Either the email address or password is invalid.";
   }
 
-  // const usersCollected = await users();
+  // const usersCollected = await user();
 
   let passwordComp = Email.password;
   passwordComp = await bcrpytjs.compare(password, passwordComp);
@@ -243,7 +242,7 @@ export const checkUser = async (emailAddress, password) => {
   }
   else{
     //the passwords match your function will return the following fields of the user: firstName, lastName, emailAddress, accountType which will be stored in the session from the route, (DO NOT RETURN THE PASSWORD!!!!)
-    let afterCheck = {firstName: Email.firstName, lastName: Email.lastName, emailAddress: Email.emailAddress, accountType: Email.accountType};
+    let afterCheck = {_id: Email._id, firstName: Email.firstName, lastName: Email.lastName, emailAddress: Email.emailAddress, accountType: Email.accountType};
     return afterCheck;
   }
 
@@ -254,4 +253,10 @@ export const checkUser = async (emailAddress, password) => {
 
 
 };
+
+export const getAptByUser = async (id) => {
+  //returns apt object that is assigned to given tenant
+  return {rentRemaining: 1000, rentDate: "Nov 12"}
+};
+
 

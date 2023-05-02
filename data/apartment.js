@@ -8,6 +8,7 @@ const create = async (
     aptNumber,
     rentCost,
     rentRemaining,
+    rentDate,
     size,
     bedNum,
     bathNum,
@@ -19,6 +20,7 @@ const create = async (
     if (isNUllOrUndefined(aptNumber)) throw 'You must provide an apartment number';
     if (isNUllOrUndefined(rentCost)) throw 'You must provide a rent cost';
     if (isNUllOrUndefined(rentRemaining)) throw 'You must provide a rent remaining';
+    if (isNUllOrUndefined(rentDate)) throw 'You must provide a rent due date';
     if (isNUllOrUndefined(size)) throw 'You must provide a size';
     if (isNUllOrUndefined(bedNum)) throw 'You must provide a number of beds';
     if (isNUllOrUndefined(bathNum)) throw 'You must provide a number of baths';
@@ -37,6 +39,7 @@ const create = async (
         aptNumber: aptNumber,
         rentCost: rentCost,
         rentRemaining: rentRemaining,
+        rentDate: rentDate,
         size: size,
         bedNum: bedNum,
         bathNum: bathNum,
@@ -55,4 +58,11 @@ const create = async (
 
 };
 
-export { create}
+const getActiveWorkOrders = async (id) => {
+    //returns active work orders for given apt
+    return 69
+}
+
+
+
+export { create, getActiveWorkOrders}

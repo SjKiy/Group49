@@ -1,4 +1,8 @@
 import {Router} from 'express';
+import EmailValidator from 'email-validator';
+import { createUser, getAptByUser, checkUser } from '../data/user.js';
+import { getPaymentsByUser } from '../data/payments.js';
+import { create, getActiveWorkOrders } from '../data/apartment.js';
 const router = Router();
 
 
@@ -62,13 +66,13 @@ router
     }
 
     // IMPLEMENT WITH USER DATA CREATEUSER
-    // try {
-    //   const added = await createUser(firstName,lastName,emailAddress,password,roleInput);
-    //   if (added.insertedUser) {return res.status(200).redirect('/login')}
-    //   else return res.status(500).render('error', {info: "Internal Server Error"});
-    // } catch (error) {
-    //   return res.status(400).render('register', {title: 'Register', error: true, info: error});
-    // }
+    try {
+      const added = await createUser(firstName,lastName,emailAddress,password,roleInput);
+      if (added.insertedUser) {return res.status(200).redirect('/login')}
+      else return res.status(500).render('error', {info: "Internal Server Error"});
+    } catch (error) {
+      return res.status(400).render('register', {title: 'Register', error: true, info: error});
+    }
   });
 
 // login page get and post
@@ -96,20 +100,23 @@ router
     if (err) return res.status(400).render('login', {title: 'Login', error: true, info: err});
     
     // IMPLEMENT WITH USER DATA CHECKUSER
-    // try {
-    //   const checked = await checkUser(email, password);
-    //   req.session.user= {firstName: checked.firstName, lastName: checked.lastName, emailAddress: checked.emailAddress, role: checked.role}
-    //   if (checked.role === 'admin') return res.status(200).redirect('/admin');
-    //   if (checked.role === 'user') return res.status(200).redirect('/protected');
-    // } catch (error) {
-    //   return res.status(400).render('login', {title: 'Login', error: true, info: error});
-    // }
+    try {
+      const checked = await checkUser(email, password);
+      req.session.user= {_id: checked._id, firstName: checked.firstName, lastName: checked.lastName, emailAddress: checked.emailAddress, role: checked.role}
+      if (checked.accountType === 'tenant') return res.status(200).redirect('/tenant');
+      if (checked.accountType === 'landlord') return res.status(200).redirect('/landlord');
+    } catch (error) {
+      return res.status(400).render('login', {title: 'Login', error: true, info: error});
+    }
   });
 
 //goes to tenant dashboard
 router.route('/tenant').get(async (req, res) => {
-  //TODO
-    return res.status(200).render('tenant', {title: 'Tenant Dashboard'});
+  //TODO fix when session is set up
+    const apt = await getAptByUser(/*req.session.user._id*/)
+    const active = await getActiveWorkOrders(/*apt._id*/)
+    const pastPays = await getPaymentsByUser(/*req.session.user._id*/)
+    return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt.rentRemaining, rentDate: apt.rentDate, numWorkOrders: active, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
 });
 
 //goes to payment page
