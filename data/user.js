@@ -4,6 +4,7 @@ import { apartment } from '../config/mongoCollections.js';
 
 import {user} from '../config/mongoCollections.js'
 import bcrpytjs from "bcryptjs";
+import { getAptbyId } from './apartment.js';
 // import e from 'express';
 
 
@@ -140,6 +141,7 @@ export const createUser = async (
     password: newHashPassword,
     // password: password,
     accountType: accountType.toLowerCase(),
+    apartments: []
     // apartments: [] i took this out for now cause the update one process in the end
   }
   let emailCheck = await user();
@@ -158,16 +160,6 @@ export const createUser = async (
   // const userACollected = await user();
 
   // return UserID;
-
-  let apartments = await apartment();
-  const newId = apartments._id;
-
-  // const newId = aptCollected._id.toString();
-
-  let insertAptInfo = await userCollected.updateOne({_id: new ObjectId(UserID)}, {$push: {apartments: new ObjectId(newId)}});
-  if (!insertAptInfo.acknowledged){
-    throw "Error: Apartment was not able to be added";
-  }
 
 
   return {insertedUser: true};
@@ -267,6 +259,129 @@ export const checkUser = async (emailAddress, password) => {
 
 };
 
+export const get = async (id) => {
+  if (!id){
+    throw "Error: Id does not exist";
+  }
+  if (typeof id !== "string"){
+    throw "Error: Id has to be a string";
+  }
+  if (id.trim() === ' '){
+    throw "Error: Id can be empty";
+  }
+  if (id.replaceAll(" ", "") === ''){
+    throw "Error: Id cannot be empty";
+  }
+  if (id.length === ''){
+    throw "Error: Id can't be empty";
+  }
+  for (let i = 0; i < id.length; i++){
+    if (!id && typeof id !== "string" ){
+      throw "Error: Id must exist and be a string";
+    }
+  }
+  id = id.trim();
+  if (!ObjectId.isValid(id)){
+    throw "Error: Invalid Object Id";
+  }
+  const userCollected = await user();
+  const specficUser = await userCollected.findOne({_id: new ObjectId(id)});
+  if(!specficUser){
+    throw "Error: User not found with that id";
+  }
+  specficUser._id = specficUser._id.toString();
+  return specficUser;
+};
+
+export const assignAptToUser = async (id, aptId ) => {
+  //returns apt object that is assigned to given tenant
+  if (!id){
+    throw "Error: Id does not exist";
+  }
+  if (!aptId){
+    throw "Error: Id does not exist";
+  }
+  if (typeof id !== "string"){
+    throw "Error: Id has to be a string";
+  }
+  if (typeof aptId !== "string"){
+    throw "Error: Id has to be a string";
+  }
+  if (id.trim() === ' '){
+    throw "Error: Id can be empty";
+  }
+    if (aptId.trim() === ' '){
+    throw "Error: Id can be empty";
+  }
+  if (id.replaceAll(" ", "") === ''){
+    throw "Error: Id cannot be empty";
+  }
+  if (aptId.replaceAll(" ", "") === ''){
+    throw "Error: Id cannot be empty";
+  }
+  if (id.length === ''){
+    throw "Error: Id can't be empty";
+  }
+  if (aptId.length === ''){
+    throw "Error: Id can't be empty";
+  }
+  for (let i = 0; i < id.length; i++){
+    if (!id && typeof id !== "string" ){
+      throw "Error: Id must exist and be a string";
+    }
+  }
+  for (let i = 0; i < aptId.length; i++){
+    if (!aptId && typeof aptId !== "string" ){
+      throw "Error: Id must exist and be a string";
+    }
+  }
+  id = id.trim();
+  aptId = aptId.trim();
+  if (!ObjectId.isValid(id)){
+    throw "Error: Invalid Object Id";
+  }
+  if (!ObjectId.isValid(aptId)){
+    throw "Error: Invalid Apt Object Id";
+  }
+  const getUser = await get(id);
+  const getApt = await getAptbyId(aptId);
+
+  if(!getUser){
+    throw "Error: User not found with that id";
+  }
+  if(!getApt){
+    throw "Error: Apartment not found with that id";
+  }
+
+  let userCollected = await user();
+  let aptCollected = await apartment();
+  const updateUser = await userCollected.updateOne(
+    { _id: new ObjectId(id) },
+    { $addToSet: { apartments: new ObjectId(aptId) } } 
+  );
+
+  const updateApartment = await aptCollected.updateOne(
+    { _id: new ObjectId(aptId) },
+    { $addToSet: { tenants: new ObjectId(id) } }
+  );
+
+  if (updateUser.modifiedCount === 0 || updateApartment.modifiedCount === 0) {
+    throw "Error: Could not assign the apartment to the user";
+  }
+  // console.log(updateUser.modifiedCount)
+  return {insertedUser: true};
+};
+
+
+
+
+//   let userTenant = await get(id);
+  
+
+// };
+
+
+
 export const getAptByUser = async (id) => {
   //returns apt object that is assigned to given tenant
   if (!id){
@@ -293,7 +408,66 @@ export const getAptByUser = async (id) => {
   if (!ObjectId.isValid(id)){
     throw "Error: Invalid Object Id";
   }
-  return {rentRemaining: 1000, rentDate: "Nov 12"}
+
+  let userTenant = await user();
+  let userTenantInfo = await userTenant.findOne({_id: new ObjectId(id)});
+  if (!userTenantInfo){
+    throw "Error: User does not exist";
+  }
+  let aptId = userTenantInfo.apartments;
+  let aptCollected = await apartment();
+  let aptInfo = await aptCollected.findOne({_id: new ObjectId(aptId)});
+  if (!aptInfo){
+    throw "Error: Apartment does not exist";
+  }
+  return aptInfo;
+
+
+  // return {rentRemaining: 1000, rentDate: "Nov 12"}
 };
 
+
+export const getAllAptLandlord = async (id) => {
+  if (!id){
+    throw "Error: Id does not exist";
+  }
+  if (typeof id !== "string"){
+    throw "Error: Id has to be a string";
+  }
+  if (id.trim() === ' '){
+    throw "Error: Id can be empty";
+  }
+  if (id.replaceAll(" ", "") === ''){
+    throw "Error: Id cannot be empty";
+  }
+  if (id.length === ''){
+    throw "Error: Id can't be empty";
+  }
+  for (let i = 0; i < id.length; i++){
+    if (!id && typeof id !== "string" ){
+      throw "Error: Id must exist and be a string";
+    }
+  }
+  
+  id = id.trim();
+  if (!ObjectId.isValid(id)){
+    throw "Error: Invalid Object Id";
+  }
+
+  let userLandlord = await user();
+  let userLandlordInfo = await userLandlord.findOne({_id: new ObjectId(id)});
+
+  if (userLandlordInfo.accountType !== "landlord"){
+    throw "Error: This is only for landlords";
+  }
+  const apartmentCollected = await apartment();
+  const landlordApartmentIds = userLandlord.apartments;
+  const landlordApartments = await apartmentCollected.find({_id: {$in: landlordApartmentIds}});
+
+  return landlordApartments;
+    
+  
+
+
+};
 

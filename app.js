@@ -11,25 +11,120 @@ const __dirname = dirname(__filename);
 
 // TESTING
 import {create} from './data/apartment.js';
+import {getAptbyId} from './data/apartment.js';
 import {workCreate} from './data/workOrder.js';
-async function main(){
-    let apt 
-    try{
-        apt = await create("Apt 1", 1500, 16500, "2021-02-01", 800, 1,1, "Nice", true, [], [])
-        console.log(apt);
-    }
-    catch(e){
-        console.log(e);
-    }
-    try{
-        const work = await workCreate("apt 1", "Plumbing", "Open", "Fix the sink", ["hi"], "2021-02-01", "2021-02-02");
-        console.log(work);
-    }
-    catch(e){
-        console.log(e);
-    }
-}
-main();
+import * as user from './data/user.js';
+import { apartment } from './config/mongoCollections.js';
+// async function main(){
+    // let apt 
+    // try{
+    //     apt = await create("Apt 1", 1500, 16500, "2021-02-01", 800, 1,1, "Nice", true, [], [])
+    //     console.log(apt);
+    // }
+    // catch(e){
+    //     console.log(e);
+    // }
+    // let apt2 
+    // try{
+    //     apt2 = await create("Apt 2", 1500, 16500, "2021-02-01", 800, 1,1, "Nice", true, [], [])
+    //     console.log(apt2);
+    // }
+    // catch(e){
+    //     console.log(e);
+    // }
+    // let apt3 
+    // try{
+    //     apt3 = await create("Apt 3", 1500, 16500, "2021-02-01", 800, 1,1, "Nice", true, [], [])
+    //     console.log(apt3);
+    // }
+    // catch(e){
+    //     console.log(e);
+    // }
+    // try{
+    //     const work = await workCreate("apt 1", "Plumbing", "Open", "Fix the sink", ["hi"], "2021-02-01", "2021-02-02");
+    //     console.log(work);
+    // }
+    // catch(e){
+    //     console.log(e);
+    // }
+
+
+    
+// try {
+//     let user1 = await user.createUser("use", "adsjsaj", "test1@yahoo.com", "Horsepull748*%", "tenant",[apt._id])
+
+//     console.log(user1);
+//   } catch (e) {
+//     console.error(e); 
+//   }
+    
+// try {
+//     let user2 = await user.createUser("use", "adsjsaj", "test2@yahoo.com", "Horsepull748*%", "tenant")
+
+//     console.log(user2);
+//   } catch (e) {
+//     console.error(e); 
+//   }
+    
+// try {
+//     let user4 = await user.createUser("uss", "adsjsaj", "testr@yahoo.com", "Horsepull748*%", "landlord")
+
+//     console.log(user4);
+//   } catch (e) {
+//     console.error(e); 
+//   }
+// }
+    
+// try {
+//     let user4 = await user.get("64513be1813378a0fbab7edd")
+
+//     console.log(user4);
+//   } catch (e) {
+//     console.error(e); 
+//   }
+// }
+// try {
+//     let user5 = await getAptbyId("64513be1813378a0fbab7edc")
+
+//     console.log(user5);
+//   } catch (e) {
+//     console.error(e); 
+//   }
+// try {
+//     let user5 = await getAptbyId("645172065090eee151c3aa12")
+
+//     console.log(user5);
+//   } catch (e) {
+//     console.error(e); 
+//   }
+
+// try {
+//   let user5 = await user.assignAptToUser("64513be1813378a0fbab7edd","64513be1813378a0fbab7edc")
+
+//   console.log(user5);
+// } catch (e) {
+//   console.error(e); 
+// }
+
+// try {
+//   let user5 = await user.assignAptToUser("645171e465205244adf0baeb","645172065090eee151c3aa12")
+
+//   console.log(user5);
+// } catch (e) {
+//   console.error(e); 
+// }
+
+
+
+// try {
+//   let user4 = await user.getAllAptLandlord("uss", "adsjsaj", "test5@yahoo.com", "Horsepull748*%", "landlord",)
+
+//   console.log(user4);
+// } catch (e) {
+//   console.error(e); 
+// }
+
+// main();
 
 
 // SERVER SETUP
