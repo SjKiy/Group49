@@ -382,7 +382,7 @@ export const assignAptToUser = async (id, aptId ) => {
 
 
 //come back to this
-export const getAptByUser = async (aptId) => {
+export const getAptByUser = async (id) => {
   //returns apt object that is assigned to given tenant
   if (!aptId){
     throw "Error: Id does not exist";
