@@ -1,5 +1,6 @@
 //need a create, find user, get user info
 import { apartment } from '../config/mongoCollections.js';
+import { getWorkById } from './workOrder.js';
 import { ObjectId } from 'mongodb';
 import { isNUllOrUndefined } from './dataHelper.js';
 
@@ -86,9 +87,16 @@ const create = async (
 
 };
 
-const getActiveWorkOrders = async (id) => {
+const getActiveWorkOrders = async (aptId) => {
     //returns active work orders for given apt
-    return 69
+    const apt = await getAptbyId(aptId);
+    let res = []
+    for (const w of apt.workOrders) {
+      const temp = await getWorkById(w._id.toString());
+      if (temp.workStatus === 'Open') res.push(temp);
+    }
+    return res;
+
 }
 
 

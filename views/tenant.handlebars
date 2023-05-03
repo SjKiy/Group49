@@ -22,7 +22,11 @@
                 </li>
                 <li class="workOrderBox">
                     <p>Active Work Orders:</p>
+                    {{#if numWorkOrders}}
                     <p>{{numWorkOrders}}</p>
+                    {{else}}
+                    <p>None</p>
+                    {{/if}}
                 </li>
                 <li class="historyBox">
                     <p>Previous Payments:</p>

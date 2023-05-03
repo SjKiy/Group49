@@ -7,34 +7,33 @@ import * as users from "./user.js";
 
 import * as apt from "./apartment.js";
 
-export const getPaymentsByUser = async () => {
-    return [100]
-}
-
 
 export const createpayment = async (
     //should we change the the tenant id to the tenant name? and apartmentId id to apartmentId name?
     tenantId,
     apartmentId,
     paymentAmount,
+    cardNum,
     date
   ) => {
     ///add the empty part. for all criteriassss!!!!!!!!!!!!!!!!!
-    if (tenantId === undefined || tenantId === null || apartmentId === undefined || apartmentId === null || paymentAmount === undefined || paymentAmount === null || date === undefined || date === null){
+    if (tenantId === undefined || tenantId === null || apartmentId === undefined || apartmentId === null || paymentAmount === undefined || paymentAmount === null || date === undefined || date === null || cardNum === undefined || cardNum === null){
       throw "Error: User field can't be undefined or null"
     }
-    if (!tenantId || !apartmentId || !paymentAmount || !date ){
-      throw "Error: Missing info in either tenant, apartmentId, paymentAmount, date Please add";
+    if (!tenantId || !apartmentId || !paymentAmount || !cardNum || !date ){
+      throw "Error: Missing info in either tenant, apartmentId, paymentAmount, cardNum, date Please add";
     }
     if (typeof tenantId !== "string"){
       throw "Error: tenant  Must be a string.";
-  
     }
     if (typeof apartmentId !== "string"){
       throw "Error: apartmentId  Must be a string.";
     }
     if (typeof paymentAmount !== "number"){
       throw "Error: paymentAmount Must be a number.";
+    }
+    if (typeof cardNum !== "number"){
+      throw "Error: cardNum must be a number"
     }
     if (typeof date !==  "string"){
       throw "Error: date Must be a string.";
@@ -67,7 +66,8 @@ export const createpayment = async (
     }
     //add date regex here
   
-   
+   // add card validator here... could npm install card-validator
+
     tenantId = tenantId.trim();
     apartmentId = apartmentId.trim();
     // paymentAmount = paymentAmount.toLowerCase().trim();
@@ -88,6 +88,7 @@ export const createpayment = async (
         tenant : new ObjectId(test._id),
         apartmentId: new ObjectId(APTS._id),
         paymentAmount: paymentAmount,
+        cardNum: cardNum,
         date: date
     }
 
@@ -107,4 +108,8 @@ export const createpayment = async (
 
 
 };
-// export { getPaymentsByUser }
+
+//return all previous payments for a given UserId
+export const getPaymentsByUser = async (userId) => {
+  return [100]
+}
