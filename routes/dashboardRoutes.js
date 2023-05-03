@@ -145,7 +145,11 @@ router.route('/payments').get(async (req, res) => {
 
 //goes to landlord dashboard
 router.route('/landlord').get(async (req, res) => {
-  //TODO
+  //need a get all workorders for all user apartments the landlord
+  const apt = getAllApartmentLandlord(/*req.session.user._id*/)
+  const active = getAllActiveWorkOrders(/*req.session.user._id*/)
+  //what info about the apartment do we need to display for the landlord, like how mant tenants are in the apartment or just the apartment number of all their apartments?
+  return res.status(200).render('landlord', {title: 'Landlord Dashboard', today: new Date().toLocaleDateString(), numWorkOrders: active.length});
   
 });
 
