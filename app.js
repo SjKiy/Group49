@@ -178,7 +178,7 @@ import { apartment } from './config/mongoCollections.js';
 //   console.error(e); 
 
 // try {
-//   let pay1 = await payment.createpayment("645266a22b943bdcb7c1ad23", "6452663d931c83c6400b94f8", 1500, 4532018264927139, "05/02/23")
+//   let pay1 = await payment.createpayment("645266a22b943bdcb7c1ad23", "6452663d931c83c6400b94f8", 1500, "4532018264927139", "05/02/23")
 
 //   console.log(pay1);
 // } catch (e) {

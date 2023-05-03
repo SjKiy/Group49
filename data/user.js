@@ -491,7 +491,6 @@ export const getAllAptLandlord = async (id) => {
 
   // return landlordApartments;
 
-  // const bandsCollected = await bands();
   let aptList = await apartmentCollected.find({}).toArray();
   if(aptList.length === 0){
     return [];
@@ -543,8 +542,6 @@ export const remove = async (id) => {
   }
 
   return {delete: true}
-  // return ` "${deleteSpecficUser.value.name} has been successfully deleted!"`;
-  // return {bandId: id, delete: true};
 
 };
 
