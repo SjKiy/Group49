@@ -1,8 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { workOrder } from "../config/mongoCollections.js";
+import {user} from '../config/mongoCollections.js'
+
 import * as workOrders from "./workOrder.js";
+import * as users from "./user.js";
 
 export const create = async (
+    workOrderId,
     userId,
     content,
     date,
@@ -11,16 +15,31 @@ export const create = async (
     if (!userId){
         throw "Error: Id does not exist";
       }
+      if (!workOrderId){
+        throw "Error: Id does not exist";
+      }
       if (typeof userId !== "string"){
+        throw "Error: Id has to be a string";
+      }
+      if (typeof workOrderId !== "string"){
         throw "Error: Id has to be a string";
       }
       if (userId.trim === ' '){
         throw "Error: Id can be empty";
       }
+      if (workOrderId.trim === ' '){
+        throw "Error: Id can be empty";
+      }
       if (userId.replaceAll(" ", "") === ''){
         throw "Error: Id cannot be empty";
       }
+      if (workOrderId.replaceAll(" ", "") === ''){
+        throw "Error: Id cannot be empty";
+      }
       if (userId.length === ''){
+        throw "Error: Id can't be empty";
+      }
+      if (workOrderId.length === ''){
         throw "Error: Id can't be empty";
       }
       for (let i = 0; i < userId.length; i++){
@@ -28,10 +47,15 @@ export const create = async (
           throw "Error: Id must exist and be a string";
         }
       }
-      if (userId === undefined || userId === null || content === undefined || content === null || date === undefined || date === null){
+      for (let i = 0; i < workOrderId.length; i++){
+        if (!workOrderId && typeof workOrderId !== "string" ){
+          throw "Error: Id must exist and be a string";
+        }
+      }
+      if (workOrderId === undefined || workOrderId === null || userId === undefined || userId === null || content === undefined || content === null || date === undefined || date === null){
         throw "Error: Comment fieldcan't be undefined or null"
       }
-      if ( !userId || !content || !date){
+      if ( !workOrderId || !userId || !content || !date){
         throw "Error: Missing info in either userId, content, date Please add";
       }
       if (typeof content !== "string" || typeof date !== "string" ){
@@ -51,7 +75,7 @@ export const create = async (
       }
     
     
-      if (userId.length === '' || content.length === '' || date.length === '' ){
+      if (workOrderId.length === '' || userId.length === '' || content.length === '' || date.length === '' ){
         throw "Error: Requirments can't be empty";
       }
       
@@ -86,33 +110,43 @@ export const create = async (
       }
     
       const commentToCreate = {
-        _id: new ObjectId(),//object id
+        _id: new ObjectId(),
+        workOrderId: workOrderId,
         userId: userId,
         content: content,
         date: date,
-     
-      }
+      };
+      
       const workCollected = await workOrder();
-      // const GetID = await get(id);
-    
-    //   const existingWork = await workCollected.findOne({ _id: new ObjectId(userId), "albums.title": title });
-    const existingWork = await workCollected.findOne({ _id: new ObjectId(userId)});
-
-      if (!existingWork) {
-        throw "Error: Title already exists";// ALREADY have it
+      const userCollected = await user();
+      
+      // Check if the userId value is valid
+      const existingUser = await userCollected.findOne({ _id: new ObjectId(userId) });
+      
+      if (!existingUser) {
+        throw "Error: User not found";
       }
-      let insertWorkInfo = await workCollected.updateOne({_id: new ObjectId(userId)}, {$push: {comments: commentToCreate}});
-      if (!insertWorkInfo.acknowledged){
+      
+      const existingWork = await workCollected.findOne({ _id: new ObjectId(workOrderId) });
+      
+      if (!existingWork) {
+        throw "Error: Work order not found";
+      }
+      
+      let insertWorkInfo = await workCollected.updateOne(
+        { _id: new ObjectId(workOrderId) },
+        { $push: { comments: commentToCreate } }
+      );
+      
+      if (!insertWorkInfo.acknowledged) {
         throw "Error: Comment was not able to be added";
       }
-
+      
       commentToCreate._id = commentToCreate._id.toString();
       return commentToCreate;
-    
-    // };
+      
 
   };
-
 
 
   export const get = async (commentId) => {
@@ -155,67 +189,124 @@ export const create = async (
   
   
   };
-  // export const getAll = async (commentId) => {
-  //   if (!commentId){
-  //     throw "Error: Id does not exist";
-  //   }
-  //   if (typeof commentId !== "string"){
-  //     throw "Error: Id has to be a string";
-  //   }
-  //   if (commentId.trim === ' '){
-  //     throw "Error: Id can be empty";
-  //   }
-  //   if (commentId.replaceAll(" ", "") === ''){
-  //     throw "Error: Id cannot be empty";
-  //   }
-  //   if (commentId.length === ''){
-  //     throw "Error: Id can't be empty";
-  //   }
-  //   for (let i = 0; i < commentId.length; i++){
-  //     if (!commentId && typeof commentId !== "string" ){
-  //       throw "Error: Id must exist and be a string";
-  //     }
-  //   }
-  //   commentId = commentId.trim();
-  //   if (!ObjectId.isValid(commentId)){
-  //     throw "Error: Invalid Object Id tess";
-  //   }
-  //   // const AlbumsCollected = await bands();
-  //   let commentsCollected = await band.get(commentId);
-  //   // let numOfAlb = AlbumsCollected.albums.length;
-  //   let commentList =  commentsCollected.comments;
-  //   if(commentList.length === 0){
-  //     return [];
-  //   }
-  //   // if(!AlbumsList){
-  //   //   throw "Error: Was not able to capture all bands"
-  //   // }
-  // //   AlbumsList = AlbumsList.map((items) =>{ items._id = items._id.toString()
-  // //   return items;
-  // //   });
-  // //   return AlbumsList;
-  // // //// need to 
-  // // };
-  // commentList = commentList.map((comment) => {
-  //   comment._id = comment._id.toString();
-  //   return comment;
-  //   });
-  
-  //   return commentList;
-  // };
 
-        // const AlbumID = insertAlbumInfo.toString();
-      // const ALBUM =  await get(AlbumID);
-    //   let bandAlbums = await band.get(bandId);
-    //   let numOfAlb = bandAlbums.albums.length;
-    //   // let numofrating = bandAlbums.albums.rating;
-    //   let totalRating = 0;
-    //   for (let i = 0; i < numOfAlb; i++){
-    //     totalRating += bandAlbums.albums[i].rating;
-    //   }
-    //   let avg = totalRating/ numOfAlb;
-     
-    //   await albumsCollected.updateOne({ _id: new ObjectId(bandId) }, { $set: { overallRating:  Number(avg.toFixed(1)) } });
-      // const AlbumID = insertAlbumInfo.toString();
-      // const OverID = averageerate.toString();
-      // const Over = await band.get(bandId.toString());///////come back to this 
+  export const remove = async (commentId) => {
+    if (!commentId){
+      throw "Error: Id does not exist";
+    }
+    if (typeof commentId !== "string"){
+      throw "Error: Id has to be a string";
+    }
+    if (commentId.trim === ' '){
+      throw "Error: Id can be empty";
+    }
+    if (commentId.replaceAll(" ", "") === ''){
+      throw "Error: Id cannot be empty";
+    }
+    if (commentId.length === ''){
+      throw "Error: Id can't be empty";
+    }
+    for (let i = 0; i < commentId.length; i++){
+      if (!commentId && typeof commentId !== "string" ){
+        throw "Error: Id must exist and be a string";
+      }
+    }
+    commentId = commentId.trim();
+    if (!ObjectId.isValid(commentId)){
+      throw "Error: Invalid Object Id testt huh";
+    }
+  
+    const workCollected = await workOrder();
+    const allOrders = await workCollected.findOne({ "comments._id": new ObjectId(commentId)});
+    //let allBands = await bandAlbums.findOne({ "albums._id": new ObjectId(albumId)});
+    // console.log(allBands);
+    let temp = allOrders._id;
+    if(!allOrders){
+      throw "Error: Comment was not found"
+    }
+  
+    // const albumsCollected = await bands();
+    let deleteCommentInfo = await workCollected.updateOne({"comments._id": new ObjectId(commentId)}, {$pull: {comments: {_id: new ObjectId(commentId)}}});
+    if (!deleteCommentInfo.acknowledged){
+      throw "Error: Comment was not able to be remove";
+    }
+      return {delete: true};
+
+  };
+
+
+  export const updatedComment = async (commentId, newContent) => {
+    if (!commentId){
+      throw "Error: Id does not exist";
+    }
+    if (typeof commentId !== "string"){
+      throw "Error: Id has to be a string";
+    }
+    if (commentId.trim() === ' '){
+      throw "Error: Id can be empty";
+    }
+    if (commentId.replaceAll(" ", "") === ''){
+      throw "Error: Id cannot be empty";
+    }
+    if (commentId.length === ''){
+      throw "Error: Id can't be empty";
+    }
+    for (let i = 0; i < commentId.length; i++){
+      if (!commentId && typeof commentId !== "string" ){
+        throw "Error: Id must exist and be a string";
+      }
+    }
+    commentId = commentId.trim();
+    if (!ObjectId.isValid(commentId)){
+      throw "Error: Invalid Object Id";
+    }
+    if(!newContent){
+      throw "Error: New Name was not provided"
+    }
+    if (typeof newContent !== "string"){
+      throw "Error: New Name has to be a string";
+    }
+    if (newContent.trim() === ' '){
+      throw "Error: New Name can be empty";
+    }
+    if (newContent.replaceAll(" ", "") === ''){
+      throw "Error: New Name cannot be empty";
+    }
+    if (newContent.length === ''){
+      throw "Error: New Name can't be empty";
+    }
+    for (let i = 0; i < newContent.length; i++){
+      if (!newContent && typeof newContent !== "string" ){
+        throw "Error: Id must exist and be a string";
+      }
+    }
+    newContent = newContent.trim();
+   
+    const updatedComment = {
+      content: newContent
+    }
+  
+    const workCollected = await workOrder();
+    const GetID = await get(commentId);
+    if (GetID.content === newContent){
+      throw "Error: New name cannot be the same as the current name"
+    }
+     const updateSpecficComment = await workCollected.findOneAndUpdate(
+    //   {_id: new ObjectId(id)},
+    //   {$set: updatedComment},
+    //   {returnDocument: 'after'}
+    // );
+    { "comments._id": new ObjectId(commentId) },
+    { $set: { "comments.$.content": newContent } },
+    { returnDocument: "after" }
+  );
+  
+    
+    if (updateSpecficComment.lastErrorObject.n === 0) {
+      throw "Error: Band Name could not be update successfully";
+    }
+    updateSpecficComment.value._id = updateSpecficComment.value._id.toString();
+    return updateSpecficComment.value;
+  
+  
+  };

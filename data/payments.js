@@ -119,33 +119,33 @@ export const createpayment = async (
 
 
 
-export const get = async (id) => {
-    if (!id){
+export const get = async (paymentid) => {
+    if (!paymentid){
       throw "Error: Id does not exist";
     }
-    if (typeof id !== "string"){
+    if (typeof paymentid !== "string"){
       throw "Error: Id has to be a string";
     }
-    if (id.trim() === ' '){
+    if (paymentid.trim() === ' '){
       throw "Error: Id can be empty";
     }
-    if (id.replaceAll(" ", "") === ''){
+    if (paymentid.replaceAll(" ", "") === ''){
       throw "Error: Id cannot be empty";
     }
-    if (id.length === ''){
+    if (paymentid.length === ''){
       throw "Error: Id can't be empty";
     }
-    for (let i = 0; i < id.length; i++){
-      if (!id && typeof id !== "string" ){
+    for (let i = 0; i < paymentid.length; i++){
+      if (!paymentid && typeof paymentid !== "string" ){
         throw "Error: Id must exist and be a string";
       }
     }
-    id = id.trim();
-    if (!ObjectId.isValid(id)){
+    paymentid = paymentid.trim();
+    if (!ObjectId.isValid(paymentid)){
       throw "Error: Invalid Object Id";
     }
     const payCollected = await payments();
-    const specficPay = await payCollected.findOne({_id: new ObjectId(id)});
+    const specficPay = await payCollected.findOne({_id: new ObjectId(paymentid)});
     if(!specficPay){
       throw "Error: User not found with that id";
     }
@@ -156,34 +156,34 @@ export const get = async (id) => {
   };
 
 //return all previous payments for a given UserId
-export const getPaymentsByUser = async (id) => {
-    if (!id){
+export const getPaymentsByUser = async (userId) => {
+    if (!userId){
         throw "Error: Id does not exist";
     }
-    if (typeof id !== "string"){
+    if (typeof userId !== "string"){
         throw "Error: Id has to be a string";
     }
-    if (id.trim() === ' '){
+    if (userId.trim() === ' '){
         throw "Error: Id can be empty";
     }
-    if (id.replaceAll(" ", "") === ''){
+    if (userId.replaceAll(" ", "") === ''){
         throw "Error: Id cannot be empty";
     }
-    if (id.length === ''){
+    if (userId.length === ''){
         throw "Error: Id can't be empty";
     }
-    for (let i = 0; i < id.length; i++){
-        if (!id && typeof id !== "string" ){
+    for (let i = 0; i < userId.length; i++){
+        if (!userId && typeof userId !== "string" ){
           throw "Error: Id must exist and be a string";
         }
     }
-    id = id.trim();
-    if (!ObjectId.isValid(id)){
+    userId = userId.trim();
+    if (!ObjectId.isValid(userId)){
         throw "Error: Invalid Object Id";
     }
 
     const payCollected = await payments();
-    const allPay = await payCollected.find({tenant: new ObjectId(id)}).toArray();
+    const allPay = await payCollected.find({tenant: new ObjectId(userId)}).toArray();
     if(!allPay){
       throw "Error: User not found with that id";
     }

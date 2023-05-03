@@ -506,3 +506,48 @@ export const getAllAptLandlord = async (id) => {
 
 };
 
+export const remove = async (id) => {
+  if (!id){
+    throw "Error: Id does not exist";
+  }
+  if (typeof id !== "string"){
+    throw "Error: Id has to be a string";
+  }
+  if (id.trim() === ' '){
+    throw "Error: Id can be empty";
+  }
+  if (id.replaceAll(" ", "") === ''){
+    throw "Error: Id cannot be empty";
+  }
+  if (id.length === ''){
+    throw "Error: Id can't be empty";
+  }
+  for (let i = 0; i < id.length; i++){
+    if (!id && typeof id !== "string" ){
+      throw "Error: Id must exist and be a string";
+    }
+  }
+  id = id.trim();
+  if (!ObjectId.isValid(id)){
+    throw "Error: Invalid Object Id";
+  }
+  const userCollected = await user();
+  const deleteSpecficUser = await userCollected.findOneAndDelete({_id: new ObjectId(id)});
+  // deleteSpecficBand._id = deleteSpecficBand._id.toString();
+
+  if(!deleteSpecficUser){
+    throw "Error: User not found with that id";
+  }
+  if (deleteSpecficUser.lastErrorObject.n === 0) {
+    throw `Error: The deletion of user not successful.`;
+  }
+
+  return {delete: true}
+  // return ` "${deleteSpecficUser.value.name} has been successfully deleted!"`;
+  // return {bandId: id, delete: true};
+
+};
+
+
+
+
