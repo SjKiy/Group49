@@ -1,5 +1,6 @@
 //need a create, find user, get user info
 import { apartment } from '../config/mongoCollections.js';
+import { getWorkById } from './workOrder.js';
 import { ObjectId } from 'mongodb';
 import { isNUllOrUndefined } from './dataHelper.js';
 
@@ -71,6 +72,15 @@ const create = async (
         workOrders: workOrders,
 
     };
+
+    
+    let aptNum = await apartment();
+    let dupAptNum = await aptNum.findOne({aptNumber});
+
+    if(dupAptNum){
+      throw "Error: Dupilcate apartment number";
+    }
+
     const insertInfo = await aptCollection.insertOne(newApt);
     if (insertInfo.insertedCount === 0) throw 'Could not add apartment';
 
@@ -78,13 +88,55 @@ const create = async (
 
     return insertInfo
 
+
 };
 
-const getActiveWorkOrders = async (id) => {
+const getActiveWorkOrders = async (aptId) => {
     //returns active work orders for given apt
-    return 69
+    const apt = await getAptbyId(aptId);
+    let res = []
+    for (const w of apt.workOrders) {
+      const temp = await getWorkById(w._id.toString());
+      if (temp.workStatus === 'Open') res.push(temp);
+    }
+    return res;
+
 }
 
 
+const getAptbyId = async (aptId) => {
+    if (!aptId){
+      throw "Error: Id does not exist";
+    }
+    if (typeof aptId !== "string"){
+      throw "Error: Id has to be a string";
+    }
+    if (aptId.trim() === ' '){
+      throw "Error: Id can be empty";
+    }
+    if (aptId.replaceAll(" ", "") === ''){
+      throw "Error: Id cannot be empty";
+    }
+    if (aptId.length === ''){
+      throw "Error: Id can't be empty";
+    }
+    for (let i = 0; i < aptId.length; i++){
+      if (!aptId && typeof aptId !== "string" ){
+        throw "Error: Id must exist and be a string";
+      }
+    }
+    aptId = aptId.trim();
+    if (!ObjectId.isValid(aptId)){
+      throw "Error: Invalid Object Id";
+    }
+    const aptCollected = await apartment();
+    const specficApt = await aptCollected.findOne({_id: new ObjectId(aptId)});
+    if(!specficApt){
+      throw "Error: Apartment not found with that id";
+    }
+    specficApt._id = specficApt._id.toString();
+    return specficApt;
+  };
 
-export { create, getActiveWorkOrders}
+
+export { create, getActiveWorkOrders, getAptbyId}

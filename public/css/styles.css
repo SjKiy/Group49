@@ -89,7 +89,8 @@ input[type="submit"]:hover {
 }
 
 #login-form,
-#registration-form {
+#registration-form 
+#payment-form{
   width:60%;
   max-width: 25em;
   margin: 1em auto;
@@ -190,4 +191,22 @@ input[type="submit"]:hover {
 
 .logout:hover {
   background-color: rgb(100, 0, 0);
+}
+
+.currency {
+  display: block;
+  margin: 0.5em 0;
+  padding: 0.5em;
+  font-size: 1em;
+  border: 1px solid #555;
+  border-radius: 0.25em;
+  background-color: #222;
+  color: #fff;
+  width: fit-content;
+}
+.currency input {
+  border: 0;
+  background-color: #222;
+  color: #fff;
+  width: 182px
 }
