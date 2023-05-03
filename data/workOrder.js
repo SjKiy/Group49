@@ -7,7 +7,7 @@ const workCreate = async (
     workType,
     workStatus,
     notes,
-    comments,
+    // comments,
     dateOpened,
     dateClosed,
 ) => {
@@ -15,7 +15,7 @@ const workCreate = async (
     if (isNUllOrUndefined(workType)) throw 'You must provide a work type';
     if (isNUllOrUndefined(workStatus)) throw 'You must provide a work status';
     if (isNUllOrUndefined(notes)) throw 'You must provide notes';
-    if (isNUllOrUndefined(comments)) throw 'You must provide a comment';
+    // if (isNUllOrUndefined(comments)) throw 'You must provide a comment';
     if (isNUllOrUndefined(dateOpened)) throw 'You must provide a date opened';
     if (isNUllOrUndefined(dateClosed)) throw 'You must provide a date closed';
     workType = workType.trim();
@@ -47,7 +47,8 @@ const workCreate = async (
         workType: workType,
         workStatus: workStatus,
         notes: notes,
-        comments: comments,
+        comments: [],
+        // comments: comments,
         dateOpened: dateOpened,
         dateClosed: dateClosed,
     };

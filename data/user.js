@@ -125,6 +125,7 @@ export const createUser = async (
 
 
   // const saltRounds = await bcrpytjs.genSalt(16);
+  //change 5
   const saltRounds = await bcrpytjs.genSalt(5);
   let newHashPassword = await bcrpytjs.hash(password, saltRounds);
 
@@ -251,12 +252,6 @@ export const checkUser = async (emailAddress, password) => {
     return afterCheck;
   }
 
-
-
-  // return [Email.firstName, Email.lastName, Email.emailAddress, Email.accountType];
-
-
-
 };
 
 export const get = async (id) => {
@@ -375,39 +370,67 @@ export const assignAptToUser = async (id, aptId ) => {
 
 
 
-//   let userTenant = await get(id);
-  
-
-// };
-
-
-//come back to this
-export const getAptByUser = async (id) => {
-  //returns apt object that is assigned to given tenant
-  if (!aptId){
+export const getAptByUseriD = async (id) => {
+  if (!id){
     throw "Error: Id does not exist";
   }
-  if (typeof aptId !== "string"){
+  if (typeof id !== "string"){
     throw "Error: Id has to be a string";
   }
-  if (aptId.trim() === ' '){
+  if (id.trim() === ' '){
     throw "Error: Id can be empty";
   }
-  if (aptId.replaceAll(" ", "") === ''){
+  if (id.replaceAll(" ", "") === ''){
     throw "Error: Id cannot be empty";
   }
-  if (aptId.length === ''){
+  if (id.length === ''){
     throw "Error: Id can't be empty";
   }
-  for (let i = 0; i < aptId.length; i++){
-    if (!aptId && typeof aptId !== "string" ){
+  for (let i = 0; i < id.length; i++){
+    if (!id && typeof id !== "string" ){
       throw "Error: Id must exist and be a string";
     }
   }
-  aptId = aptId.trim();
-  if (!ObjectId.isValid(aptId)){
+  id = id.trim();
+  if (!ObjectId.isValid(id)){
     throw "Error: Invalid Object Id";
   }
+
+  let user = await get(id);
+  if (!user){
+    throw "Error: User does not exist";
+  }
+  let apartmentId = user.apartments;
+  if (!apartmentId || apartmentId.length === 0){
+    throw "Error: User does not have an apartment";
+    //return [];
+  }
+
+  let AptID = apartmentId.map((id) => new ObjectId(id));
+
+  let aptCollected = await apartment();
+  let userApartments = await aptCollected.find({ _id: { $in: AptID } }).toArray();
+  if (!userApartments){
+    throw "Error: Apartment does not exist";
+  }
+  for (let i = 0; i < userApartments.length; i++){
+    userApartments[i]._id = userApartments[i]._id.toString();
+    // userApartments[i].tenants = userApartments[i].tenants.toString();
+    //come back does it matter if the array of tenant is showing new object id instead of string.
+  }
+
+  return userApartments;
+  // aptCollected._id.toString();
+  // for (let i = 0; i < aptCollected.tenants.length; i++){
+  //   userApartments[i]._id.toString();
+  // }
+  // return userApartments;
+  // let aptInfo = await aptCollected.findOne({_id: new ObjectId(aptId)});
+  // if (!aptInfo){
+  //   throw "Error: Apartment does not exist";
+  // }
+  // return aptInfo;
+
 
   // let userTenant = await user();
   // let userTenantInfo = await userTenant.findOne({_id: new ObjectId(id)});
@@ -423,10 +446,10 @@ export const getAptByUser = async (id) => {
   // return aptInfo;
 
 
-  return {rentRemaining: 1000, rentDate: "Nov 12"}
+  // return {rentRemaining: 1000, rentDate: "Nov 12"}
 };
 
-//come back to this
+//come back to this the landlord Apt is not showing up
 export const getAllAptLandlord = async (id) => {
   if (!id){
     throw "Error: Id does not exist";
@@ -456,18 +479,30 @@ export const getAllAptLandlord = async (id) => {
 
   let userLandlord = await user();
   let userLandlordInfo = await userLandlord.findOne({_id: new ObjectId(id)});
-
+  if (!userLandlordInfo){   
+    throw "Error: User does not exist";
+  }
   if (userLandlordInfo.accountType !== "landlord"){
     throw "Error: This is only for landlords";
   }
   const apartmentCollected = await apartment();
-  const landlordApartmentIds = userLandlord.apartments;
-  const landlordApartments = await apartmentCollected.find({_id: {$in: landlordApartmentIds}});
+  // const landlordApartmentIds = userLandlord.apartments;
+  // const landlordApartments = await apartmentCollected.find({_id: {$in: landlordApartmentIds}});
 
-  return landlordApartments;
-    
-  
+  // return landlordApartments;
 
+  // const bandsCollected = await bands();
+  let aptList = await apartmentCollected.find({}).toArray();
+  if(aptList.length === 0){
+    return [];
+  }
+  if(!aptList){
+    throw "Error: Was not able to capture all apartments";
+  }
+  aptList = aptList.map((items) =>{ items._id = items._id.toString()
+  return items;
+  });
+  return aptList;
 
 };
 
