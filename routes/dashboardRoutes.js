@@ -113,10 +113,10 @@ router
 //goes to tenant dashboard
 router.route('/tenant').get(async (req, res) => {
   //TODO fix when session is set up
-    const apt = await getAptByUser(/*req.session.user._id*/)
-    const active = await getActiveWorkOrders(/*apt._id*/)
-    const pastPays = await getPaymentsByUser(/*req.session.user._id*/)
-    return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt.rentRemaining, rentDate: apt.rentDate, numWorkOrders: active, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
+    const apt = await getAptByUser(req.session.user._id)
+    const active = await getActiveWorkOrders(apt._id)
+    const pastPays = await getPaymentsByUser(req.session.user._id)
+    return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt.rentRemaining, rentDate: apt.rentDate, numWorkOrders: active.length, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
 });
 
 //Payment page get(go to page) put(submit update to rent);
@@ -127,33 +127,57 @@ router
         return res.status(200).render('pay', {title: "Payment Portal"});
     })
     .post(async (req, res) => {
-
+        //adds to payment collection and subtracts from apt rent due.
+        //redirects to /payments
     }
 );
 
 //goes to submit work order page
-router.route('/submitworkorder').get(async (req, res) => {
+router
+  .route('/submitworkorder')
+  .get(async (req, res) => {
     //TODO
-
-});
+    //render submission page
+  })
+  .post(async (req, res) => {
+    //TODO
+    //add to work order collection and update apartment that work order is for
+    //redirects to /workorders
+  });
 
 //goes to all work order page
 router.route('/workorders').get(async (req, res) => {
     //TODO
+    //gets all work orders for current user's apt
+    //if current user is landlord: gets all work orders (open,complete,inprog)
+    //renders page
+  })
+  .put(async (req, res) => {
+    //TODO
+    //only for landlord: updates workorder collection, to add notes and such
+    //renders workorders
+  })
 
-});
+;
 
 //goes to previous payment page
 router.route('/payments').get(async (req, res) => {
     //TODO
-
+    //gets all previous payments for current user
+    //renders page
 });
 
 //goes to landlord dashboard
 router.route('/landlord').get(async (req, res) => {
   //TODO
-  
 });
+
+//goes to landlord dashboard
+router.route('/landlord').get(async (req, res) => {
+  //TODO
+});
+
+
 
 router.route('/error').get(async (req, res) => {
   //code here for GET

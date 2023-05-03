@@ -423,7 +423,7 @@ export const getAptByUser = async (id) => {
   // return aptInfo;
 
 
-  // return {rentRemaining: 1000, rentDate: "Nov 12"}
+  return {rentRemaining: 1000, rentDate: "Nov 12"}
 };
 
 //come back to this

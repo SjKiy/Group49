@@ -60,7 +60,18 @@ const workCreate = async (
     return insertInfo;
 };
 
-export {workCreate};
+//given workId, return workOrder Object
+const getWorkById = async (workId) => {
+    const workOrderCollection = await workOrder();
+    const workOrder = await workOrderCollection.findOne({_id: new ObjectId(workId)});
+    if(!workOrder){
+        throw "Error: Apartment not found with that id";
+    }
+    workOrder._id = workOrder._id.toString();
+    return workOrder;
+}
+
+export {workCreate, getWorkById};
 
 
     
