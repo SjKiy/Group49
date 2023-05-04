@@ -2,7 +2,7 @@ import { workOrder } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import { isNUllOrUndefined, dateChecker } from "./dataHelper.js";
 
-const workCreate = async (
+export const workCreate = async (
     aptNumber,
     workType,
     workStatus,
@@ -64,35 +64,220 @@ const workCreate = async (
     return insertInfo;
 };
 
-//given workId, return workOrder Object
-const getWorkById = async (workId) => {
-    const workOrderCollection = await workOrder();
-    const workOrder = await workOrderCollection.findOne({_id: new ObjectId(workId)});
-    if(!workOrder){
-        throw "Error: Apartment not found with that id";
+
+ export const getWorkById = async (workId) => {
+    if (!workId){
+      throw "Error: Id does not exist";
     }
-    workOrder._id = workOrder._id.toString();
-    return workOrder;
-}
-
-//getting a can not get workorder before initalization error when testing but logid seems sound
-const getWorkOrderByAptNumber = async (aptNumber) => {
-    const workOrderCollection = await workOrder();
-    //find all the work orders for the given apptNUmber
-    const workOrder = await workOrderCollection.find({aptNumber: aptNumber}).toArray();
-
-    if(!workOrder){
-        throw "Error: Apartment not found with that id";
+    if (typeof workId !== "string"){
+      throw "Error: Id has to be a string";
     }
-    workOrder._id = workOrder._id.toString();
-    return workOrder;
+    if (workId.trim() === ' '){
+      throw "Error: Id can be empty";
+    }
+    if (workId.replaceAll(" ", "") === ''){
+      throw "Error: Id cannot be empty";
+    }
+    if (workId.length === ''){
+      throw "Error: Id can't be empty";
+    }
+    for (let i = 0; i < workId.length; i++){
+      if (!workId && typeof workId !== "string" ){
+        throw "Error: Id must exist and be a string";
+      }
+    }
+    workId = workId.trim();
+    if (!ObjectId.isValid(workId)){
+      throw "Error: Invalid Object Id";
+    }
+    const workCollected = await workOrder();
+    const specficWork = await workCollected.findOne({_id: new ObjectId(workId)});
+    if(!specficWork){
+      throw "Error: Work not found with that id";
+    }
+    specficWork._id = specficWork._id.toString();
+    return specficWork;
+  };
 
-}
+
+ export const newNotes = async (workId, newNote) => {
+    if (!workId){
+      throw "Error: Id does not exist";
+    }
+    if (typeof workId !== "string"){
+      throw "Error: Id has to be a string";
+    }
+    if (workId.trim === ' '){
+      throw "Error: Id can be empty";
+    }
+    if (workId.replaceAll(" ", "") === ''){
+      throw "Error: Id cannot be empty";
+    }
+    if (workId.length === ''){
+      throw "Error: Id can't be empty";
+    }
+    for (let i = 0; i < workId.length; i++){
+      if (!workId && typeof workId !== "string" ){
+        throw "Error: Id must exist and be a string";
+      }
+    }
+    workId = workId.trim();
+    if (!ObjectId.isValid(workId)){
+      throw "Error: Invalid Object Id";
+    }
+    if(!newNote){
+      throw "Error: New Name was not provided"
+    }
+    if (typeof newNote !== "string"){
+      throw "Error: New Name has to be a string";
+    }
+    if (newNote.trim === ' '){
+      throw "Error: New Name can be empty";
+    }
+    if (newNote.replaceAll(" ", "") === ''){
+      throw "Error: New Name cannot be empty";
+    }
+    if (newNote.length === ''){
+      throw "Error: New Name can't be empty";
+    }
+    for (let i = 0; i < newNote.length; i++){
+      if (!newNote && typeof newNote !== "string" ){
+        throw "Error: Id must exist and be a string";
+      }
+    }
+    newNote = newNote.trim();
+   
+    const updatedWork = {
+      notes: newNote
+    }
+    const GetID = await getWorkById(workId);
+
+    const workOrderCollection = await workOrder();
+    if (GetID.notes === newNote){
+      throw "Error: New note cannot be the same as the current note"
+    }
+     const updateSpecficWo = await workOrderCollection.findOneAndUpdate(
+      {_id: new ObjectId(workId)},
+      {$set: updatedWork},
+      {returnDocument: 'after'}
+    );
+  
+    
+    if (updateSpecficWo.lastErrorObject.n === 0) {
+      throw "Error: Note could not be update successfully";
+    }
+    updateSpecficWo.value._id = updateSpecficWo.value._id.toString();
+    return updateSpecficWo.value;
+  
+  
+  };
+export const updateProg = async (workId, newProg) => {
+    if (!workId){
+      throw "Error: Id does not exist";
+    }
+    if (typeof workId !== "string"){
+      throw "Error: Id has to be a string";
+    }
+    if (workId.trim === ' '){
+      throw "Error: Id can be empty";
+    }
+    if (workId.replaceAll(" ", "") === ''){
+      throw "Error: Id cannot be empty";
+    }
+    if (workId.length === ''){
+      throw "Error: Id can't be empty";
+    }
+    for (let i = 0; i < workId.length; i++){
+      if (!workId && typeof workId !== "string" ){
+        throw "Error: Id must exist and be a string";
+      }
+    }
+    workId = workId.trim();
+    if (!ObjectId.isValid(workId)){
+      throw "Error: Invalid Object Id";
+    }
+    if(!newProg){
+      throw "Error: New Name was not provided"
+    }
+    if (typeof newProg !== "string"){
+      throw "Error: New Name has to be a string";
+    }
+    if (newProg.trim === ' '){
+      throw "Error: New Name can be empty";
+    }
+    if (newProg.replaceAll(" ", "") === ''){
+      throw "Error: New Name cannot be empty";
+    }
+    if (newProg.length === ''){
+      throw "Error: New Name can't be empty";
+    }
+    for (let i = 0; i < newProg.length; i++){
+      if (!newProg && typeof newProg !== "string" ){
+        throw "Error: Id must exist and be a string";
+      }
+    }
+    newProg = newProg.trim();
+   
+    const updatedWork = {
+      workStatus: newProg
+    }
+    const GetID = await getWorkById(workId);
+
+    const workOrderCollection = await workOrder();
+    if (GetID.workStatus === newProg){
+      throw "Error: New note cannot be the same as the current note"
+    }
+     const updateSpecficWo = await workOrderCollection.findOneAndUpdate(
+      {_id: new ObjectId(workId)},
+      {$set: updatedWork},
+      {returnDocument: 'after'}
+    );
+  
+    
+    if (updateSpecficWo.lastErrorObject.n === 0) {
+      throw "Error: Note could not be update successfully";
+    }
+    updateSpecficWo.value._id = updateSpecficWo.value._id.toString();
+    return updateSpecficWo.value;
+  
+  
+  };
+
+
+  //getting a can not get workorder before initalization error when testing but logid seems sound
+// export const getWorkOrderByAptNumber = async (aptNumber) => {
+//     const workOrderCollection = await workOrder();
+//     //find all the work orders for the given apptNUmber
+//     const workOrder = await workOrderCollection.find({aptNumber: aptNumber}).toArray();
+
+//     if(!workOrder){
+//         throw "Error: Apartment not found with that id";
+//     }
+//     workOrder._id = workOrder._id.toString();
+//     return workOrder;
+
+// }
+
+export const getWorkOrderByAptNumber = async (aptNumber) => {
+    // add errror checking
+    const workOrderCollection = await workOrder();
+    const workOrders = await workOrderCollection.find({ aptNumber: aptNumber }).toArray();
+  
+    if (!workOrders || workOrders.length === 0) {
+      throw "Error: No work orders found for apartment number";
+    }
+  
+    return workOrders.map(workOrder => {
+      workOrder._id = workOrder._id.toString();
+      return workOrder;
+    });
+  };
+  
     
     
 
 
-export {workCreate, getWorkById,  getWorkOrderByAptNumber};
+// export {workCreate, getWorkById,  getWorkOrderByAptNumber, newNotes, updateProg};
 
 
     

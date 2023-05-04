@@ -1,0 +1,52 @@
+<h1>{{title}}</h1>
+
+{{#if getAllApts.length}}
+  <ol>
+    {{#each getAllApts}}
+      <li>
+        <p>Apartment Number: {{aptNumber}}</p>
+        <p>Rent Cost: {{rentCost}}</p>
+        <p>Rent Remaining: {{rentRemaining}}</p>
+        <p>Rent Date: {{rentDate}}</p>
+        <p>Size: {{size}}</p>
+        <p>Beds: {{bedNum}}</p>
+        <p>Baths: {{bathNum}}</p>
+        <p>Description: {{description}}</p>
+        <p>Vacancies:{{isVacant}}</p>
+        <p>Tenant: {{tenants}}</p>
+        <p>WorkOrders: {{workOrders}}</p>
+      </li>
+    {{/each}}
+  </ol>
+{{else}}
+  <p>No apartments found.</p>
+{{/if}}
+
+<p><a href="/landlord" class="active">Dashboard</a></p>
+
+
+{{!-- <p><a href="/landlord" class="active">Dashboard</a></p>
+<h1>{{title}}</h1>
+
+{{#if getAllApts.length}}
+  <ol>
+    {{#each getAllApts}}
+      <li>
+        <p>Apartment Number: {{aptNumber}}</p>
+        <p>Rent Cost: {{rentCost}}</p>
+        <p>Rent Remaining: {{rentRemaining}}</p>
+        <p>Rent Date: {{rentDate}}</p>
+        <p>Size: {{size}}</p>
+        <p>Beds: {{bedNum}}</p>
+        <p>Baths: {{bathNum}}</p>
+        <p>Description: {{description}}</p>
+        <p>Vacancies:{{isVacant}}</p>
+        {{#each getTenants}}
+        <p>Tenant:  {{tenants}}</p>
+        <p>WorkOrders: {{workOrders}}</p>
+      </li>
+    {{/each}}
+  </ol>
+{{else}}
+  <p>No apartments found.</p>
+{{/if}} --}}

@@ -188,8 +188,23 @@ export const getPaymentsByUser = async (userId) => {
 
     return allPay;
 
+  };
+export const getAllPayments = async () => {
+    const paymentsCollected = await payments();
+    let paymentList = await paymentsCollected.find({}).toArray();
+    if(paymentList.length === 0){
+      return [];
+    }
+    if(!paymentList){
+      throw "Error: Was not able to capture all payments"
+    }
+    paymentList = paymentList.map((items) =>{ items._id = items._id.toString()
+    return items;
+    });
+    return paymentList;
+  //// need to 
+  };
 
     
 
 //   return [100]
-}
