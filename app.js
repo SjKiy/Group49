@@ -221,6 +221,41 @@ main();
 //   })
 // );
 
+// app.get('/', async (req, res, next) => {
+//     if(req,session.user && req.session.user.role == "tenant"){
+//         return res.redirect('/tenant');
+//     }
+//     if(req.session.user && req.session.user.role == "landlord"){
+//         return res.redirect('/landlord');
+//     }
+//     next()
+    
+    
+    
+// });
+
+// app.get('/tenant', async (req, res, next) => {
+//     if(!req.session.user){
+//         return res.redirect('/login');
+//     }
+//     if(req.session.user && req.session.user.role == "landlord"){
+//         return res.redirect('/landlord');
+//     }
+//     next()
+
+// });
+
+// app.get('/landlord', async (req, res, next) => {
+//     if(!req.session.user){
+//         return res.redirect('/login');
+//     }
+//     if(req.session.user && req.session.user.role == "tenant"){
+//         return res.redirect('/tenant');
+//     }
+//     next()
+
+// });
+
 // app.use('/public', staticDir);
 // app.use(express.json());
 // app.use(express.urlencoded({extended: true}));
