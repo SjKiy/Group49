@@ -23,14 +23,14 @@ async function main(){
     let apt 
     let x 
     // try{
-    //     apt = await create("Apt 1", 1500, 16500, "2021-02-01", 800, 1,1, "Nice", true, [], ["hi","problem", "help"])
+    //     apt = await create("Apt 1", 1500, 16500, "01/05/2023", 800, 1,1, "Nice", true, [], [])
     //     console.log(apt);
     // }
     // catch(e){
     //     console.log(e);
     // }
     // try{
-    //     work3 = await workCreate("apt 5", "Plumbing", "Open", "Fix the sink", "2021-02-01", "2021-02-02");
+    //     work3 = await workCreate("apt 5", "Plumbing", "Open", "Fix the sink", "01/25/2023", "01/29/2023");
     //     console.log(work3);
     // }
     // catch(e){
