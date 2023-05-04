@@ -1,6 +1,10 @@
 //need a create, find user, get user info
 import { apartment } from '../config/mongoCollections.js';
+import { payments } from '../config/mongoCollections.js';
 import { getWorkById } from './workOrder.js';
+// import * as pay from './payments.js';
+import { get } from './payments.js';
+
 import { ObjectId } from 'mongodb';
 import { isNUllOrUndefined } from './dataHelper.js';
 
@@ -103,6 +107,58 @@ const getActiveWorkOrders = async (aptId) => {
 
 }
 
+const updateAptRentRemaining = async(paymentid) =>{
+  if (!paymentid){
+    throw "Error: Id huh not exist";
+  }
+  if (typeof paymentid !== "string"){
+    throw "Error: Id has to be a string";
+  }
+  if (paymentid.trim() === ' '){
+    throw "Error: Id can be empty";
+  }
+  if (paymentid.replaceAll(" ", "") === ''){
+    throw "Error: Id cannot be empty";
+  }
+  if (paymentid.length === ''){
+    throw "Error: Id can't be empty";
+  }
+  for (let i = 0; i < paymentid.length; i++){
+    if (!paymentid && typeof paymentid !== "string" ){
+      throw "Error: Id must exist and be a string";
+    }
+  }
+  paymentid = paymentid.trim();
+  if (!ObjectId.isValid(paymentid)){
+    throw "Error: Invalid Object Id";
+  }
+
+  const aptCollected = await apartment();
+  // const paymentCollected = await payments();
+
+  let specficPayment = await get(paymentid);
+  if (!specficPayment){
+    throw "Error: Payment not found";
+  }
+  let specficApt = await getAptbyId(specficPayment.apartmentId);
+  if (!specficApt){
+    throw "Error: Apartment not found";
+  }
+  let newRent = specficApt.rentRemaining - specficPayment.paymentAmount;
+  
+  const updateInfo = await aptCollected.updateOne({_id: new ObjectId(specficApt._id)}, {$set: {rentRemaining: newRent}});
+  if (!updateInfo.matchedCount && !updateInfo.modifiedCount){
+    throw "Error: Update failed";
+  }
+  if (!updateInfo.acknowledged) {
+    throw "Error: Rent remaining could not be updated";
+  }
+
+  return {update: true};
+
+
+
+};
 
 const getAptbyId = async (aptId) => {
     if (!aptId){
@@ -139,4 +195,8 @@ const getAptbyId = async (aptId) => {
   };
 
 
-export { create, getActiveWorkOrders, getAptbyId}
+
+
+
+export { create, getActiveWorkOrders, getAptbyId, updateAptRentRemaining}
+
