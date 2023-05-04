@@ -6,12 +6,17 @@
             <ul>
                 <li><a href="/landlord" class="active">Dashboard</a></li>
                 <li><a href="/workorders">View Work Orders</a></li>
-                <li><a href="/payments">View Apartments</a></li>
+                <li><a href="/payments">View Payments</a></li>
+                <li><a href="/apartments">Manage Apartments</a></li>
                 <li><a href="/logout" class="logout">Log Out</a></li>
             </ul>
         </div>
         <div class="infos">
             <ul>
+                <li class="rentDueBox">
+                    <p>Payments Due:</p>
+                    <p>{{numPayments}}</p>
+                </li>
                 <li class="workOrderBox">
                     <p>Active Work Orders:</p>
                     <p>{{numWorkOrders}}</p>

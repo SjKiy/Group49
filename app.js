@@ -203,130 +203,130 @@ main();
 
 
 // SERVER SETUP
-// const staticDir = express.static(__dirname + '/public');
+const staticDir = express.static(__dirname + '/public');
 
-// const rewriteUnsupportedBrowserMethods = (req, res, next) => {
-//   if (req.body && req.body._method) {
-//     req.method = req.body._method;
-//     delete req.body._method;
-//   }
-//   next();
-// };
+const rewriteUnsupportedBrowserMethods = (req, res, next) => {
+  if (req.body && req.body._method) {
+    req.method = req.body._method;
+    delete req.body._method;
+  }
+  next();
+};
 
-// app.use(session({
-//     name: 'AuthCookie',
-//     secret: 'some secret string!',
-//     resave: false,
-//     saveUninitialized: false
-//   })
-// );
+app.use(session({
+    name: 'AuthCookie',
+    secret: 'some secret string!',
+    resave: false,
+    saveUninitialized: false
+  })
+);
 
-// app.get('/', async (req, res, next) => {
-//     if(req,session.user && req.session.user.role == "tenant"){
-//         return res.redirect('/tenant');
-//     }
-//     if(req.session.user && req.session.user.role == "landlord"){
-//         return res.redirect('/landlord');
-//     }
-//     next()
+app.get('/', async (req, res, next) => {
+    if(req,session.user && req.session.user.role == "tenant"){
+        return res.redirect('/tenant');
+    }
+    if(req.session.user && req.session.user.role == "landlord"){
+        return res.redirect('/landlord');
+    }
+    next()
     
     
     
-// });
+});
 
-// app.get('/tenant', async (req, res, next) => {
-//     if(!req.session.user){
-//         return res.redirect('/login');
-//     }
-//     if(req.session.user && req.session.user.role == "landlord"){
-//         return res.redirect('/landlord');
-//     }
-//     next()
+app.get('/tenant', async (req, res, next) => {
+    if(!req.session.user){
+        return res.redirect('/login');
+    }
+    if(req.session.user && req.session.user.role == "landlord"){
+        return res.redirect('/landlord');
+    }
+    next()
 
-// });
+});
 
-// app.get('/landlord', async (req, res, next) => {
-//     if(!req.session.user){
-//         return res.redirect('/login');
-//     }
-//     if(req.session.user && req.session.user.role == "tenant"){
-//         return res.redirect('/tenant');
-//     }
-//     next()
+app.get('/landlord', async (req, res, next) => {
+    if(!req.session.user){
+        return res.redirect('/login');
+    }
+    if(req.session.user && req.session.user.role == "tenant"){
+        return res.redirect('/tenant');
+    }
+    next()
 
-// });
+});
 
-// app.get('/register', async (req, res, next) => {
-//     if(req.session.user){
-//         return res.redirect('/login');
-//     }
-//     next()
-// });
+app.get('/register', async (req, res, next) => {
+    if(req.session.user){
+        return res.redirect('/login');
+    }
+    next()
+});
 
-// app.get('/pay', async (req, res, next) => {
-//     if(!req.session.user){
-//         return res.redirect('/login');
-//     }
-//     if(req.session.user && req.session.user.role == "landlord"){
-//         return res.redirect('/landlord');
-//     }
-//     next()
-// });
+app.get('/pay', async (req, res, next) => {
+    if(!req.session.user){
+        return res.redirect('/login');
+    }
+    if(req.session.user && req.session.user.role == "landlord"){
+        return res.redirect('/landlord');
+    }
+    next()
+});
 
-// app.get('/login', async (req, res, next) => {
-//     if(req.session.user){   
-//         if(req.session.user.role == "tenant"){
-//             return res.redirect('/tenant');
-//         }
-//         if(req.session.user.role == "landlord"){
-//             return res.redirect('/landlord');
-//         }
-//     }
-//     next()
-// });
+app.get('/login', async (req, res, next) => {
+    if(req.session.user){   
+        if(req.session.user.role == "tenant"){
+            return res.redirect('/tenant');
+        }
+        if(req.session.user.role == "landlord"){
+            return res.redirect('/landlord');
+        }
+    }
+    next()
+});
 
-// app.get('submitworkorder', async (req, res, next) => {
-//     if(!req.session.user){
-//         return res.redirect('/login');
-//     }
-//     next()
-// });
+app.get('submitworkorder', async (req, res, next) => {
+    if(!req.session.user){
+        return res.redirect('/login');
+    }
+    next()
+});
 
-// app.get('workorders', async (req, res, next) => {
-//     if(!req.session.user){
-//         return res.redirect('/login');
-//     }
-//     next()
-// });
+app.get('/workorders', async (req, res, next) => {
+    if(!req.session.user){
+        return res.redirect('/login');
+    }
+    next()
+});
 
-// app.get('payments', async (req, res, next) => {
-//     if(!req.session.user){
-//         return res.redirect('/login');
-//     }
-//     if(req.session.user && req.session.user.role == "landlord"){
-//         return res.redirect('/landlord');
-//     }
-//     next()
-// });
+app.get('/payments', async (req, res, next) => {
+    if(!req.session.user){
+        return res.redirect('/login');
+    }
+    if(req.session.user && req.session.user.role == "landlord"){
+        return res.redirect('/landlord');
+    }
+    next()
+});
 
-// app.get('/logout', async (req, res, next) => {
-//     if(!req.session.user){
-//         return res.redirect('/login');
-//     }
-//     next()
-// });
+app.get('/logout', async (req, res, next) => {
+    if(!req.session.user){
+        return res.redirect('/login');
+    }
+    next()
+});
 
-// app.use('/public', staticDir);
-// app.use(express.json());
-// app.use(express.urlencoded({extended: true}));
-// app.use(rewriteUnsupportedBrowserMethods);
+app.use('/public', staticDir);
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(rewriteUnsupportedBrowserMethods);
 
-// app.engine('handlebars', exphbs.engine({defaultLayout: 'main'}));
-// app.set('view engine', 'handlebars');
+app.engine('handlebars', exphbs.engine({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
-// configRoutes(app);
+configRoutes(app);
 
-// app.listen(3000, () => {
-//   console.log("We've now got a server!");
-//   console.log('Your routes will be running on http://localhost:3000');
-// });
+app.listen(3000, () => {
+  console.log("We've now got a server!");
+  console.log('Your routes will be running on http://localhost:3000');
+});
