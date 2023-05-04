@@ -202,7 +202,7 @@ async function main(){
 main();
 
 
-// // SERVER SETUP
+// SERVER SETUP
 // const staticDir = express.static(__dirname + '/public');
 
 // const rewriteUnsupportedBrowserMethods = (req, res, next) => {
@@ -254,6 +254,66 @@ main();
 //     }
 //     next()
 
+// });
+
+// app.get('/register', async (req, res, next) => {
+//     if(req.session.user){
+//         return res.redirect('/login');
+//     }
+//     next()
+// });
+
+// app.get('/pay', async (req, res, next) => {
+//     if(!req.session.user){
+//         return res.redirect('/login');
+//     }
+//     if(req.session.user && req.session.user.role == "landlord"){
+//         return res.redirect('/landlord');
+//     }
+//     next()
+// });
+
+// app.get('/login', async (req, res, next) => {
+//     if(req.session.user){   
+//         if(req.session.user.role == "tenant"){
+//             return res.redirect('/tenant');
+//         }
+//         if(req.session.user.role == "landlord"){
+//             return res.redirect('/landlord');
+//         }
+//     }
+//     next()
+// });
+
+// app.get('submitworkorder', async (req, res, next) => {
+//     if(!req.session.user){
+//         return res.redirect('/login');
+//     }
+//     next()
+// });
+
+// app.get('workorders', async (req, res, next) => {
+//     if(!req.session.user){
+//         return res.redirect('/login');
+//     }
+//     next()
+// });
+
+// app.get('payments', async (req, res, next) => {
+//     if(!req.session.user){
+//         return res.redirect('/login');
+//     }
+//     if(req.session.user && req.session.user.role == "landlord"){
+//         return res.redirect('/landlord');
+//     }
+//     next()
+// });
+
+// app.get('/logout', async (req, res, next) => {
+//     if(!req.session.user){
+//         return res.redirect('/login');
+//     }
+//     next()
 // });
 
 // app.use('/public', staticDir);
