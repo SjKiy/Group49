@@ -303,7 +303,7 @@ export const create = async (
   
     
     if (updateSpecficComment.lastErrorObject.n === 0) {
-      throw "Error: Band Name could not be update successfully";
+      throw "Error: Comment could not be update successfully";
     }
     updateSpecficComment.value._id = updateSpecficComment.value._id.toString();
     return updateSpecficComment.value;
