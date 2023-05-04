@@ -20,6 +20,7 @@ import { apartment } from './config/mongoCollections.js';
 async function main(){
   let work2 = undefined;
   let work3 = undefined;
+  ///sejad todo check correct implementation
     // let apt 
     // try{
     //     apt = await create("Apt 1", 1500, 16500, "2021-02-01", 800, 1,1, "Nice", true, [], [])
