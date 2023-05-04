@@ -402,7 +402,7 @@ export const getAptByUseriD = async (id) => {
   }
   let apartmentId = user.apartments;
   if (!apartmentId || apartmentId.length === 0){
-    throw "Error: User does not have an apartment";
+    throw "Error: User does not have an apartment. Contact Landlord.";
     //return [];
   }
 

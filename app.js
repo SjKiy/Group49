@@ -232,20 +232,7 @@ app.get('/', async (req, res, next) => {
     
     
     
-});
-
-app.use(async (req, res, next) => {
-  let time = new Date().toUTCString();
-  let requestMethod = req.method;
-  let requestRoute = req.originalUrl;
-  let userCheck = "Non-Authenticated User";
-  if (req.session.user) {
-      userCheck = "Authenticated User";
-  }
-  console.log(`[${time}]: ${requestMethod} ${requestRoute} (${userCheck})`);
-  next();
-});
-
+// });
 
 app.get('/tenant', async (req, res, next) => {
     if(!req.session.user){
@@ -272,16 +259,6 @@ app.get('/landlord', async (req, res, next) => {
 app.get('/register', async (req, res, next) => {
     if(req.session.user){
         return res.redirect('/login');
-    }
-    next()
-});
-
-app.get('/apartments', async (req, res, next) => {
-    if(!req.session.user){
-        return res.redirect('/login');
-    }
-    if(req.session.user && req.session.user.role == "landlord"){
-        return res.redirect('/landlord');
     }
     next()
 });
@@ -315,14 +292,14 @@ app.get('submitworkorder', async (req, res, next) => {
     next()
 });
 
-app.get('workorders', async (req, res, next) => {
+app.get('/workorders', async (req, res, next) => {
     if(!req.session.user){
         return res.redirect('/login');
     }
     next()
 });
 
-app.get('payments', async (req, res, next) => {
+app.get('/payments', async (req, res, next) => {
     if(!req.session.user){
         return res.redirect('/login');
     }
@@ -337,22 +314,6 @@ app.get('/logout', async (req, res, next) => {
         return res.redirect('/login');
     }
     next()
-});
-
-
-app.get('/', (req, res, next) => {
-  if (!req.session.user) {
-      return res.status(403).redirect('/login');
-  }
-  if (req.session.user.role == "landlord") {
-      return res.redirect('/landlord');
-  }
-  if (req.session.user.role == "tenant") {
-      return res.redirect('/tenant');
-  }
-  console.log("dkkk")
-
-  next();
 });
 
 app.use('/public', staticDir);

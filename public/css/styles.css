@@ -89,7 +89,7 @@ input[type="submit"]:hover {
 }
 
 #login-form,
-#registration-form 
+#registration-form, 
 #payment-form{
   width:60%;
   max-width: 25em;
@@ -209,4 +209,10 @@ input[type="submit"]:hover {
   background-color: #222;
   color: #fff;
   width: 182px
+}
+
+.errorLog {
+  display: block;
+  text-align: center;
+  line-height: 150%;
 }

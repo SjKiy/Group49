@@ -114,10 +114,15 @@ router
 //goes to tenant dashboard
 router.route('/tenant').get(async (req, res) => {
   //TODO fix when session is set up
+  try {
     const apt = await getAptByUseriD(req.session.user._id)
     const active = await getActiveWorkOrders(apt._id)
     const pastPays = await getPaymentsByUser(req.session.user._id)
     return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt.rentRemaining, rentDate: apt.rentDate, numWorkOrders: active.length, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
+  } catch (error) {
+    return res.status(400).render('error', {title: "Error Page", info: error})
+  }
+    
 });
 
 //Payment page get(go to page) put(submit update to rent);
@@ -132,6 +137,10 @@ router
         //redirects to /payments
     }
 );
+
+router.route('/myapt').get(async (req, res) => {
+  //returns info on tenant's apt
+});
 
 //goes to submit work order page
 router
@@ -176,7 +185,9 @@ router.route('/landlord').get(async (req, res) => {
     // const apts = await getAllAptLandlord(req.session.user._id)
     // //need function to get all the work orders for all the apts of the landlord
     // const active = 0
-    return res.status(200).render('landlord', {title: 'Landlord Dashboard', today: new Date().toLocaleDateString(), numWorkOrders: 0});
+    // let paymentsDue = 0;
+    // paymentsDue ++ for every apt in apts that has pending rent due
+    return res.status(200).render('landlord', {title: 'Landlord Dashboard', today: new Date().toLocaleDateString(), numWorkOrders: 0, numPayments: 0});
 
   
 });
@@ -194,6 +205,7 @@ router.route('/viewallapartments').get(async (req, res) => {
   // return res.status(200).render('viewallapartments', {title: 'View All Apartments', getAllApts: getAllAp, getTenant: getNames});
 });
 
+});
 
 router.route('/error').get(async (req, res) => {
   //code here for GET
