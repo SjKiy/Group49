@@ -12,6 +12,7 @@ const __dirname = dirname(__filename);
 // TESTING
 import {create} from './data/apartment.js';
 import {getAptbyId} from './data/apartment.js';
+import {updateAptRentRemaining} from './data/apartment.js';
 import {workCreate} from './data/workOrder.js';
 import * as user from './data/user.js';
 import * as payment from './data/payments.js';
@@ -185,7 +186,15 @@ import { apartment } from './config/mongoCollections.js';
 //   console.error(e); 
 // }
 // try {
-//   let pay1 = await payment.get("64528b542ca1e7e2351b9d93")
+//   let pay1 = await updateAptRentRemaining("645312e6cd973d1d90c88a08")
+
+//   console.log(pay1);
+// } catch (e) {
+//   console.error(e); 
+// }
+// }
+// try {
+//   let pay1 = await payment.get("64530ffdefc84a25cc5bb3b0")
 
 //   console.log(pay1);
 // } catch (e) {
