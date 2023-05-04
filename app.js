@@ -12,7 +12,7 @@ const __dirname = dirname(__filename);
 // TESTING
 import {create} from './data/apartment.js';
 import {getAptbyId} from './data/apartment.js';
-import {workCreate} from './data/workOrder.js';
+import {workCreate, getWorkOrderByAptNumber, getWorkById} from './data/workOrder.js';
 import * as user from './data/user.js';
 import * as payment from './data/payments.js';
 import* as comments from './data/comments.js';
@@ -20,10 +20,26 @@ import { apartment } from './config/mongoCollections.js';
 async function main(){
   let work2 = undefined;
   let work3 = undefined;
-    // let apt 
+    let apt 
+    let x 
     // try{
-    //     apt = await create("Apt 1", 1500, 16500, "2021-02-01", 800, 1,1, "Nice", true, [], [])
+    //     apt = await create("Apt 1", 1500, 16500, "2021-02-01", 800, 1,1, "Nice", true, [], ["hi","problem", "help"])
     //     console.log(apt);
+    // }
+    // catch(e){
+    //     console.log(e);
+    // }
+    // try{
+    //     work3 = await workCreate("apt 5", "Plumbing", "Open", "Fix the sink", "2021-02-01", "2021-02-02");
+    //     console.log(work3);
+    // }
+    // catch(e){
+    //     console.log(e);
+    // }
+    // try{
+    //     x = await getWorkById(work3._id);
+    //     console.log(x);
+
     // }
     // catch(e){
     //     console.log(e);
@@ -44,13 +60,7 @@ async function main(){
     // catch(e){
     //     console.log(e);
     // }
-    // try{
-    //     work3 = await workCreate("apt 5", "Plumbing", "Open", "Fix the sink", "2021-02-01", "2021-02-02");
-    //     console.log(work3);
-    // }
-    // catch(e){
-    //     console.log(e);
-    // }
+    
     // try{
     //     // might have to return 
     //     const work = await comments.create("6452ae0d733a5ed3b53feafe", "Hehrrrey y", "05/03/2023");
@@ -59,14 +69,14 @@ async function main(){
     // catch(e){
     //     console.log(e);
     // }
-    try{
-        // might have to return 
-        const work = await comments.get("6452aaf64fdf07c9e0fe3be4");
-        console.log(work);
-    }
-    catch(e){
-        console.log(e);
-    }
+    // try{
+    //     // might have to return 
+    //     const work = await comments.get("6452aaf64fdf07c9e0fe3be4");
+    //     console.log(work);
+    // }
+    // catch(e){
+    //     console.log(e);
+    // }
     
     // try {
         // album1 = await album.create(band1._id, "Wiwsh You Were Here", "09/12/1975", ["Shine On You Crazy Diamond, Pts. 1-5", "Welcome to the Machine", "Have a Cigar (Ft. Roy Harper)", "Wish You Were Here", "Shine On You Crazy Diamond, Pts. 6-9"], 4.6)

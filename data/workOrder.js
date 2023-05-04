@@ -72,7 +72,24 @@ const getWorkById = async (workId) => {
     return workOrder;
 }
 
-export {workCreate, getWorkById};
+//getting a can not get workorder before initalization error when testing but logid seems sound
+const getWorkOrderByAptNumber = async (aptNumber) => {
+    const workOrderCollection = await workOrder();
+    //find all the work orders for the given apptNUmber
+    const workOrder = await workOrderCollection.find({aptNumber: aptNumber}).toArray();
+
+    if(!workOrder){
+        throw "Error: Apartment not found with that id";
+    }
+    workOrder._id = workOrder._id.toString();
+    return workOrder;
+
+}
+    
+    
+
+
+export {workCreate, getWorkById,  getWorkOrderByAptNumber};
 
 
     
