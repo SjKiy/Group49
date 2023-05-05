@@ -206,6 +206,13 @@ import { apartment } from './config/mongoCollections.js';
 //   console.log(pay1);
 // } catch (e) {
 //   console.error(e); 
+// // }
+// try {
+//   let pay1 = await payment.getPaymentsByApt("6452663d931c83c6400b94f8")
+
+//   console.log(pay1);
+// } catch (e) {
+//   console.error(e); 
 // }
 // try {
 //   let aptbyId = await user.getAptByUseriD("645266a22b943bdcb7c1ad23")
@@ -342,7 +349,7 @@ import { apartment } from './config/mongoCollections.js';
 // main();
 
 
-// // SERVER SETUP
+// SERVER SETUP
 const staticDir = express.static(__dirname + '/public');
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {

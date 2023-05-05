@@ -234,6 +234,11 @@ router.route('/payments').get(async (req, res) => {
           }
           allss.push(updatedPayinfo);
       }
+
+      let aptPaySearch = req.query.aptNum;
+      if(aptPaySearch){
+        allss = allss.filter((apt) => apt.AptName === aptPaySearch);
+      }
       return res.status(200).render('paymentsLandlord', {title: 'All Payments Made', payments: allss});
     }
     else {
@@ -286,7 +291,7 @@ router.route('/viewallapartments').get(async (req, res) => {
         WorkOrders: getAllAp[i].workOrders,
       };
       allTenants.push(newTotal);
-      console.log(allTenants);
+      // console.log(allTenants);
 
     }
 

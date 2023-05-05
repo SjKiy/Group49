@@ -189,6 +189,52 @@ export const getPaymentsByUser = async (userId) => {
     return allPay;
 
   };
+
+  export const getPaymentsByApt = async (aptId) => {
+    if (!aptId){
+        throw "Error: Id does not exist";
+    }
+    if (typeof aptId !== "string"){
+        throw "Error: Id has to be a string";
+    }
+    if (aptId.trim() === ' '){
+        throw "Error: Id can be empty";
+    }
+    if (aptId.replaceAll(" ", "") === ''){
+        throw "Error: Id cannot be empty";
+    }
+    if (aptId.length === ''){
+        throw "Error: Id can't be empty";
+    }
+    for (let i = 0; i < aptId.length; i++){
+        if (!aptId && typeof aptId !== "string" ){
+          throw "Error: Id must exist and be a string";
+        }
+    }
+    aptId = aptId.trim();
+    if (!ObjectId.isValid(aptId)){
+        throw "Error: Invalid Object Id";
+    }
+
+    const payCollected = await payments();
+    const allPay = await payCollected.find({apartmentId: new ObjectId(aptId)}).toArray();
+    if(!allPay){
+      throw "Error: Apt not found with that id";
+    }
+
+
+   let aptList = allPay.map((items) =>{ items.tenant = items.tenant.toString(), items.apartmentId = items.apartmentId.toString();
+      return items;
+      });
+      return aptList;
+    // allPay.tenant = allPay.tenant.toString();
+    // allPay.apartmentId = allPay.apartmentId.toString();
+    // allPay._id = allPay._id.toString();
+    //should i return object ids or strings?
+
+    // return allPay;
+
+  };
 export const getAllPayments = async () => {
     const paymentsCollected = await payments();
     let paymentList = await paymentsCollected.find({}).toArray();

@@ -256,3 +256,8 @@ input[type="submit"]:hover {
   text-align: center;
   line-height: 150%;
 }
+
+.searching {
+  display: flex;
+  justify-content: right;
+}
