@@ -97,6 +97,7 @@ const create = async (
 
 const getActiveWorkOrders = async (aptId) => {
     //returns active work orders for given apt
+    console.log(aptId)
     const apt = await getAptbyId(aptId);
     let res = []
     for (const w of apt.workOrders) {

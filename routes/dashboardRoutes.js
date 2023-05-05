@@ -108,7 +108,7 @@ router
     // IMPLEMENT WITH USER DATA CHECKUSER
     try {
       const checked = await checkUser(email, password);
-      req.session.user= {_id: checked._id, firstName: checked.firstName, lastName: checked.lastName, emailAddress: checked.emailAddress, role: checked.role}
+      req.session.user= {_id: checked._id, firstName: checked.firstName, lastName: checked.lastName, emailAddress: checked.emailAddress, accountType: checked.accountType}
       if (checked.accountType === 'tenant') return res.status(200).redirect('/tenant');
       if (checked.accountType === 'landlord') return res.status(200).redirect('/landlord');
     } catch (error) {
@@ -121,7 +121,7 @@ router.route('/tenant').get(async (req, res) => {
   //TODO fix when session is set up
   try {
     const apt = await getAptByUseriD(req.session.user._id)
-    const active = await getActiveWorkOrders(apt._id)
+    const active = await getActiveWorkOrders(apt[0]._id)
     const pastPays = await getPaymentsByUser(req.session.user._id)
     return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt.rentRemaining, rentDate: apt.rentDate, numWorkOrders: active.length, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
   } catch (error) {
@@ -180,28 +180,35 @@ router.route('/payments').get(async (req, res) => {
     //TODO
     //gets all previous payments for current user
     //renders page
-    let getAllPay = await payment.getAllPayments();
-    let allss = [];
-
-    for (let i = 0; i < getAllPay.length; i++) {
-        let apt = await apartment.getAptbyId(getAllPay[i].apartmentId);
-        let tenantNames = await user.get(getAllPay[i].tenant);
-        let test = apt.aptNumber;
-        let test1 = tenantNames.firstName + " " + tenantNames.lastName;
-
-        const updatedPayinfo = {
-          TenantName: test1,
-          AptName: test,
-          Amount: getAllPay[i].paymentAmount,
-          date: getAllPay[i].date
-        }
-        allss.push(updatedPayinfo);
-
-
+    console.log(req.session.user.accountType)
+    if (req.session.user.accountType === 'landlord') {
+      let getAllPay = await payment.getAllPayments();
+      let allss = [];
+  
+      for (let i = 0; i < getAllPay.length; i++) {
+          let apt = await apartment.getAptbyId(getAllPay[i].apartmentId);
+          let tenantNames = await user.get(getAllPay[i].tenant);
+          let test = apt.aptNumber;
+          let test1 = tenantNames.firstName + " " + tenantNames.lastName;
+  
+          const updatedPayinfo = {
+            TenantName: test1,
+            AptName: test,
+            Amount: getAllPay[i].paymentAmount,
+            date: getAllPay[i].date
+          }
+          allss.push(updatedPayinfo);
+      }
+      return res.status(200).render('paymentsLandlord', {title: 'All Payments Made', payments: allss});
     }
-
-    return res.status(200).render('payments', {title: 'All Payments Mades', payments: allss});
-
+    else {
+      // get all payments for user
+      const p = await getPaymentsByUser(req.session.user._id)
+      const apt = await getAptByUseriD(req.session.user._id)
+      const amount = apt[0].rentRemaining
+      const rent = apt[0].rentCost
+      return res.status(200).render('paymentsTenant', {title: 'Previous Payments', payments: p, amount: amount, rent: rent})
+    }
 });
 
 

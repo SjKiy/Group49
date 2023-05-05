@@ -162,8 +162,47 @@ input[type="submit"]:hover {
   border-radius: 5px;
   padding: 20px;
   font-size: 150%;
-  overflow:hidden ; 
-  
+  display: inline-block;
+  color: #FFFFFF;
+  margin: 5px;
+  padding: 8px 16px;
+  width: relative 50%;
+  text-decoration: none;
+  transition: 0.25s;
+  border-radius: 5px;
+}
+
+
+.infosp {
+  margin-left:25%;
+  padding-left: 15px;
+  height:80%;
+}
+
+.infosp ul{
+  display: grid;
+  border-radius: 5px;
+  list-style-type: none;
+  grid-template-columns: 48% 48%;
+  /* grid-template-rows: 35% 35%; */
+  grid-gap: 10px;
+  background-color: #414141;
+  color: #ffffff;
+  margin: 0 auto;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  height: 80%; 
+  width: 65%;
+  position: fixed; 
+  overflow: scroll;
+}
+
+.infosp li {
+  background-color: #363636;
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 150%;
   display: inline-block;
   color: #FFFFFF;
   margin: 5px;

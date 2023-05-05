@@ -139,7 +139,7 @@ import { apartment } from './config/mongoCollections.js';
 //   }
 
 // try {
-//   let user5 = await user.assignAptToUser("645266a22b943bdcb7c1ad23","6452663d931c83c6400b94f8")
+//   let user5 = await user.assignAptToUser("64546dd2c4a45e587364d96d","645029de9a30187bd522aa3b")
 
 //   console.log(user5);
 // } catch (e) {
@@ -163,13 +163,13 @@ import { apartment } from './config/mongoCollections.js';
 // } catch (e) {
 //   console.error(e); 
 
-// try {
-//   let pay1 = await payment.createpayment("645266a22b943bdcb7c1ad23", "6452663d931c83c6400b94f8", 1500, 4532018264927139, "05/02/23")
+try {
+  let pay1 = await payment.createpayment("64546dd2c4a45e587364d96d", "645029de9a30187bd522aa3b", 1500, "4532018264927139", "05/02/23")
 
-//   console.log(pay1);
-// } catch (e) {
-//   console.error(e); 
-// }
+  console.log(pay1);
+} catch (e) {
+  console.error(e); 
+}
 // try {
 //   let pay1 = await payment.get("64528ba6fcd05b1b690f027a")
 
@@ -332,9 +332,6 @@ app.get('/workorders', async (req, res, next) => {
 app.get('/payments', async (req, res, next) => {
     if(!req.session.user){
         return res.redirect('/login');
-    }
-    if(req.session.user && req.session.user.role == "landlord"){
-        return res.redirect('/landlord');
     }
     next()
 });

@@ -1,29 +1,38 @@
 <h1>{{title}}</h1>
-
-{{#if getAllApts.length}}
-  <ol>
-    {{#each getAllApts}}
-      <li>
-        <p>Apartment Number: {{aptNumber}}</p>
-        <p>Rent Cost: {{rentCost}}</p>
-        <p>Rent Remaining: {{rentRemaining}}</p>
-        <p>Rent Date: {{rentDate}}</p>
-        <p>Size: {{size}}</p>
-        <p>Beds: {{bedNum}}</p>
-        <p>Baths: {{bathNum}}</p>
-        <p>Description: {{description}}</p>
-        <p>Vacancies:{{isVacant}}</p>
-        <p>Tenant: {{tenants}}</p>
-        <p>WorkOrders: {{workOrders}}</p>
-      </li>
-    {{/each}}
-  </ol>
-{{else}}
-  <p>No apartments found.</p>
-{{/if}}
-
-<p><a href="/landlord" class="active">Dashboard</a></p>
-
+<main>
+  <div class="nav">
+            <ul>
+                <li><a href="/landlord">Dashboard</a></li>
+                <li><a href="/workorders">View Work Orders</a></li>
+                <li><a href="/viewallapartments"  class="active">View All Apartments</a></li>
+                <li><a href="/payments">View Apartments Payments</a></li>
+                <li><a href="/logout" class="logout">Log Out</a></li>
+            </ul>
+  </div>
+  <div class="infos">
+    {{#if getAllApts.length}}
+    <ol>
+      {{#each getAllApts}}
+        <li>
+          <p>Apartment Number: {{aptNumber}}</p>
+          <p>Rent Cost: {{rentCost}}</p>
+          <p>Rent Remaining: {{rentRemaining}}</p>
+          <p>Rent Date: {{rentDate}}</p>
+          <p>Size: {{size}}</p>
+          <p>Beds: {{bedNum}}</p>
+          <p>Baths: {{bathNum}}</p>
+          <p>Description: {{description}}</p>
+          <p>Vacancies:{{isVacant}}</p>
+          <p>Tenant: {{tenants}}</p>
+          <p>WorkOrders: {{workOrders}}</p>
+        </li>
+      {{/each}}
+    </ol>
+  {{else}}
+    <p>No apartments found.</p>
+  {{/if}}
+  </div>
+</main>
 
 {{!-- <p><a href="/landlord" class="active">Dashboard</a></p>
 <h1>{{title}}</h1>

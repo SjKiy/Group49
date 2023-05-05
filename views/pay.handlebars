@@ -3,10 +3,12 @@
     <main>
         <div class="nav">
             <ul>
-                <li><a href="/landlord" class="active">Dashboard</a></li>
+                <li><a href="/tenant">Dashboard</a></li>
+                <li><a href="/pay"  class="active">Pay Rent</a></li>
+                <li><a href="/submitworkorder">Submit Work Order</a></li>
                 <li><a href="/workorders">View Work Orders</a></li>
-                <li><a href="/payments">View Payments</a></li>
-                <li><a href="/apartments">Manage Apartments</a></li>
+                <li><a href="/payments">Previous Payments</a></li>
+                <li><a href="/myapt">View My Apartment</a></li>
                 <li><a href="/logout" class="logout">Log Out</a></li>
             </ul>
         </div>
@@ -17,19 +19,18 @@
                 <input type="text" id="cname" name="cardname" placeholder="John More Doe"/>
                 <label for="ccnum">Credit card number</label>
                 <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444"/>
-                <label for="expmonth">Exp Month</label>
-                <input type="text" id="expmonth" name="expmonth" placeholder="September"/>
-                <label for="expyear">Exp Year</label>
-                <input type="text" id="expyear" name="expyear" placeholder="2018"/>
+                <label for="expmonth">Exp Month (MM)</label>
+                <input type="text" id="expmonth" name="expmonth" placeholder="05"/>
+                <label for="expyear">Exp Year (YY)</label>
+                <input type="text" id="expyear" name="expyear" placeholder="23"/>
                 <label for="cvv">CVV</label>
                 <input type="text" id="cvv" name="cvv" placeholder="352"/>
-
                 <label for="amount">Payment Amount</label>
                 <br>
                 <span class="currency">$<input type="number" id="amount" name="amount" placeholder="0.00"/></span>
+                <input type="submit"></input>
             </form>
 
-            <input type="submit"></input>
         </div>
         
     </main>
