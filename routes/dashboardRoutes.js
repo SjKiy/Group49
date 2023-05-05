@@ -171,6 +171,36 @@ router.route('/workorders').get(async (req, res) => {
     //gets all work orders for current user's apt
     //if current user is landlord: gets all work orders (open,complete,inprog)
     //renders page
+    if (req.session.user.accountType === 'landlord') {
+      let getAllWork = await workOrder.getAllWork();
+      let updateWork = [];
+      for (let i = 0; i < getAllWork.length; i++) {
+        let allComments = [];
+        for (let j = 0; j < getAllWork[i].comments.length; j++) {
+          let userName = await user.get(getAllWork[i].comments[j].userId);
+          let userNam = userName.firstName + " " + userName.lastName;
+          allComments.push([userNam, 
+            getAllWork[i].comments[j].content, 
+            getAllWork[i].comments[j].date]);
+        }
+      const updatedWorkOrder = {
+        AptNum: getAllWork[i].aptNumber,
+        workType: getAllWork[i].workType,
+        workStatus: getAllWork[i].workStatus,
+        notes: getAllWork[i].notes,
+        comments: allComments,
+        dateOpened: getAllWork[i].dateOpened,
+        dateClosed: getAllWork[i].dateClosed,
+      };
+      updateWork.push(updatedWorkOrder);
+
+
+      }
+
+    return res.status(200).render('workorder', {title: 'View All Work Orders', work: updateWork});
+
+    }
+
   })
   .put(async (req, res) => {
     //TODO
@@ -234,14 +264,36 @@ router.route('/viewallapartments').get(async (req, res) => {
   let landlord = req.session.user._id;
   // let tentName = req.session.user.tenants;
   let getAllAp = await user.getAllAptLandlord(landlord);
-  // let getTenant = await user.get(tentName);
-  // let getNames = getTenant.firstName + " " + getTenant.lastName;
-  // console.log(getNames);
-  return res.status(200).render('viewallapartments', {title: 'View All Apartments', getAllApts: getAllAp});
-  // return res.status(200).render('viewallapartments', {title: 'View All Apartments', getAllApts: getAllAp, getTenant: getNames});
-});
+  let allTenants = [];
 
-// });
+  for (let i = 0; i < getAllAp.length; i++) {
+    for (let j = 0; j < getAllAp[i].tenants.length; j++) {
+      let makeString = [getAllAp[i].tenants[j].toString()];
+      let userName = await user.get(makeString[j]);
+      let userNam = userName.firstName + " " + userName.lastName;
+      // console.log(userNam);
+      const newTotal = {
+        AptNum: getAllAp[i].aptNumber,
+        Rent: getAllAp[i].rentCost,
+        RentRemaining: getAllAp[i].rentRemaining,
+        RentDate: getAllAp[i].rentDate,
+        Size: getAllAp[i].size,
+        Beds: getAllAp[i].bedNum,
+        Baths: getAllAp[i].bathNum,
+        Description: getAllAp[i].description,
+        Vacancies: getAllAp[i].isVacant,
+        Tenants: userNam,
+        WorkOrders: getAllAp[i].workOrders,
+      };
+      allTenants.push(newTotal);
+      console.log(allTenants);
+
+    }
+
+  }
+  return res.status(200).render('viewallapartments', {title: 'View All Apartments', getAllApts: allTenants});
+
+});
 
 router.route('/error').get(async (req, res) => {
   //code here for GET

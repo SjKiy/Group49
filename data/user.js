@@ -138,7 +138,7 @@ export const createUser = async (
   const userToCreate = {
     firstName: firstName,
     lastName: lastName,
-    emailAddress: emailAddress,
+    emailAddress: emailAddress.toLowerCase(),
     password: newHashPassword,
     // password: password,
     accountType: accountType.toLowerCase(),
@@ -357,7 +357,7 @@ export const assignAptToUser = async (id, aptId ) => {
 
   const updateApartment = await aptCollected.updateOne(
     { _id: new ObjectId(aptId) },
-    { $addToSet: { tenants: new ObjectId(id) } }
+    { $addToSet: { tenants: new ObjectId(id).toString() } }
   );
 
   if (updateUser.modifiedCount === 0 || updateApartment.modifiedCount === 0) {

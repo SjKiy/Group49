@@ -35,7 +35,7 @@ export const workCreate = async (
     notes = notes.trim();
     if(notes === "") throw 'You must provide notes';
     if(notes.lenght > 100) throw 'Notes must be less than 1000 characters';
-    if(!Array.isArray(comments)) throw 'Comment must be a array';
+    // if(!Array.isArray(comments)) throw 'Comment must be a array';
     if(typeof dateOpened !== 'string') throw 'Date opened must be a string';
     if(typeof dateClosed !== 'string') throw 'Date closed must be a string';
     if(dateOpened === "") throw 'You must provide a date opened';
@@ -271,6 +271,21 @@ export const getWorkOrderByAptNumber = async (aptNumber) => {
       workOrder._id = workOrder._id.toString();
       return workOrder;
     });
+  };
+  export const getAllWork = async () => {
+    const workOrderCollection = await workOrder();
+    let workList = await workOrderCollection.find({}).toArray();
+    if(workList.length === 0){
+      return [];
+    }
+    if(!workList){
+      throw "Error: Was not able to capture all payments"
+    }
+    workList = workList.map((items) =>{ items._id = items._id.toString();
+    return items;
+    });
+    return workList;
+  //// need to 
   };
   
     

@@ -32,12 +32,35 @@ import { apartment } from './config/mongoCollections.js';
     //     console.log(e);
     // }
     // try{
-    //     work3 = await workCreate("apt 5", "Plumbing", "Open", "Fix the sink", "01/25/2023", "01/29/2023");
+    //     let work3 = await workOrder.workCreate("apt 3", "Plumbing", "Open", "Fix the sink", "01/25/2023", "01/29/2023");
     //     console.log(work3);
     // }
     // catch(e){
     //     console.log(e);
     // }
+    // try{
+    //     let work4 = await workOrder.workCreate("apt 4", "Electrical", "Open", "Fix the lights", "01/26/2023", "01/30/2023");
+    //     console.log(work4);
+    // }
+    // catch(e){
+    //     console.log(e);
+    // }
+    // try{
+    //     let work3 = await comments.create("64552caa2f2ea62225a14f88", "6453b985104c1341a5c3d7a1", "This is Comment 1", "01/25/2023");
+    //     console.log(work3);
+    // }
+    // catch(e){
+    //     console.log(e);
+    // }
+    // try{
+    //     let work4 = await comments.create("64552caa2f2ea62225a14f89", "645266a22b943bdcb7c1ad23", "This is Comment 1 ", "01/26/2023");
+    //     console.log(work4);
+    // }
+    // catch(e){
+    //     console.log(e);
+    // }
+
+
     // try{
     //     x = await getWorkById(work3._id);
     //     console.log(x);
@@ -215,6 +238,106 @@ import { apartment } from './config/mongoCollections.js';
 // } catch (e) {
 //   console.error(e); 
 // }
+// try {
+//   let aptbyId = await workOrder.getAllWork()
+
+//   // console.log(aptbyId);
+//   console.log(aptbyId[4].comments[0]);
+//   // console.log(aptbyId[0].apartmentId);
+
+// } catch (e) {
+//   console.error(e); 
+// }
+// try {
+//   let aptbyId = await user.getAllAptLandlord("64540df0a3049a17bd764afb")
+
+//   // console.log(aptbyId);
+//   console.log(aptbyId[0].tenants[0]);
+//   // console.log(aptbyId[4].comments[0]);
+//   // console.log(aptbyId[0].apartmentId);
+
+// } catch (e) {
+//   console.error(e); 
+// }
+// try {
+//   let getAllAp = await user.getAllAptLandlord("64540df0a3049a17bd764afb");
+//   // let makeString = [getAllAp[0].tenants[0].toString()];
+//   // let updateApts = [];
+//   // let test = await user.get(makeString[0]);
+//   // let name = test.firstName + " " + test.lastName;
+//   // console.log(name);
+//   // console.log(makeString);
+
+//   for (let i = 0; i < getAllAp.length; i++) {
+//     let allTenants = [];
+//     for (let j = 0; j < getAllAp[i].tenants.length; j++) {
+//       let makeString = [getAllAp[i].tenants[j].toString()];
+//       let userName = await user.get(makeString[j]);
+//       let userNam = userName.firstName + " " + userName.lastName;
+//       // console.log(userNam);
+//       const newTotal = {
+//         AptNum: getAllAp[i].aptNumber,
+//         Rent: getAllAp[i].rentCost,
+//         RentRemaining: getAllAp[i].rentRemaining,
+//         RentDate: getAllAp[i].rentDate,
+//         Size: getAllAp[i].size,
+//         Beds: getAllAp[i].bedNum,
+//         Baths: getAllAp[i].bathNum,
+//         Description: getAllAp[i].description,
+//         Vacancies: getAllAp[i].isVacant,
+//         Tenants: userNam,
+//         WorkOrders: getAllAp[i].workOrders,
+//       };
+//       allTenants.push(newTotal);
+//       console.log(allTenants);
+//     }
+//   }
+  // }
+  //       for (let i = 0; i < getAllAp.length; i++) {
+  //         let allTenants = [];
+  //         for (let j = 0; j < getAllAp[i].tenants.length; j++) {
+  //           let userName = await user.get(getAllAp[i].tenants[j].userId);
+  //           let userNam = userName.firstName + " " + userName.lastName;
+  //           console.log(getAllAp);
+  //         }
+  //       }
+  // console.log(getAllAp);
+        //     allTenants.push([userNam]);
+        //   }
+        // const updatedApts = {
+        //   AptNum: getAllAp[i].aptNumber,
+        //   Rent: getAllAp[i].rent,
+        //   RentRemaining: getAllAp[i].rentRemaining,
+        //   RentDate: getAllAp[i].rentDate,
+        //   Size: getAllAp[i].size,
+        //   Beds: getAllAp[i].bedNum,
+        //   Baths: getAllAp[i].bathNum,
+        //   Description: getAllAp[i].description,
+        //   Vacancies: getAllAp[i].isVacant,
+        //   Tenants: allTenants,
+        //   WorkOrders: getAllAp[i].workOrders,
+        // };
+        // updateApts.push(updatedApts);
+  
+        // console.log(updateApts);
+        // }
+// } catch (e) {
+//   console.error(e); 
+// }
+// try {
+//   let getAllWork = await workOrder.getAllWork();
+//   // let updateWork = [];
+//   for (let i = 0; i < getAllWork.length; i++) {
+//     // let allComments = [];
+//     for (let j = 0; j < getAllWork[i].comments.length; j++) {
+//       let userName = await user.get(getAllWork[i].comments[j].userId);
+//       // let userNam = userName.firstName + " " + userName.lastName;
+//       // allComments.push([userNam, getAllWork[i].comments[j].content]);
+//       console.log(userName);
+//     }
+
+
+
 // }
 // main();
 
@@ -238,18 +361,18 @@ app.use(session({
   })
 );
 
-// app.get('/', async (req, res, next) => {
-//     if(req,session.user && req.session.user.role == "tenant"){
-//         return res.redirect('/tenant');
-//     }
-//     if(req.session.user && req.session.user.role == "landlord"){
-//         return res.redirect('/landlord');
-//     }
-//     next()
+app.get('/', async (req, res, next) => {
+    if(req,session.user && req.session.user.role == "tenant"){
+        return res.redirect('/tenant');
+    }
+    if(req.session.user && req.session.user.role == "landlord"){
+        return res.redirect('/landlord');
+    }
+    next()
     
     
     
-// });
+});
 
 app.use(async (req, res, next) => {
   let time = new Date().toUTCString();
@@ -356,11 +479,11 @@ app.get('/', (req, res, next) => {
   if (!req.session.user) {
       return res.status(403).redirect('/login');
   }
-  if (req.session.user.role == "admin") {
-      return res.redirect('/admin');
+  if (req.session.user.role == "landlord") {
+      return res.redirect('/landlord');
   }
-  if (req.session.user.role == "user") {
-      return res.redirect('/protected');
+  if (req.session.user.role == "tenant") {
+      return res.redirect('/tenant');
   }
   console.log("dkkk")
 
