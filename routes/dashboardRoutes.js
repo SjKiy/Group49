@@ -194,12 +194,14 @@ router.route('/workorders').get(async (req, res) => {
       };
       updateWork.push(updatedWorkOrder);
 
-
-      }
-
-    return res.status(200).render('workorder', {title: 'View All Work Orders', work: updateWork});
-
     }
+    let aptPaySearch = req.query.aptNum;
+    // console.log(aptPaySearch);
+    if(aptPaySearch){
+      updateWork = updateWork.filter((apt) => apt.AptNum.toLowerCase() === aptPaySearch.toLowerCase());
+    }
+    return res.status(200).render('workorder', {title: 'View All Work Orders', work: updateWork});
+  }
 
   })
   .put(async (req, res) => {
@@ -237,7 +239,7 @@ router.route('/payments').get(async (req, res) => {
 
       let aptPaySearch = req.query.aptNum;
       if(aptPaySearch){
-        allss = allss.filter((apt) => apt.AptName === aptPaySearch);
+        allss = allss.filter((apt) => apt.AptName.toLowerCase() === aptPaySearch.toLowerCase());
       }
       return res.status(200).render('paymentsLandlord', {title: 'All Payments Made', payments: allss});
     }

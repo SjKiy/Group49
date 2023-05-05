@@ -32,28 +32,35 @@ import { apartment } from './config/mongoCollections.js';
     //     console.log(e);
     // }
     // try{
-    //     let work3 = await workOrder.workCreate("apt 3", "Plumbing", "Open", "Fix the sink", "01/25/2023", "01/29/2023");
+    //     let work3 = await workOrder.workCreate("apt 3", "Shower", "Open", "Show has no force", "01/31/2023", "02/23/2023");
     //     console.log(work3);
     // }
     // catch(e){
     //     console.log(e);
     // }
     // try{
-    //     let work4 = await workOrder.workCreate("apt 4", "Electrical", "Open", "Fix the lights", "01/26/2023", "01/30/2023");
+    //     let work4 = await workOrder.workCreate("apt 4", "Sink", "Open", "Sink is leaking", "02/03/2023", "02/04/2023");
     //     console.log(work4);
     // }
     // catch(e){
     //     console.log(e);
     // }
     // try{
-    //     let work3 = await comments.create("64552caa2f2ea62225a14f88", "6453b985104c1341a5c3d7a1", "This is Comment 1", "01/25/2023");
+    //     let work3 = await comments.create("6455618f07521ff395f4f40b", "6453b985104c1341a5c3d7a1", "This is Comment 2", "01/26/2023");
     //     console.log(work3);
     // }
     // catch(e){
     //     console.log(e);
     // }
     // try{
-    //     let work4 = await comments.create("64552caa2f2ea62225a14f89", "645266a22b943bdcb7c1ad23", "This is Comment 1 ", "01/26/2023");
+    //     let work4 = await comments.create("645561d79cf1606193dc0d78", "645266a22b943bdcb7c1ad23", "This is Comment 2 ", "01/27/2023");
+    //     console.log(work4);
+    // }
+    // catch(e){
+    //     console.log(e);
+    // }
+    // try{
+    //     let work4 = await workOrder.getWorkOrderByAptNumber("APT 4");
     //     console.log(work4);
     // }
     // catch(e){
