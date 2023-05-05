@@ -1,1 +1,20 @@
 <h1>{{title}}</h1>
+
+{{#if payments.length}}
+  <ul>
+    {{#each payments}}
+      <li>
+        <p>Tenant Name: {{TenantName}}</p>
+        <p>Apartment Number: {{AptName}}</p>
+        <p>Payment Amount: {{Amount}}</p>
+        <p>Payment Date: {{date}}</p>
+        </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No apartments found.</p>
+{{/if}}
+
+
+
+

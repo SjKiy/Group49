@@ -198,7 +198,7 @@ export const getAllPayments = async () => {
     if(!paymentList){
       throw "Error: Was not able to capture all payments"
     }
-    paymentList = paymentList.map((items) =>{ items._id = items._id.toString()
+    paymentList = paymentList.map((items) =>{ items._id = items._id.toString(), items.tenant = items.tenant.toString(), items.apartmentId = items.apartmentId.toString();
     return items;
     });
     return paymentList;

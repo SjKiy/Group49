@@ -16,7 +16,8 @@ import {getAptbyId} from './data/apartment.js';
 import * as workOrder from './data/workOrder.js';
 import * as user from './data/user.js';
 import * as payment from './data/payments.js';
-import* as comments from './data/comments.js';
+import * as comments from './data/comments.js';
+import * as apartments from './data/apartment.js';
 import { apartment } from './config/mongoCollections.js';
 // async function main(){
   // let work2 = undefined;
@@ -197,12 +198,28 @@ import { apartment } from './config/mongoCollections.js';
 // } catch (e) {
 //   console.error(e); 
 // }
-// }
+// try {
+//   let aptbyId = await apartments.getAptbyId("6452663d931c83c6400b94f8")
 
+//   console.log(aptbyId);
+// } catch (e) {
+//   console.error(e); 
+// }
+// try {
+//   let aptbyId = await payment.getAllPayments()
+
+//   console.log(aptbyId);
+//   console.log(aptbyId[0].tenant);
+//   console.log(aptbyId[0].apartmentId);
+
+// } catch (e) {
+//   console.error(e); 
+// }
+// }
 // main();
 
 
-// SERVER SETUP
+// // SERVER SETUP
 const staticDir = express.static(__dirname + '/public');
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
@@ -221,18 +238,31 @@ app.use(session({
   })
 );
 
-app.get('/', async (req, res, next) => {
-    if(req,session.user && req.session.user.role == "tenant"){
-        return res.redirect('/tenant');
-    }
-    if(req.session.user && req.session.user.role == "landlord"){
-        return res.redirect('/landlord');
-    }
-    next()
+// app.get('/', async (req, res, next) => {
+//     if(req,session.user && req.session.user.role == "tenant"){
+//         return res.redirect('/tenant');
+//     }
+//     if(req.session.user && req.session.user.role == "landlord"){
+//         return res.redirect('/landlord');
+//     }
+//     next()
     
     
     
 // });
+
+app.use(async (req, res, next) => {
+  let time = new Date().toUTCString();
+  let requestMethod = req.method;
+  let requestRoute = req.originalUrl;
+  let userCheck = "Non-Authenticated User";
+  if (req.session.user) {
+      userCheck = "Authenticated User";
+  }
+  console.log(`[${time}]: ${requestMethod} ${requestRoute} (${userCheck})`);
+  next();
+});
+
 
 app.get('/tenant', async (req, res, next) => {
     if(!req.session.user){
@@ -315,6 +345,22 @@ app.get('/logout', async (req, res, next) => {
     }
     next()
 });
+app.get('/', (req, res, next) => {
+  if (!req.session.user) {
+      return res.status(403).redirect('/login');
+  }
+  if (req.session.user.role == "admin") {
+      return res.redirect('/admin');
+  }
+  if (req.session.user.role == "user") {
+      return res.redirect('/protected');
+  }
+  console.log("dkkk")
+
+  next();
+});
+
+
 
 app.use('/public', staticDir);
 app.use(express.json());

@@ -4,6 +4,11 @@ import { createUser, getAptByUseriD, checkUser } from '../data/user.js';
 import { getPaymentsByUser } from '../data/payments.js';
 import { create, getActiveWorkOrders } from '../data/apartment.js';
 import * as user from '../data/user.js';
+import * as payment from '../data/payments.js';
+import * as apartment from '../data/apartment.js';
+import * as comments from '../data/comments.js';
+import * as workOrder from '../data/workOrder.js';
+
 const router = Router();
 
 
@@ -175,7 +180,27 @@ router.route('/payments').get(async (req, res) => {
     //TODO
     //gets all previous payments for current user
     //renders page
-    return res.status(200).render('payments', {title: 'All Payments Mades', today: new Date().toLocaleDateString(), numWorkOrders: 0});
+    let getAllPay = await payment.getAllPayments();
+    let allss = [];
+
+    for (let i = 0; i < getAllPay.length; i++) {
+        let apt = await apartment.getAptbyId(getAllPay[i].apartmentId);
+        let tenantNames = await user.get(getAllPay[i].tenant);
+        let test = apt.aptNumber;
+        let test1 = tenantNames.firstName + " " + tenantNames.lastName;
+
+        const updatedPayinfo = {
+          TenantName: test1,
+          AptName: test,
+          Amount: getAllPay[i].paymentAmount,
+          date: getAllPay[i].date
+        }
+        allss.push(updatedPayinfo);
+
+
+    }
+
+    return res.status(200).render('payments', {title: 'All Payments Mades', payments: allss});
 
 });
 
@@ -195,6 +220,7 @@ router.route('/landlord').get(async (req, res) => {
 
 router.route('/viewallapartments').get(async (req, res) => {
   //code here for GET
+  //come back to this
   let landlord = req.session.user._id;
   // let tentName = req.session.user.tenants;
   let getAllAp = await user.getAllAptLandlord(landlord);
@@ -205,7 +231,7 @@ router.route('/viewallapartments').get(async (req, res) => {
   // return res.status(200).render('viewallapartments', {title: 'View All Apartments', getAllApts: getAllAp, getTenant: getNames});
 });
 
-});
+// });
 
 router.route('/error').get(async (req, res) => {
   //code here for GET
