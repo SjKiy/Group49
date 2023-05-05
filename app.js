@@ -163,13 +163,13 @@ import { apartment } from './config/mongoCollections.js';
 // } catch (e) {
 //   console.error(e); 
 
-try {
-  let pay1 = await payment.createpayment("64546dd2c4a45e587364d96d", "645029de9a30187bd522aa3b", 1500, "4532018264927139", "05/02/23")
+// try {
+//   let pay1 = await payment.createpayment("64546dd2c4a45e587364d96d", "645029de9a30187bd522aa3b", 1500, "4532018264927139", "05/02/23")
 
-  console.log(pay1);
-} catch (e) {
-  console.error(e); 
-}
+//   console.log(pay1);
+// } catch (e) {
+//   console.error(e); 
+// }
 // try {
 //   let pay1 = await payment.get("64528ba6fcd05b1b690f027a")
 
@@ -268,7 +268,7 @@ app.get('/tenant', async (req, res, next) => {
     if(!req.session.user){
         return res.redirect('/login');
     }
-    if(req.session.user && req.session.user.role == "landlord"){
+    if(req.session.user && req.session.user.accountType == "landlord"){
         return res.redirect('/landlord');
     }
     next()
@@ -279,7 +279,7 @@ app.get('/landlord', async (req, res, next) => {
     if(!req.session.user){
         return res.redirect('/login');
     }
-    if(req.session.user && req.session.user.role == "tenant"){
+    if(req.session.user && req.session.user.accountType == "tenant"){
         return res.redirect('/tenant');
     }
     next()
@@ -297,7 +297,7 @@ app.get('/pay', async (req, res, next) => {
     if(!req.session.user){
         return res.redirect('/login');
     }
-    if(req.session.user && req.session.user.role == "landlord"){
+    if(req.session.user && req.session.user.accountType == "landlord"){
         return res.redirect('/landlord');
     }
     next()
@@ -305,17 +305,27 @@ app.get('/pay', async (req, res, next) => {
 
 app.get('/login', async (req, res, next) => {
     if(req.session.user){   
-        if(req.session.user.role == "tenant"){
+        if(req.session.user.accountType == "tenant"){
             return res.redirect('/tenant');
         }
-        if(req.session.user.role == "landlord"){
+        if(req.session.user.accountType == "landlord"){
             return res.redirect('/landlord');
         }
     }
     next()
 });
 
-app.get('submitworkorder', async (req, res, next) => {
+app.get('/myapt', async (req, res, next) => {
+  if(!req.session.user){
+      return res.redirect('/login');
+  }
+  if (req.session.user && req.session.user.accountType == "landlord"){
+    return res.redirect('/landlord')
+  }
+  next()
+});
+
+app.get('/submitworkorder', async (req, res, next) => {
     if(!req.session.user){
         return res.redirect('/login');
     }

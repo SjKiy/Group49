@@ -9,9 +9,9 @@
                 <li><a href="/logout" class="logout">Log Out</a></li>
             </ul>
   </div>
-  <div class="infos">
+  <div class="infosp">
     {{#if getAllApts.length}}
-    <ol>
+    <ul>
       {{#each getAllApts}}
         <li>
           <p>Apartment Number: {{aptNumber}}</p>
@@ -27,7 +27,7 @@
           <p>WorkOrders: {{workOrders}}</p>
         </li>
       {{/each}}
-    </ol>
+    </ul>
   {{else}}
     <p>No apartments found.</p>
   {{/if}}

@@ -123,7 +123,7 @@ router.route('/tenant').get(async (req, res) => {
     const apt = await getAptByUseriD(req.session.user._id)
     const active = await getActiveWorkOrders(apt[0]._id)
     const pastPays = await getPaymentsByUser(req.session.user._id)
-    return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt.rentRemaining, rentDate: apt.rentDate, numWorkOrders: active.length, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
+    return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt[0].rentRemaining, rentDate: apt[0].rentDate, numWorkOrders: active.length, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
   } catch (error) {
     return res.status(400).render('error', {title: "Error Page", info: error})
   }
@@ -135,7 +135,10 @@ router
     .route('/pay')
     .get(async (req, res) => {
         //TODO
-        return res.status(200).render('pay', {title: "Payment Portal"});
+      const apt = await getAptByUseriD(req.session.user._id)
+      const amount = apt[0].rentRemaining
+      const rent = apt[0].rentCost
+      return res.status(200).render('pay', {title: "Payment Portal", amount: amount, rent: rent});
     })
     .post(async (req, res) => {
         //adds to payment collection and subtracts from apt rent due.
@@ -145,6 +148,8 @@ router
 
 router.route('/myapt').get(async (req, res) => {
   //returns info on tenant's apt
+  const apt = await getAptByUseriD(req.session.user._id)
+  return res.status(200).render('myapt', {title: "My Apartment", apt: apt[0]})
 });
 
 //goes to submit work order page
@@ -205,9 +210,7 @@ router.route('/payments').get(async (req, res) => {
       // get all payments for user
       const p = await getPaymentsByUser(req.session.user._id)
       const apt = await getAptByUseriD(req.session.user._id)
-      const amount = apt[0].rentRemaining
-      const rent = apt[0].rentCost
-      return res.status(200).render('paymentsTenant', {title: 'Previous Payments', payments: p, amount: amount, rent: rent})
+      return res.status(200).render('paymentsTenant', {title: 'Previous Payments', payments: p})
     }
 });
 

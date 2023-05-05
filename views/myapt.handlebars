@@ -1,0 +1,33 @@
+<body>
+    <h1>{{title}}</h1>
+    <main>
+        <div class="nav">
+            <ul>
+                <li><a href="/tenant">Dashboard</a></li>
+                <li><a href="/pay">Pay Rent</a></li>
+                <li><a href="/submitworkorder">Submit Work Order</a></li>
+                <li><a href="/workorders">View Work Orders</a></li>
+                <li><a href="/payments">Previous Payments</a></li>
+                <li><a href="/myapt" class="active">View My Apartment</a></li>
+                <li><a href="/logout" class="logout">Log Out</a></li>
+            </ul>
+        </div>
+        <div class="infos">
+            <ul>
+                <li>
+                <p>Apartment Number: {{apt.aptNumber}}</p>
+                <p>Rent Cost: ${{apt.rentCost}}</p>
+                <p>Rent Remaining: ${{apt.rentRemaining}}</p>
+                <p>Rent Date: {{apt.rentDate}}</p>
+                <p>Size (sqft): {{apt.size}}</p>
+                <p>Beds: {{apt.bedNum}}</p>
+                <p>Baths: {{apt.bathNum}}</p>
+                <p>Description: {{apt.description}}</p>
+                <p>Vacancies: {{apt.isVacant}}</p>
+                <p>Tenant: {{apt.tenants}}</p>
+                <p>WorkOrders: {{apt.workOrders}}</p>
+                </li>
+            </ul>
+        </div>
+    </main>
+</body>
