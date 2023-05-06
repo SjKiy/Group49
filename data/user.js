@@ -5,6 +5,7 @@ import { apartment } from '../config/mongoCollections.js';
 import {user} from '../config/mongoCollections.js'
 import bcrpytjs from "bcryptjs";
 import { getAptbyId } from './apartment.js';
+import { getAptbyName } from './apartment.js';
 // import e from 'express';
 
 
@@ -545,6 +546,177 @@ export const remove = async (id) => {
 
 };
 
+export const getUserbyEmail = async (email) => {
+  if (!email){
+    throw "Error: Must Inlcude Email";
+  }
+  if (typeof email !== "string"){
+    throw "Error: Email has to be a string";
+  }
+  email = email.trim();
+  if (email === ' '){
+    throw "Error: Email can be empty";
+  }
+  if (email.replaceAll(" ", "") === ''){
+    throw "Error: Email cannot be empty";
+  }
+  if (email.length === ''){
+    throw "Error: Email can't be empty";
+  }
+  for (let i = 0; i < email.length; i++){
+    if (!email && typeof email !== "string" ){
+      throw "Error: Email must exist and be a string";
+    }
+  }
 
+  const userCollected = await user();
+  const specficEmail = await userCollected.findOne({emailAddress: email});
+  if(!specficEmail){
+      throw "Error: Email not found with that id";
+  }
+  
+  return specficEmail;
+};
+
+
+
+
+export const assignApt = async (email, aptNum ) => {
+  //returns apt object that is assigned to given tenant
+  if (!email){
+    throw "Error: Email does not exist";
+  }
+  if (!aptNum){
+    throw "Error: Id does not exist";
+  }
+  if (typeof aptNum !== "string"){
+    throw "Error: Id has to be a string";
+  }
+  if (typeof email !== "string"){
+    throw "Error: Email has to be a string";
+  }
+  if (email.trim() === ' '){
+    throw "Error: Email can be empty";
+  }
+  if (aptNum.trim() === ' '){
+    throw "Error: Id can be empty";
+  }
+
+  if (email.replaceAll(" ", "") === ''){
+    throw "Error: Email cannot be empty";
+  }
+  if (aptNum.replaceAll(" ", "") === ''){
+    throw "Error: Id cannot be empty";
+  }
+
+  if (email.length === ''){
+    throw "Error: Email can't be empty";
+  }
+  if (aptNum.length === ''){
+    throw "Error: Id can't be empty";
+  }
+
+  for (let i = 0; i < email.length; i++){
+    if (!email && typeof email !== "string" ){
+      throw "Error: Email must exist and be a string";
+    }
+  }
+  for (let i = 0; i < aptNum.length; i++){
+    if (!aptNum && typeof aptNum !== "string" ){
+      throw "Error: Id must exist and be a string";
+    }
+  }
+  aptNum = aptNum.trim();
+  email = email.trim();
+
+  const getUser = await getUserbyEmail(email);
+  const getApt = await getAptbyName(aptNum);
+
+
+
+  if(!getUser){
+    throw "Error: Email not found with that id";
+  }
+  if (getUser.emailAddress !== email){
+    throw "Error: Email does not match";
+  }
+  if(!getApt){
+    throw "Error: Apartment not found with that id";
+  }
+
+  let userCollected = await user();
+  let aptCollected = await apartment();
+  const updateUser = await userCollected.updateOne(
+    { _id: new ObjectId(getUser._id) },
+    { $addToSet: { apartments: new ObjectId(getApt._id) } } 
+  );
+
+  const updateApartment = await aptCollected.updateOne(
+    { _id: new ObjectId(getApt._id) },
+    { $addToSet: { tenants: new ObjectId(getUser._id).toString() } }
+  );
+
+  if (updateUser.modifiedCount === 0 || updateApartment.modifiedCount === 0) {
+    throw "Error: Could not assign the apartment to the user";
+  }
+  // console.log(updateUser.modifiedCount)
+  return {insertedUser: true};
+};
+
+
+
+export const getAllTenantLandlord = async (id) => {
+  if (!id){
+    throw "Error: Id does not exist";
+  }
+  if (typeof id !== "string"){
+    throw "Error: Id has to be a string";
+  }
+  if (id.trim() === ' '){
+    throw "Error: Id can be empty";
+  }
+  if (id.replaceAll(" ", "") === ''){
+    throw "Error: Id cannot be empty";
+  }
+  if (id.length === ''){
+    throw "Error: Id can't be empty";
+  }
+  for (let i = 0; i < id.length; i++){
+    if (!id && typeof id !== "string" ){
+      throw "Error: Id must exist and be a string";
+    }
+  }
+  
+  id = id.trim();
+  if (!ObjectId.isValid(id)){
+    throw "Error: Invalid Object Id";
+  }
+
+  let userLandlord = await user();
+  let userLandlordInfo = await userLandlord.findOne({_id: new ObjectId(id)});
+  if (!userLandlordInfo){   
+    throw "Error: User does not exist";
+  }
+  if (userLandlordInfo.accountType !== "landlord"){
+    throw "Error: This is only for landlords";
+  }
+  const userCollected = await user();
+  let tenantList = await userCollected.find({accountType: "tenant"}).toArray();
+  if(tenantList.length === 0){
+    return [];
+  }
+  if(!tenantList){
+    throw "Error: Was not able to capture all apartments";
+  }
+  tenantList = tenantList.map((items) =>({
+    firstName: items.firstName.toString(),
+    lastName: items.lastName.toString(),
+    email: items.emailAddress.toString(),
+
+    }));
+  return tenantList;
+  // return {tenantListfirstName}
+
+};
 
 

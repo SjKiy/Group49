@@ -129,7 +129,7 @@ import { apartment } from './config/mongoCollections.js';
 
     
 // try {
-//     let user1 = await user.createUser("use", "adsjsaj", "test1@yahoo.com", "Horsepull748*%", "tenant",[apt._id])
+//     let user1 = await user.createUser("Micke", "Mous", "Micky@yahoo.com", "Horsepull748*%", "tenant")
 
 //     console.log(user1);
 //   } catch (e) {
@@ -145,13 +145,20 @@ import { apartment } from './config/mongoCollections.js';
 //   }
     
 // try {
-//     let user4 = await user.createUser("uss", "adsjsaj", "testr@yahoo.com", "Horsepull748*%", "landlord")
+//     let user4 = await user.createUser("test", "user", "user@yahoo.com", "Horsepull748*%", "tenant")
 
 //     console.log(user4);
 //   } catch (e) {
 //     console.error(e); 
 //   }
-// }
+// try {
+//     let user4 = await user.getUserbyEmail("user@yahoo.com")
+
+//     console.log(user4);
+//   } catch (e) {
+//     console.error(e); 
+//   }
+
     
 // try {
 //     let user4 = await user.get("64513be1813378a0fbab7edd")
@@ -178,6 +185,27 @@ import { apartment } from './config/mongoCollections.js';
 
 // try {
 //   let user5 = await user.assignAptToUser("64546dd2c4a45e587364d96d","645029de9a30187bd522aa3b")
+
+//   console.log(user5);
+// } catch (e) {
+//   console.error(e); 
+// }
+// try {
+//   let user5 = await user.getAllTenantLandlord("64540df0a3049a17bd764afb")
+
+//   console.log(user5);
+// } catch (e) {
+//   console.error(e); 
+// }
+// try {
+//   let user5 = await user.assignAptToUsers("645667b726f40f4f92fb257d","dale@gmail.com", "6455c2617ee5f515358a98ea")
+
+//   console.log(user5);
+// } catch (e) {
+//   console.error(e); 
+// }
+// try {
+//   let user5 = await user.assignApt("user@yahoo.com","Apt 11")
 
 //   console.log(user5);
 // } catch (e) {

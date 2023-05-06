@@ -344,7 +344,32 @@ router.route('/landlordassignApt').get(async (req, res) => {
 
 })
 .post(async (req, res) => {
+  //need to fix error checking
+  let tenantEmail = req.body.tenantEmail;
+  let apt = req.body.aptNum;
+
+  if (apt === "" && tenantEmail === "" ){
+    return res.status(400).render('landlordassignApt', { error: 'Required Fields Are Missing. Please Add them.'});
+  }
+
+  try {
+    const AssignCheck = await user.assignApt(tenantEmail, apt);
   
+    console.log("Insert result:", AssignCheck);
+  
+    if(AssignCheck){
+      return res.redirect('/viewallapartments');
+    } else {
+      return res.status(500).render('landlordassignApt',{error:true, error:"Internal Server Error"});
+    }
+  } catch(e){
+    console.error("Error occurred:", e);
+    return res.status(400).render('landlordassignApt',{error:true, error: e});
+  }
+
+
+
+
 });
 
 
@@ -354,16 +379,6 @@ router.route('/landlordCreateApt').get(async (req, res) => {
 })
 .post(async (req, res) => {
   //need to fix error checking
-  // let aptNumber = req.body.aptNum;
-  // let rentCost = req.body.rentCost;
-  // let rentRemaining =  req.body.rentRem;
-  // let rentDate =  req.body.rentDate;
-  // let size =  req.body.size;
-  // let bedNum =  req.body.bed;
-  // let bathNum =  req.body.bath;
-  // let description =  req.body.description;
-  // let isVacant =  req.body.isVacant;
-
   let aptNumber = req.body.aptNum;
   let rentCost = Number(req.body.rentCost);
   let rentRemaining =  Number(req.body.rentRem);
@@ -520,6 +535,24 @@ router.route('/landlordCreateApt').get(async (req, res) => {
   }
 
 });
+
+router.route('/landlordAllTenants').get(async (req, res) => {
+
+  let landlord = req.session.user._id;
+  // let tentName = req.session.user.tenants;
+  let getAllTen = await user.getAllTenantLandlord(landlord);
+
+  let tenSearch = req.query.emailAdd;
+  // console.log(aptPaySearch);
+  if(tenSearch){
+    getAllTen = getAllTen.filter((ten) => ten.email.toLowerCase() === tenSearch.toLowerCase());
+  }
+
+  return res.status(200).render('landlordAllTenants', {title: 'View All Tenants', getAllTen: getAllTen});
+
+  
+});
+
 
 
 

@@ -2,23 +2,32 @@
 {{!-- <main> --}}
   <div class="nav">
             <ul>
-                <li><a href="/landlord">Dashboard</a></li>
+                {{!-- <li><a href="/landlord">Dashboard</a></li>
                 <li><a href="/workorders">View All Work Orders</a></li>
                 <li><a href="/viewallapartments"  class="active">View All Apartments</a></li>
                 <li><a href="/landlordCreateApt">Create An Apartments</a></li>
 
                 <li><a href="/landlordassignApt">Assign Apartment to Tenant</a></li>
                 <li><a href="/payments">View Apartments Payments</a></li>
+                <li><a href="/logout" class="logout">Log Out</a></li> --}}
+                <li><a href="/landlord" class="active">Dashboard</a></li>
+                <li><a href="/workorders">View All Work Orders</a></li>
+                <li><a href="/viewallapartments">View All Apartments</a></li>
+                <li><a href="/landlordAllTenants">View All Tenants</a></li>
+                <li><a href="/landlordCreateApt">Create An Apartments</a></li>
+                <li><a href="/landlordassignApt">Assign Apartment to Tenant</a></li>
+                <li><a href="/payments">View Apartments Payments</a></li>
+                <li><a href="/editWorkOrders">Edit WorkOrders</a></li>
                 <li><a href="/logout" class="logout">Log Out</a></li>
             </ul>
   </div>
-  <div class="assigning">
-    <form action="/landlordassignApt" method="post" class="assign-tenant-form">
+  <div>
+    <form action="/landlordassignApt" method="post" class="assign-apt-to-tenant-form">
+        <label for="tenantEmail">Tenant Email:</label>
+        <input type="email" id="tenantEmail" name="tenantEmail" placeholder="Tenant Email">
         <label for="aptNum">Apartment Number:</label>
         <input type="text" id="aptNum" name="aptNum" placeholder="Apartment Number">
-        <label for="tenantName">Tenant Name:</label>
-        <input type="text" id="tenantName" name="tenantName" placeholder="Tenant Name">
-        <input type="submit" value="Assign">
+        <input type="submit" value="Submit">
     </form>
 
   </div>

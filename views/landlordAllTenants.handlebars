@@ -1,0 +1,37 @@
+<h1>{{title}}</h1>
+{{!-- <main> --}}
+  <div class="nav">
+            <ul>
+                <li><a href="/landlord">Dashboard</a></li>
+                <li><a href="/workorders">View Work Orders</a></li>
+                <li><a href="/viewallapartments">View All Apartments</a></li>
+                <li><a href="/landlordAllTenants">View All Tenants</a></li>
+                <li><a href="/landlordCreateApt">Create An Apartments</a></li>
+                <li><a href="/landlordassignApt">Assign Apartment to Tenant</a></li>
+                <li><a href="/payments">View Apartments Payments</a></li>
+                <li><a href="/logout" class="logout">Log Out</a></li>
+            </ul>
+  </div>
+  <div class="searching">
+    <form id="searchTen" action="/landlordAllTenants" method="GET">
+        <label for="emailAdd">Email Address:</label>
+        <input type="email" id="emailAdd" name="emailAdd" placeholder="Email Address">
+        <input type="submit" value="Search">
+    </form>
+  </div>
+  <div class="infosp">
+    {{#if getAllTen.length}}
+    <ul>
+      {{#each getAllTen}}
+        <li>
+          <p>First Name: {{firstName}}</p>
+          <p>Last Name: {{lastName}}</p>
+          <p>Email Address: {{email}}</p>
+        </li>
+      {{/each}}
+    </ul>
+  {{else}}
+    <p>No Tenants found.</p>
+  {{/if}}
+  </div>
+{{!-- </main> --}}
