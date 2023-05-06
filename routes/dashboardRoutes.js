@@ -3,6 +3,8 @@ import EmailValidator from 'email-validator';
 import { createUser, getAptByUseriD, checkUser } from '../data/user.js';
 import { getPaymentsByUser } from '../data/payments.js';
 import { create, getActiveWorkOrders } from '../data/apartment.js';
+import { isNUllOrUndefined } from '../data/dataHelper.js';
+import { dateChecker } from '../data/dataHelper.js';
 import * as user from '../data/user.js';
 import * as payment from '../data/payments.js';
 import * as apartment from '../data/apartment.js';
@@ -271,14 +273,17 @@ router.route('/viewallapartments').get(async (req, res) => {
   let landlord = req.session.user._id;
   // let tentName = req.session.user.tenants;
   let getAllAp = await user.getAllAptLandlord(landlord);
-  let allTenants = [];
-
+  let ten = [];
   for (let i = 0; i < getAllAp.length; i++) {
+    let allTenants = [];
+  
     for (let j = 0; j < getAllAp[i].tenants.length; j++) {
       let makeString = [getAllAp[i].tenants[j].toString()];
       let userName = await user.get(makeString[j]);
       let userNam = userName.firstName + " " + userName.lastName;
       // console.log(userNam);
+      allTenants.push(userNam);
+    }
       const newTotal = {
         AptNum: getAllAp[i].aptNumber,
         Rent: getAllAp[i].rentCost,
@@ -289,16 +294,17 @@ router.route('/viewallapartments').get(async (req, res) => {
         Baths: getAllAp[i].bathNum,
         Description: getAllAp[i].description,
         Vacancies: getAllAp[i].isVacant,
-        Tenants: userNam,
+        Tenants: allTenants,
         WorkOrders: getAllAp[i].workOrders,
       };
-      allTenants.push(newTotal);
-      // console.log(allTenants);
-
-    }
-
+      ten.push(newTotal);
+  // }
+    
+    console.log(ten);
+  
   }
-  return res.status(200).render('viewallapartments', {title: 'View All Apartments', getAllApts: allTenants});
+    
+  return res.status(200).render('viewallapartments', {title: 'View All Apartments', getAllApts: ten});
 
 });
 
@@ -312,6 +318,184 @@ router.route('/logout').get(async (req, res) => {
   req.session.destroy();
   return res.status(200).render('logout', {title: 'Logged Out'})
 });
+
+
+router.route('/landlordassignApt').get(async (req, res) => {
+  return res.status(200).render('landlordassignApt', {title: 'Assign Tenant to Apartment'})
+
+})
+.post(async (req, res) => {
+  
+});
+
+
+router.route('/landlordCreateApt').get(async (req, res) => {
+  return res.status(200).render('landlordCreateApt', {title: 'Create An Apartment'})
+
+})
+.post(async (req, res) => {
+  // let aptNumber = req.body.aptNum;
+  // let rentCost = req.body.rentCost;
+  // let rentRemaining =  req.body.rentRem;
+  // let rentDate =  req.body.rentDate;
+  // let size =  req.body.size;
+  // let bedNum =  req.body.bed;
+  // let bathNum =  req.body.bath;
+  // let description =  req.body.description;
+  // let isVacant =  req.body.isVacant;
+  console.log("Received POST request with data:", req.body);
+
+  let aptNumber = req.body.aptNum;
+  let rentCost = Number(req.body.rentCost);
+  let rentRemaining =  Number(req.body.rentRem);
+  let rentDate =  req.body.rentDate;
+  let size =  Number(req.body.size);
+  let bedNum =  Number(req.body.bed);
+  let bathNum =  Number(req.body.bath);
+  let description =  req.body.description;
+  // let isVacant =  req.body.isVacant;
+  let isVacant = false; 
+
+  if (req.body.isVacant === 'true') {
+    isVacant = true; 
+  }
+
+  // let {aptNumber, rentCost, rentRemaining, rentDate, size, bedNum, bathNum, description, isVacant} = req.body;
+
+  if (isNUllOrUndefined(aptNumber)){
+    return res.status(400).render('landlordCreateApt', { error: 'Apartment Number is missing.'});
+
+  }
+  if (isNUllOrUndefined(rentCost)){
+    return res.status(400).render('landlordCreateApt', { error: 'Rent Cost is missing.'});
+
+  }
+  if (isNUllOrUndefined(rentRemaining)){
+    return res.status(400).render('landlordCreateApt', { error: 'Rent Remaining is missing.'});
+  }
+  if (isNUllOrUndefined(rentDate)){
+    return res.status(400).render('landlordCreateApt', { error: 'Rent Date is missing.'});
+  }
+  if (isNUllOrUndefined(size)){
+    return res.status(400).render('landlordCreateApt', { error: 'Size is missing.'});
+  }
+  if (isNUllOrUndefined(bedNum)) {
+    return res.status(400).render('landlordCreateApt', { error: 'Number of Beds is missing.'});
+  };
+  if (isNUllOrUndefined(bathNum)){
+    return res.status(400).render('landlordCreateApt', { error: 'Number of Baths is missing.'});
+  };
+  if (isNUllOrUndefined(description)) {
+    return res.status(400).render('landlordCreateApt', { error: 'Description is missing.'});
+  };
+  if (isNUllOrUndefined(isVacant)){
+    return res.status(400).render('landlordCreateApt', { error: 'Vacancy is missing.'});
+  };
+  // if (isNUllOrUndefined(tenants)) {
+  //   return res.status(400).render('landlordCreateApt', { error: 'Tenants is missing.'});
+  // };
+  // if (isNUllOrUndefined(workOrders)) {
+  //   return res.status(400).render('landlordCreateApt', { error: 'Work Orders is missing.'});
+  // };
+  //error checking for aptNumber
+  if(typeof aptNumber !== 'string') {
+    return res.status(400).render('landlordCreateApt', { error: 'Apartment Number must be a string.'});
+  };
+  aptNumber = aptNumber.trim();
+  if(aptNumber === "") {
+    return res.status(400).render('landlordCreateApt', { error: 'Apartment Number must not be an empty string.'});
+  };
+  if(aptNumber.lenght > 26) {
+    return res.status(400).render('landlordCreateApt', { error: 'Apartment Number must be less than 26 characters.'});
+  };
+  //other then checking for nums should there be any other constaints?
+  if(typeof rentCost !== 'number') {
+    return res.status(400).render('landlordCreateApt', { error: 'Rent Cost must be a number.'});
+  };
+  if(typeof rentRemaining !== 'number') {
+    return res.status(400).render('landlordCreateApt', { error: 'Rent Remaining must be a number.'});
+  };
+  if(typeof size !== 'number') {
+    return res.status(400).render('landlordCreateApt', { error: 'Size must be a number.'});
+  };
+  if(typeof bedNum !== 'number') {
+    return res.status(400).render('landlordCreateApt', { error: 'Number of Beds must be a number.'});
+  };
+  if(typeof bathNum !== 'number') {
+    return res.status(400).render('landlordCreateApt', { error: 'Number of Baths must be a number.'});
+  };
+  if(bedNum < 0) {
+    return res.status(400).render('landlordCreateApt', { error: 'Number of beds must be positive.'});
+  };
+  if(bathNum < 0) {
+    return res.status(400).render('landlordCreateApt', { error: 'Number of baths must be positive.'});
+  };
+  if(size < 0) {
+    return res.status(400).render('landlordCreateApt', { error: 'Size must be positive.'});
+  };
+  if(rentCost < 0) {
+    return res.status(400).render('landlordCreateApt', { error: 'Rent Cost must be positive.'});
+  };
+  if(rentRemaining < 0) {
+    return res.status(400).render('landlordCreateApt', { error: 'Rent Remaining must be positive.'});
+  };
+  if (dateChecker(rentDate)){
+    return res.status(400).render('landlordCreateApt', { error: 'Rent Date must be a date.'});
+  }
+  //error checking for rentDate
+  //error checking for description
+  if(typeof description !== 'string') {
+    return res.status(400).render('landlordCreateApt', { error: 'Description must be a string.'});
+  };
+  description = description.trim();
+  if(description === "") {
+    return res.status(400).render('landlordCreateApt', { error: 'Description must not be an empty string.'});
+  };
+  if(description.lenght > 100) {
+    return res.status(400).render('landlordCreateApt', { error: 'Description must be less than 100 characters.'});
+  };
+  //error checking for isVacant
+  if(typeof isVacant !== 'boolean') {
+    return res.status(400).render('landlordCreateApt', { error: 'Vacancy must be true or false.'});
+  };
+  //error checking for tenants, for tentants and workorders should I check if they exist or no since the only way to update is on the user side
+  // if(!Array.isArray(tenants)) throw 'Tenants must be an array';
+  // if(!Array.isArray(workOrders)) throw 'Work orders must be an array';
+  // if(tenants.length > bedNum*2 ) {
+  //   return res.status(400).render('landlordCreateApt', { error: 'Too many tenants for the number of beds.'});
+  // };
+
+  // try{
+  //   const LoginCheck = await apartment.create(aptNumber, rentCost, rentRemaining, rentDate, size, bedNum, bathNum, description, isVacant, [], []);
+  //   if(LoginCheck){
+  //     return res.redirect('/viewallapartments');
+  //     ///not redirecting to login page it shows the error duplicate email
+  //   }else{
+  //      return res.status(500).render('landlordCreateApt',{error:true, error:"Internal Server Error"});
+  //   }
+  //   }catch(e){
+  //     return res.status(400).render('landlordCreateApt',{error:true, error: e});
+  //   // console.log("test");
+  // }
+
+  try {
+    const LoginCheck = await apartment.create(aptNumber, rentCost, rentRemaining, rentDate, size, bedNum, bathNum, description, isVacant, [], []);
+  
+    console.log("Insert result:", LoginCheck);
+  
+    if(LoginCheck){
+      return res.redirect('/viewallapartments');
+    } else {
+      return res.status(500).render('landlordCreateApt',{error:true, error:"Internal Server Error"});
+    }
+  } catch(e){
+    console.error("Error occurred:", e);
+    return res.status(400).render('landlordCreateApt',{error:true, error: e});
+  }
+
+});
+
+
 
 
 export default router;

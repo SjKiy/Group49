@@ -227,9 +227,9 @@ import { apartment } from './config/mongoCollections.js';
 //   console.log(aptbyId);
 // } catch (e) {
 //   console.error(e); 
-// }
+// // }
 // try {
-//   let aptbyId = await user.getAllAptLandlord("64513be1813378a0fbab7edd")
+//   let aptbyId = await user.getAllAptLandlord("64540df0a3049a17bd764afb")
 
 //   console.log(aptbyId);
 // } catch (e) {
@@ -272,15 +272,15 @@ import { apartment } from './config/mongoCollections.js';
 
 // } catch (e) {
 //   console.error(e); 
-// }
+// // }
 // try {
 //   let getAllAp = await user.getAllAptLandlord("64540df0a3049a17bd764afb");
-//   // let makeString = [getAllAp[0].tenants[0].toString()];
-//   // let updateApts = [];
-//   // let test = await user.get(makeString[0]);
-//   // let name = test.firstName + " " + test.lastName;
-//   // console.log(name);
-//   // console.log(makeString);
+//   let makeString = [getAllAp[0].tenants[0].toString()];
+//   let updateApts = [];
+//   let test = await user.get(makeString[0]);
+//   let name = test.firstName + " " + test.lastName;
+//   console.log(name);
+//   console.log(makeString);
 
 //   for (let i = 0; i < getAllAp.length; i++) {
 //     let allTenants = [];
@@ -306,6 +306,44 @@ import { apartment } from './config/mongoCollections.js';
 //       console.log(allTenants);
 //     }
 //   }
+//fixed the get all apartments
+// try {
+//   let getAllAp = await user.getAllAptLandlord("64540df0a3049a17bd764afb");
+//   let ten = [];
+//   for (let i = 0; i < getAllAp.length; i++) {
+//     let allTenants = [];
+
+//     for (let j = 0; j < getAllAp[i].tenants.length; j++) {
+//       let makeString = [getAllAp[i].tenants[j].toString()];
+//       let userName = await user.get(makeString[j]);
+//       let userNam = userName.firstName + " " + userName.lastName;
+//       // console.log(userNam);
+//       allTenants.push(userNam);
+//     }
+//       const newTotal = {
+//         AptNum: getAllAp[i].aptNumber,
+//         Rent: getAllAp[i].rentCost,
+//         RentRemaining: getAllAp[i].rentRemaining,
+//         RentDate: getAllAp[i].rentDate,
+//         Size: getAllAp[i].size,
+//         Beds: getAllAp[i].bedNum,
+//         Baths: getAllAp[i].bathNum,
+//         Description: getAllAp[i].description,
+//         Vacancies: getAllAp[i].isVacant,
+//         Tenants: allTenants,
+//         WorkOrders: getAllAp[i].workOrders,
+//       };
+//       ten.push(newTotal);
+//   // }
+  
+//   console.log(ten);
+
+// }
+  
+// } catch (e) {
+//   console.log(e);
+  
+// }
   // }
   //       for (let i = 0; i < getAllAp.length; i++) {
   //         let allTenants = [];

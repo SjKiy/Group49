@@ -7,6 +7,7 @@ import { get } from './payments.js';
 
 import { ObjectId } from 'mongodb';
 import { isNUllOrUndefined } from './dataHelper.js';
+import { dateChecker } from './dataHelper.js';
 
 //creates an apartment record in the database
 const create = async ( 
@@ -35,6 +36,7 @@ const create = async (
     if (isNUllOrUndefined(tenants)) throw 'You must provide a list of tenants';
     if (isNUllOrUndefined(workOrders)) throw 'You must provide a list of work orders';
     //error checking for aptNumber
+    if (dateChecker(rentDate)) throw 'Rent due date must be a valid date';
     if(typeof aptNumber !== 'string') throw 'Apartment number must be a string';
     aptNumber = aptNumber.trim();
     if(aptNumber === "") throw 'You must provide an apartment number';
@@ -45,6 +47,14 @@ const create = async (
     if(typeof size !== 'number') throw 'Size must be a number';
     if(typeof bedNum !== 'number') throw 'Number of beds must be a number';
     if(typeof bathNum !== 'number') throw 'Number of baths must be a number';
+    if(bedNum < 0) throw 'Number of beds must be positive';
+    if(bathNum < 0) throw 'Number of baths must be positive';
+    if(size < 0) throw 'Size must be positive';
+    if(rentCost < 0) throw 'Rent cost must be positive';
+    if(rentRemaining < 0) throw 'Rent remaining must be positive';
+    //error checking for rentDate
+    
+    //add error checking number of beds and baths, size can't be negative
     //error checking for description
     if(typeof description !== 'string') throw 'Description must be a string';
     description = description.trim();
