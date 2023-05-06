@@ -89,11 +89,47 @@ const create = async (
     if (insertInfo.insertedCount === 0) throw 'Could not add apartment';
 
     const newId = insertInfo.insertedId;
+    let x = await getAptbyId(newId.toString());
 
-    return insertInfo
+    return x
 
 
 };
+
+const getAptbyName = async (aptNumber) => {
+  if (!aptNumber){
+    throw "Error: Must Inlcude Apartment Number";
+  }
+  if (typeof aptNumber !== "string"){
+    throw "Error: Apartment Number has to be a string";
+  }
+  aptNumber = aptNumber.trim();
+  if (aptNumber === ' '){
+    throw "Error: Apartment Number can be empty";
+  }
+  if (aptNumber.replaceAll(" ", "") === ''){
+    throw "Error: Apartment Number cannot be empty";
+  }
+  if (aptNumber.length === ''){
+    throw "Error: Apartment Number can't be empty";
+  }
+  for (let i = 0; i < aptNumber.length; i++){
+    if (!aptNumber && typeof aptNumber !== "string" ){
+      throw "Error: Apartment Number must exist and be a string";
+    }
+  }
+
+  const aptCollected = await apartment();
+  const specficApt = await aptCollected.findOne({aptNumber: aptNumber});
+  if(!specficApt){
+      throw "Error: Apartment not found with that id";
+  }
+  
+  return specficApt;
+};
+  
+
+
 
 const getActiveWorkOrders = async (aptId) => {
     //returns active work orders for given apt
@@ -199,5 +235,5 @@ const getAptbyId = async (aptId) => {
 
 
 
-export { create, getActiveWorkOrders, getAptbyId, updateAptRentRemaining}
+export { create, getActiveWorkOrders, getAptbyId, updateAptRentRemaining, getAptbyName}
 

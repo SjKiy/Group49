@@ -22,17 +22,25 @@ import { apartment } from './config/mongoCollections.js';
 // async function main(){
   // let work2 = undefined;
   // let work3 = undefined;
-  //   let apt 
+  // let apt 
+  // let user1
     // let x 
     // try{
     //     apt = await create("Apt 1", 1500, 16500, "01/05/2023", 800, 1,1, "Nice", true, [], [])
-    //     console.log(apt);
     // }
     // catch(e){
     //     console.log(e);
     // }
+    // try {
+    //       user1 = await user.createUser("Aidan", "Ryan", "aidanryanqb24@gmail.com", "Fudgie123$", "landlord")
+          
+    //     } 
+    //   catch (e) {
+    //       console.error(e); 
+    //     }
+          
     // try{
-    //     let work3 = await workOrder.workCreate("apt 3", "Shower", "Open", "Show has no force", "01/31/2023", "02/23/2023");
+    //     let work3 = await workOrder.workCreate("Apt 1", "Shower", "Open", "Show has no force", "01/31/2023", "02/23/2023");
     //     console.log(work3);
     // }
     // catch(e){
