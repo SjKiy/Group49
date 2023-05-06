@@ -1,6 +1,7 @@
 import { workOrder } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import { isNUllOrUndefined, dateChecker } from "./dataHelper.js";
+import { apartment } from '../config/mongoCollections.js';
 
 export const workCreate = async (
     aptNumber,
@@ -58,10 +59,20 @@ export const workCreate = async (
 
     const insertInfo = await workOrderCollection.insertOne(newWorkOrder);
     if (insertInfo.insertedCount === 0) throw 'Could not add work order';
+    //adding this workorder id to the aplist of its apartment
+    const aptCollection = await apartment();
+    const updateApt = await aptCollection.updateOne(
+        {aptNumber: aptNumber},
+        {$push: {workOrders: insertInfo.insertedId.toString()}}
+    );
+    console.log(updateApt)
+    if (updateApt.modifiedCount === 0) {
+        throw "Error: Could not update apartment successfully";
+    }
 
     const newId = insertInfo.insertedId;
-    //const workOrder = await get(newId);
-    return insertInfo;
+    const work = await getWorkById(newId.toString());
+    return work;
 };
 
 

@@ -214,6 +214,19 @@ router.route('/workorders').get(async (req, res) => {
 
 ;
 
+router.route('/editWorkOrders').get(async (req, res) => {
+  //code here for GET
+  return res.status(200).render('editWorkOrders', {title: 'Edit Work Orders', none: false});
+})
+.put(async (req, res) => {
+  //code here for PUT
+});
+
+
+
+
+
+
 //goes to previous payment page
 router.route('/payments').get(async (req, res) => {
     //TODO
