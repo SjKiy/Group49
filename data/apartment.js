@@ -2,7 +2,8 @@
 import { apartment } from '../config/mongoCollections.js';
 import { payments } from '../config/mongoCollections.js';
 import { getWorkById } from './workOrder.js';
-// import * as pay from './payments.js';
+
+ import * as pay from './payments.js';
 import { get } from './payments.js';
 
 import { ObjectId } from 'mongodb';
@@ -34,11 +35,23 @@ const create = async (
     if (isNUllOrUndefined(isVacant)) throw 'You must provide a vacancy status';
     if (isNUllOrUndefined(tenants)) throw 'You must provide a list of tenants';
     if (isNUllOrUndefined(workOrders)) throw 'You must provide a list of work orders';
+    let split = rentDate.split('/');
+    if (split.length != 3) throw 'rentDate should be YYYY/MM/DDDD format'
+    if (parseInt(split[1]) > 12 || parseInt(split[1]) < 1) {
+      throw 'Month of rentDate is invalid'
+    }
+    if (parseInt(split[2]) < 1 || parseInt(split[2]) > 31) {
+      throw "Day of rentDate is invalid"
+    }
+    if (parseInt(split[0]) < 1) {
+      throw "Year of rentDate is invalid"
+    }
+
     //error checking for aptNumber
     if(typeof aptNumber !== 'string') throw 'Apartment number must be a string';
     aptNumber = aptNumber.trim();
     if(aptNumber === "") throw 'You must provide an apartment number';
-    if(aptNumber.lenght > 26) throw 'Apartment number must be less than 26 characters';
+    if(aptNumber.length > 26) throw 'Apartment number must be less than 26 characters';
     //other then checking for nums should there be any other constaints?
     if(typeof rentCost !== 'number') throw 'Rent cost must be a number';
     if(typeof rentRemaining !== 'number') throw 'Rent remaining must be a number';
@@ -49,7 +62,7 @@ const create = async (
     if(typeof description !== 'string') throw 'Description must be a string';
     description = description.trim();
     if(description === "") throw 'You must provide a description';
-    if(description.lenght > 100) throw 'Description must be less than 100 characters';
+    if(description.length > 100) throw 'Description must be less than 100 characters';
     //error checking for isVacant
     if(typeof isVacant !== 'boolean') throw 'Vacancy status must be a boolean';
     //error checking for tenants, for tentants and workorders should I check if they exist or no since the only way to update is on the user side
@@ -96,44 +109,10 @@ const create = async (
 
 };
 
-const getAptbyName = async (aptNumber) => {
-  if (!aptNumber){
-    throw "Error: Must Inlcude Apartment Number";
-  }
-  if (typeof aptNumber !== "string"){
-    throw "Error: Apartment Number has to be a string";
-  }
-  aptNumber = aptNumber.trim();
-  if (aptNumber === ' '){
-    throw "Error: Apartment Number can be empty";
-  }
-  if (aptNumber.replaceAll(" ", "") === ''){
-    throw "Error: Apartment Number cannot be empty";
-  }
-  if (aptNumber.length === ''){
-    throw "Error: Apartment Number can't be empty";
-  }
-  for (let i = 0; i < aptNumber.length; i++){
-    if (!aptNumber && typeof aptNumber !== "string" ){
-      throw "Error: Apartment Number must exist and be a string";
-    }
-  }
-
-  const aptCollected = await apartment();
-  const specficApt = await aptCollected.findOne({aptNumber: aptNumber});
-  if(!specficApt){
-      throw "Error: Apartment not found with that id";
-  }
-  
-  return specficApt;
-};
-  
-
-
 
 const getActiveWorkOrders = async (aptId) => {
     //returns active work orders for given apt
-    console.log(aptId)
+    
     const apt = await getAptbyId(aptId);
     let res = []
     for (const w of apt.workOrders) {
@@ -141,10 +120,12 @@ const getActiveWorkOrders = async (aptId) => {
       if (temp.workStatus === 'Open') res.push(temp);
     }
     return res;
+    
 
 }
 
 const updateAptRentRemaining = async(paymentid) =>{
+  
   if (!paymentid){
     throw "Error: Id huh not exist";
   }
@@ -198,6 +179,7 @@ const updateAptRentRemaining = async(paymentid) =>{
 };
 
 const getAptbyId = async (aptId) => {
+  
     if (!aptId){
       throw "Error: Id does not exist";
     }
@@ -222,6 +204,8 @@ const getAptbyId = async (aptId) => {
     if (!ObjectId.isValid(aptId)){
       throw "Error: Invalid Object Id";
     }
+
+    
     const aptCollected = await apartment();
     const specficApt = await aptCollected.findOne({_id: new ObjectId(aptId)});
     if(!specficApt){
@@ -229,6 +213,7 @@ const getAptbyId = async (aptId) => {
     }
     specficApt._id = specficApt._id.toString();
     return specficApt;
+    
   };
 
 
@@ -236,4 +221,6 @@ const getAptbyId = async (aptId) => {
 
 
 export { create, getActiveWorkOrders, getAptbyId, updateAptRentRemaining, getAptbyName}
+
+
 
