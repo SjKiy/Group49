@@ -264,6 +264,17 @@ input[type="submit"]:hover {
   justify-content: right;
 }
 
+.workOrder {
+  display: flex;
+  justify-content: right;
+  gap: 150px;
+}
+
+.even-form {
+  align-items: center;
+ 
+}
+
 .new-apt-form{
   display: flex;
   flex-direction: column;
