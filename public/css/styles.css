@@ -271,3 +271,11 @@ input[type="submit"]:hover {
   /* justify-content: center; */
 
 }
+
+
+#CreatAPTERROR {
+  background-color: #fdd;
+  color: #f00;
+  padding: 1em;
+  margin: 1em 0;
+}

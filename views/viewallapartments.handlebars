@@ -11,6 +11,13 @@
                 <li><a href="/logout" class="logout">Log Out</a></li>
             </ul>
   </div>
+  <div class="searching">
+    <form id="searchApt" action="/viewallapartments" method="GET">
+        <label for="aptNum">Apartment Number:</label>
+        <input type="text" id="aptNum" name="aptNum" placeholder="Apartment Number">
+        <input type="submit" value="Search">
+    </form>
+  </div>
   <div class="infosp">
     {{#if getAllApts.length}}
     <ul>

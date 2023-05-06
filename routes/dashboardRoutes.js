@@ -313,7 +313,13 @@ router.route('/viewallapartments').get(async (req, res) => {
       ten.push(newTotal);
   // }
     
-    console.log(ten);
+    // console.log(ten);
+    let aptPaySearch = req.query.aptNum;
+    // console.log(aptPaySearch);
+    if(aptPaySearch){
+      ten = ten.filter((apt) => apt.AptNum.toLowerCase() === aptPaySearch.toLowerCase());
+    }
+
   
   }
     
@@ -347,6 +353,7 @@ router.route('/landlordCreateApt').get(async (req, res) => {
 
 })
 .post(async (req, res) => {
+  //need to fix error checking
   // let aptNumber = req.body.aptNum;
   // let rentCost = req.body.rentCost;
   // let rentRemaining =  req.body.rentRem;
@@ -356,7 +363,6 @@ router.route('/landlordCreateApt').get(async (req, res) => {
   // let bathNum =  req.body.bath;
   // let description =  req.body.description;
   // let isVacant =  req.body.isVacant;
-  console.log("Received POST request with data:", req.body);
 
   let aptNumber = req.body.aptNum;
   let rentCost = Number(req.body.rentCost);
@@ -375,6 +381,13 @@ router.route('/landlordCreateApt').get(async (req, res) => {
 
   // let {aptNumber, rentCost, rentRemaining, rentDate, size, bedNum, bathNum, description, isVacant} = req.body;
 
+  if (aptNumber === "" && rentCost === "" && rentRemaining === "" && rentDate === "" && size === "" && bedNum === "" && bathNum === "" && description === "" ){
+    return res.status(400).render('landlordCreateApt', { error: 'Required Fields Are Missing. Please Add them.'});
+  }
+  if(!aptNumber || !rentCost || !rentRemaining || !rentDate || !size || !bedNum || !bathNum || !description || !isVacant){
+    return res.status(400).render('landlordCreateApt', { error: 'Required Fields Are Missing. Please Add them.'});
+  }
+  
   if (isNUllOrUndefined(aptNumber)){
     return res.status(400).render('landlordCreateApt', { error: 'Apartment Number is missing.'});
 
