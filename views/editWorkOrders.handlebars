@@ -1,0 +1,32 @@
+<body>
+    <h1>{{title}}</h1>
+    <div class="nav">
+                <ul>
+                    <li><a href="/landlord">Dashboard</a></li>
+                    <li><a href="/workorders">View All Work Orders</a></li>
+                    <li><a href="/viewallapartments"  class="active">View All Apartments</a></li>
+                    <li><a href="/payments">View Apartments Payments</a></li>
+                    <li><a href="/logout" class="logout">Log Out</a></li>
+                </ul>
+    </div>
+    {{#if none}}
+            <div>You have no WorkOrders</div>
+    {{/if}}
+    {{#else}}
+    <div>
+        <form action="/workOrders" method="PUT">
+            <label for="workStatus"></label>
+            <select name="workStatus" id="workStatus">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+            <input type="submit" value="Update">
+        </form>
+    </div>
+    {{/else}}
+</body>
+
+    
+    
+
