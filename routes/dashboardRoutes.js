@@ -260,8 +260,11 @@ router.route('/payments').get(async (req, res) => {
     }
     else {
       // get all payments for user
-      const p = await getPaymentsByUser(req.session.user._id)
-      const apt = await getAptByUseriD(req.session.user._id)
+      const p = await payment.getPaymentsByUser(req.session.user._id)
+      // const apt = await getAptByUseriD(req.session.user._id)
+      // console.log(req.session.user._id);
+      // let specifcTenPay = awa
+
       return res.status(200).render('paymentsTenant', {title: 'Previous Payments', payments: p})
     }
 });
@@ -349,9 +352,24 @@ router.route('/landlordassignApt').get(async (req, res) => {
   let apt = req.body.aptNum;
 
   if (apt === "" && tenantEmail === "" ){
-    return res.status(400).render('landlordassignApt', { error: 'Required Fields Are Missing. Please Add them.'});
+    return res.status(400).render('landlordassignApt', {error: true, error: 'Required Fields Are Missing. Please Add them.'});
   }
-
+  if (typeof apt !== 'string'){
+    return res.status(400).render('landlordassignApt', { error: 'Apartment Number Must Be A String'});
+  }
+  if (typeof tenantEmail !== 'string'){
+    return res.status(400).render('landlordassignApt', { error: 'Tenant Email Must Be A String'});
+  }
+  if (!EmailValidator.validate(tenantEmail)){
+    return res.status(400).render('landlordassignApt', { error: 'Tenant Email Must Be A Valid Email'});
+  }
+  
+  if (apt.length === 0){
+    return res.status(400).render('landlordassignApt', { error: 'Apartment Number Cannot Be Empty'});
+  }
+  if (tenantEmail.length === 0){
+    return res.status(400).render('landlordassignApt', { error: 'Tenant Email Cannot Be Empty'});
+  }
   try {
     const AssignCheck = await user.assignApt(tenantEmail, apt);
   
