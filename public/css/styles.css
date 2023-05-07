@@ -289,13 +289,18 @@ input[type="submit"]:hover {
   color: #f00;
   padding: 1em;
   margin: 1em 0;
+  left: 40%;
+  margin-left: 25%;
+  width: 60%
 }
 #ASSIGNERROR {
   background-color: #fdd;
   color: #f00;
   padding: 1em;
   margin: 1em 0;
-
+  left: 40%;
+  margin-left: 25%;
+  width: 60%
 }
 .assign-apt-to-tenant-form{
   display: flex;
