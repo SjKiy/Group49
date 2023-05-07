@@ -216,11 +216,64 @@ router.route('/workorders').get(async (req, res) => {
 
 router.route('/editWorkOrders').get(async (req, res) => {
   //code here for GET
+  let getAllWork = await workOrder.getAllWork();
+  if(getAllWork.length === 0){
+    return res.status(200).render('editWorkOrders', {title: 'Edit Work Orders', none: true});
+  }
   return res.status(200).render('editWorkOrders', {title: 'Edit Work Orders', none: false});
 })
 .put(async (req, res) => {
   //code here for PUT
+  console.log(req.body);
+})
+.post(async (req, res) => {
+  //code here for POST
+  //check if apt exist and then check if an apt exists with all that info
+  //need to thing with specifc work order and add a comment
+  let aptNumber = req.body.aptNum;
+  let workType = req.body.workType;
+  let dateOpened = req.body.dateOpened;
+  let comment = req.body.comments;
+
+  if (aptNumber === "" && workType === "" && dateOpened === "" && comment === "" ){
+    return res.status(400).render('editWorkOrders', { error: 'Required Fields Are Missing. Please Add them.'});
+  }
+  if(!aptNumber || !workType || !dateOpened || !comment){
+    return res.status(400).render('editWorkOrders', { error: 'Required Fields Are Missing. Please Add them.'});
+  }
+
+  //add comment with apartment of that aptNUmber using updateone 
+
+  const apt = await apartment.getAptbyAptNum(aptNumber);
+  if (!apt) {
+    return res.status(400).render('editWorkOrders', { error: 'Apartment does not exist.'});
+  }
+  if (apt.workOrders.length === 0) {
+    return res.status(400).render('editWorkOrders', { error: 'Apartment does not have any work orders.'});
+  }
+
+  const workOrderCollection = await workOrder();
+  if (GetID.workStatus === newProg){
+      throw "Error: New note cannot be the same as the current note"
+  }
+  //need to get id of work order from input somehow to update it
+  const updateComment = await workOrderCollection.findOneAndUpdate(
+    {_id: new ObjectId(workId)},
+    {$push: {comments: newComment}},
+    {returnDocument: 'after'}
+  );
+
+  
+
+
+
+    
+
+
+  return res.status(200).render('workOrder', {title: 'Work Order'});
 });
+
+
 
 
 
