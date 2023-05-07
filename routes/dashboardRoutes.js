@@ -257,6 +257,7 @@ router.route('/editWorkOrders').get(async (req, res) => {
       throw "Error: New note cannot be the same as the current note"
   }
   //need to get id of work order from input somehow to update it
+  //make an update comment fucntion in workorder db?
   const updateComment = await workOrderCollection.findOneAndUpdate(
     {_id: new ObjectId(workId)},
     {$push: {comments: newComment}},
