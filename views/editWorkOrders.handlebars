@@ -18,7 +18,7 @@
     {{/if}}
     <div class="workOrder">
         <div class="even-form" >
-            <h2>Update Work Order Status</h2>
+            <h3>Update Work Order Status</h2>
             <form action="/workOrders" method="PUT">
                 <label for="aptNum">Apartment Number</label>
                 <input for="aptNum" type="text" id="aptNum" name="aptNum" placeholder="Apartment Number">
@@ -39,21 +39,51 @@
             </form>
         </div>
         <div class="even-form">
+             <h3>Update Work Order Note</h2>
             <form action="/workOrders" method="PUT">
-                <label for="notes">Update Work Order Notes</label>
+                <label for="aptNum">Apartment Number</label>
+                <input for="aptNum" type="text" id="aptNum" name="aptNum" placeholder="Apartment Number">
+                <br>
+                <label for="workType">Work Type</label>
+                <input for="workType" type="text" id="workType" name="workType" placeholder="WorkType">
+                <br>
+                <label for="dateOpened">Date Opened</label>
+                <input for="dateOpened" type="date" id="dateOpened" name="dateOpened" placeholder="Date Opened">
+                <br>
+                <label for="notes">New Note</label>
                 <input type="text" id="notes" name="notes" placeholder="Notes">
                 <input type="submit" value="Update">
             </form>
         </div>
         <div class="even-form">
+            <h3>Add a Comment to a Work Order</h2>
             <form action="/workOrders" method="POST">
+                <label for="aptNum">Apartment Number</label>
+                <input for="aptNum" type="text" id="aptNum" name="aptNum" placeholder="Apartment Number">
+                <br>
+                <label for="workType">Work Type</label>
+                <input for="workType" type="text" id="workType" name="workType" placeholder="WorkType">
+                <br>
+                <label for="dateOpened">Date Opened</label>
+                <input for="dateOpened" type="date" id="dateOpened" name="dateOpened" placeholder="Date Opened">
+                <br>
                 <label for="comments">Add a Comment</label>
                 <input type="text" id="comments" name="comments" placeholder="Comments">
                 <input type="submit" value="Update">
             </form>
         </div>
         <div class="even-form">
+            <h3>Update Work Order Date Closed</h2>
             <form action="/workOrders" method="PUT">
+                <label for="aptNum">Apartment Number</label>
+                <input for="aptNum" type="text" id="aptNum" name="aptNum" placeholder="Apartment Number">
+                <br>
+                <label for="workType">Work Type</label>
+                <input for="workType" type="text" id="workType" name="workType" placeholder="WorkType">
+                <br>
+                <label for="dateOpened">Date Opened</label>
+                <input for="dateOpened" type="date" id="dateOpened" name="dateOpened" placeholder="Date Opened">
+                <br>
                 <label for="comments">Update Date Closed</label>
                 <input type="date" id="dateClosed" name="dateClosed" placeholder="Date Closed">
                 <input type="submit" value="Update">

@@ -267,7 +267,7 @@ input[type="submit"]:hover {
 .workOrder {
   display: flex;
   justify-content: right;
-  gap: 150px;
+  gap: 130px;
 }
 
 .even-form {
