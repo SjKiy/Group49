@@ -457,7 +457,11 @@ router.route('/viewallapartments').get(async (req, res) => {
       // console.log(userNam);
       allTenants.push(userNam);
     }
-    
+      const ws = await apartment.getActiveWorkOrders(getAllAp[i]._id.toString());
+      let workys = [];
+      for (const w of ws) {
+        workys.push(w.workType)
+      }
       const newTotal = {
         AptNum: getAllAp[i].aptNumber,
         Rent: getAllAp[i].rentCost,
@@ -469,7 +473,7 @@ router.route('/viewallapartments').get(async (req, res) => {
         Description: getAllAp[i].description,
         Vacancies: getAllAp[i].isVacant,
         Tenants: allTenants,
-        WorkOrders: getAllAp[i].workOrders,
+        WorkOrders: workys,
       };
       ten.push(newTotal);
   // }
@@ -542,10 +546,6 @@ router.route('/landlordassignApt').get(async (req, res) => {
     console.error("Error occurred:", e);
     return res.status(400).render('landlordassignApt',{title: 'Assign Tenant to Apartment',error:true, error: e});
   }
-
-
-
-
 });
 
 

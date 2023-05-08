@@ -632,14 +632,13 @@ export const assignApt = async (email, aptNum ) => {
   const getUser = await getUserbyEmail(email);
   const getApt = await getAptbyName(aptNum);
 
-
-
   if(!getUser){
     throw "Error: Email not found with that id";
   }
   if (getUser.emailAddress !== email){
     throw "Error: Email does not match";
   }
+  if (getUser.apartments.length !== 0) throw 'Error: This user already has an apartment';
   if(!getApt){
     throw "Error: Apartment not found with that id";
   }
