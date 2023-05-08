@@ -547,8 +547,22 @@ app.get('/submitworkorder', async (req, res, next) => {
     if(!req.session.user){
         return res.redirect('/login');
     }
-    next()
-});
+    if (req.session.user && req.session.user.accountType == "landlord"){
+        return res.redirect('/landlord')
+      }
+      next()
+  });
+  app.get('/viewtenantworkorders', async (req, res, next) => {
+      if(!req.session.user){
+          return res.redirect('/login');
+      }
+      if (req.session.user && req.session.user.accountType == "landlord"){
+        return res.redirect('/landlord')
+      }
+      next()
+  });
+//     next()
+// });
 
 app.get('/workorders', async (req, res, next) => {
     if(!req.session.user){

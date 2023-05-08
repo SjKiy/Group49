@@ -8,6 +8,7 @@
     </header>
     <h1>{{title}}</h1>
     {{!-- <main> --}}
+        <div id="errorCS"></div>
         {{#if error}}
             <div id="error">{{info}}</div>
         {{/if}}
@@ -29,6 +30,7 @@
             <br>
             <label for="roleInput">Choose a role:</label>
             <select id="roleInput" name="roleInput">
+                <option value="">Select a Role</option>
                 <option value="tenant">tenant</option>
                 <option value="landlord">landlord</option>
             </select>

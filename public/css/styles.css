@@ -323,3 +323,19 @@ input[type="submit"]:hover {
   align-items: center;
 
 }
+
+#errorSubmitWokrCS{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#errorCreateAptCS{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#errorAssignAptCS{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
