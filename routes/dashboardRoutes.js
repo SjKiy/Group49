@@ -440,6 +440,58 @@ router.route('/landlord').get(async (req, res) => {
 });
 
 
+// router.route('/viewallapartments').get(async (req, res) => {
+//   //code here for GET
+//   //come back to this
+//   let landlord = req.session.user._id;
+//   // let tentName = req.session.user.tenants;
+//   let getAllAp = await user.getAllAptLandlord(landlord);
+//   let ten = [];
+//   for (let i = 0; i < getAllAp.length; i++) {
+//     let allTenants = [];
+//     for (let j = 0; j < getAllAp[i].tenants.length; j++) {
+//       let makeString = [getAllAp[i].tenants[j].toString()];
+//       let userName = await user.get(makeString[0]);
+
+//       let userNam = userName.firstName + " " + userName.lastName;
+//       // console.log(userNam);
+//       allTenants.push(userNam);
+//     }
+//       const ws = await apartment.getActiveWorkOrders(getAllAp[i]._id.toString());
+//       let workys = [];
+//       for (const w of ws) {
+//         workys.push(w.workType)
+//       }
+//       const newTotal = {
+//         AptNum: getAllAp[i].aptNumber,
+//         Rent: getAllAp[i].rentCost,
+//         RentRemaining: getAllAp[i].rentRemaining,
+//         RentDate: getAllAp[i].rentDate,
+//         Size: getAllAp[i].size,
+//         Beds: getAllAp[i].bedNum,
+//         Baths: getAllAp[i].bathNum,
+//         Description: getAllAp[i].description,
+//         Vacancies: getAllAp[i].isVacant,
+//         Tenants: allTenants,
+//         WorkOrders: workys,
+//       };
+//       ten.push(newTotal);
+//   // }
+    
+//     // console.log(ten);
+//     let aptPaySearch = req.query.aptNum;
+//     // console.log(aptPaySearch);
+//     if(aptPaySearch){
+//       ten = ten.filter((apt) => apt.AptNum.toLowerCase() === aptPaySearch.toLowerCase());
+//     }
+
+  
+//   }
+    
+//   return res.status(200).render('viewallapartments', {title: 'View All Apartments', getAllApts: ten});
+
+// });
+///the code below resolved the issue of not all the aparments show up on the page the issue could be on on my end. 
 router.route('/viewallapartments').get(async (req, res) => {
   //code here for GET
   //come back to this
@@ -457,7 +509,14 @@ router.route('/viewallapartments').get(async (req, res) => {
       // console.log(userNam);
       allTenants.push(userNam);
     }
-      const ws = await apartment.getActiveWorkOrders(getAllAp[i]._id.toString());
+    let ws;
+    try {
+       ws = await apartment.getActiveWorkOrders(getAllAp[i]._id.toString());      
+    } catch (e) {
+      console.error("Error occurred:", e);      
+      ws = [];
+    }
+      // const ws = await apartment.getActiveWorkOrders(getAllAp[i]._id.toString());
       let workys = [];
       for (const w of ws) {
         workys.push(w.workType)
