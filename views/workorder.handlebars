@@ -39,7 +39,11 @@
         <p>Notes: {{notes}}</p>
         <p>Date Opened: {{dateOpened}}</p>
         <p>Date Closed: {{dateClosed}}</p>
-        <p>Comments: {{comments}}</p>
+        <p class="comments">Comments: 
+          {{#each comments}}
+            <br>{{content}}
+          {{/each}}
+        </p>
         </li>
       {{/each}}
     </ul>
