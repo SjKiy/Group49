@@ -1,0 +1,45 @@
+<h1>{{title}}</h1>
+{{!-- <main> --}}
+  <div class="nav">
+    <ul>
+        <li><a href="/tenant" class="active">Dashboard</a></li>
+        <li><a href="/pay">Pay Rent</a></li>
+        <li><a href="/submitworkorder">Submit Work Order</a></li>
+        <li><a href="/workorders">View Work Orders</a></li>
+        <li><a href="/viewAllTenantPayments">Previous Payments</a></li>
+        <li><a href="/myapt">View My Apartment</a></li>
+        <li><a href="/logout" class="logout">Log Out</a></li>
+    </ul>
+  </div>
+  <div class="searching">
+    <form id="searchPay" action="/payments" method="GET">
+      <label for="aptNum">Search by Apartment Number:</label>
+      <input type="text" id="aptNum" name="aptNum" placeholder="Apartment Number">
+      <input type="submit" value="Search">
+    </form>
+    
+  </div>
+  <div class="infosp">
+    {{#if payments.length}}
+      <ul>
+        {{#each payments}}
+          <li>
+            <p>Tenant Name: {{TenantName}}</p>
+            <p>Apartment Number: {{AptName}}</p>
+            <p>Payment Amount: {{Amount}}</p>
+            <p>Payment Date: {{date}}</p>
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <p>No apartments found.</p>
+    {{/if}}
+  </div>
+
+
+{{!-- </main> --}}
+
+
+
+
+

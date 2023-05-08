@@ -1,0 +1,39 @@
+{{!-- <body> --}}
+    <h1>{{title}}</h1>
+    {{!-- <main> --}}
+        <div class="nav">
+            <ul>
+                <li><a href="/tenant" class="active">Dashboard</a></li>
+                <li><a href="/pay">Pay Rent</a></li>
+                <li><a href="/submitworkorder">Submit Work Order</a></li>
+                <li><a href="/viewtenantworkorders">View Work Orders</a></li>
+                <li><a href="/payments">Previous Payments</a></li>
+                <li><a href="/myapt">View My Apartment</a></li>
+                <li><a href="/logout" class="logout">Log Out</a></li>
+            </ul>
+        </div>
+  <div class="infosp">
+    {{#if getAllWork.length}}
+    <ul>
+      {{#each getAllWork}}
+        <li>
+        {{!-- <p>Apartment Number: {{aptNumber}}</p> --}}
+        {{!-- <p>Apartment Number: {{aptNum}}</p> --}}
+        <p>Work Type: {{workType}}</p>
+        <p>Status: {{workStatus}}</p>
+        <p>Notes: {{notes}}</p>
+        <p>Comments: {{comments}}</p>
+        <p>Date Opened: {{dateOpened}}</p>
+        <p>Date Closed: {{dateClosed}}</p>
+        </li>
+      {{/each}}
+    </ul>
+  {{else}}
+    <p>No Work Orders found.</p>
+  {{/if}}
+  </div>
+{{!-- </main> --}}
+
+
+
+

@@ -278,6 +278,7 @@ import { apartment } from './config/mongoCollections.js';
 // } catch (e) {
 //   console.error(e); 
 // }
+
 // try {
 //   let aptbyId = await payment.getAllPayments()
 
@@ -423,7 +424,13 @@ import { apartment } from './config/mongoCollections.js';
 //       // allComments.push([userNam, getAllWork[i].comments[j].content]);
 //       console.log(userName);
 //     }
+// try {
+//   let aptbyId = await workOrder.addWorkOrdertoApt("6452663d931c83c6400b94f8", "645561d79cf1606193dc0d78")
 
+//   console.log(aptbyId);
+// } catch (e) {
+//   console.error(e); 
+// }
 
 
 // }

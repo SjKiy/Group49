@@ -1,11 +1,11 @@
 <h1>{{title}}</h1>
-<main>
+{{!-- <main> --}}
   <div class="nav">
     <ul>
       <li><a href="/tenant">Dashboard</a></li>
         <li><a href="/pay">Pay Rent</a></li>
         <li><a href="/submitworkorder">Submit Work Order</a></li>
-        <li><a href="/workorders">View Work Orders</a></li>
+        <li><a href="/viewtenantworkorders">View Work Orders</a></li>
         <li><a href="/payments"  class="active">Previous Payments</a></li>
         <li><a href="/myapt">View My Apartment</a></li>
         <li><a href="/logout" class="logout">Log Out</a></li>
@@ -22,10 +22,10 @@
         {{/each}}
       </ul>
     {{else}}
-      <p>No hey found.</p>
+      <p>No Payment found.</p>
     {{/if}}
   </div>
 
 
-</main>
+{{!-- </main> --}}
 

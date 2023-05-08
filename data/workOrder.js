@@ -2,6 +2,7 @@ import { workOrder } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import { isNUllOrUndefined, dateChecker } from "./dataHelper.js";
 import { apartment } from '../config/mongoCollections.js';
+import * as apartments from './apartment.js';
 
 export const workCreate = async (
     aptNumber,
@@ -17,8 +18,8 @@ export const workCreate = async (
     if (isNUllOrUndefined(workStatus)) throw 'You must provide a work status';
     if (isNUllOrUndefined(notes)) throw 'You must provide notes';
     // if (isNUllOrUndefined(comments)) throw 'You must provide a comment';
-    if (isNUllOrUndefined(dateOpened)) throw 'You must provide a date opened';
-    if (isNUllOrUndefined(dateClosed)) throw 'You must provide a date closed';
+    // if (isNUllOrUndefined(dateOpened)) throw 'You must provide a date opened';
+    // if (isNUllOrUndefined(dateClosed)) throw 'You must provide a date closed';
     if(typeof workType !== 'string') throw 'Work type must be a string';
     workType = workType.trim();
     if(workType === "") throw 'You must provide a work type';
@@ -37,12 +38,12 @@ export const workCreate = async (
     if(notes === "") throw 'You must provide notes';
     if(notes.lenght > 100) throw 'Notes must be less than 1000 characters';
     // if(!Array.isArray(comments)) throw 'Comment must be a array';
-    if(typeof dateOpened !== 'string') throw 'Date opened must be a string';
-    if(typeof dateClosed !== 'string') throw 'Date closed must be a string';
-    if(dateOpened === "") throw 'You must provide a date opened';
-    if(dateClosed === "") throw 'You must provide a date closed';
-    dateChecker(dateOpened);
-    dateChecker(dateClosed);
+    // if(typeof dateOpened !== 'string') throw 'Date opened must be a string';
+    // if(typeof dateClosed !== 'string') throw 'Date closed must be a string';
+    // if(dateOpened === "") throw 'You must provide a date opened';
+    // if(dateClosed === "") throw 'You must provide a date closed';
+    // dateChecker(dateOpened);
+    // dateChecker(dateClosed);
 
     const workOrderCollection = await workOrder();
 
@@ -63,7 +64,7 @@ export const workCreate = async (
     const aptCollection = await apartment();
     const updateApt = await aptCollection.updateOne(
         {aptNumber: aptNumber},
-        {$push: {workOrders: insertInfo.insertedId.toString()}}
+        {$push: {workOrders: insertInfo.insertedId}}
     );
     console.log(updateApt)
     if (updateApt.modifiedCount === 0) {
@@ -299,11 +300,8 @@ export const getWorkOrderByAptNumber = async (aptNumber) => {
   //// need to 
   };
   
-    
-    
-
-
-// export {workCreate, getWorkById,  getWorkOrderByAptNumber, newNotes, updateProg};
+  
+    // export {workCreate, getWorkById,  getWorkOrderByAptNumber, newNotes, updateProg};
 
 
     

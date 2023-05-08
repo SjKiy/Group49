@@ -1,5 +1,6 @@
 import {Router} from 'express';
 import EmailValidator from 'email-validator';
+import xss from 'xss';
 import { createUser, getAptByUseriD, checkUser } from '../data/user.js';
 import { getPaymentsByUser } from '../data/payments.js';
 import { create, getActiveWorkOrders } from '../data/apartment.js';
@@ -29,7 +30,14 @@ router
   .post(async (req, res) => {
     //code here for POST
     let missing = []
-    let {firstNameInput, lastNameInput, emailAddressInput, passwordInput, confirmPasswordInput, roleInput} = req.body;
+    // let {firstNameInput, lastNameInput, emailAddressInput, passwordInput, confirmPasswordInput, roleInput} = xss(req.body);
+    let firstNameInput = xss(req.body.firstNameInput);
+    let lastNameInput = xss(req.body.lastNameInput);
+    let emailAddressInput = xss(req.body.emailAddressInput);
+    let passwordInput = xss(req.body.passwordInput);
+    let confirmPasswordInput = xss(req.body.confirmPasswordInput);
+    let roleInput = xss(req.body.role);
+
     if (!firstNameInput) missing.push('Missing First Name');
     if (!lastNameInput) missing.push('Missing Last Name');
     if (!emailAddressInput) missing.push('Missing Email Address');
@@ -93,7 +101,10 @@ router
   .post(async (req, res) => {
     //code here for POST
     let err='';
-    let {emailAddressInput, passwordInput} = req.body;
+    let emailAddressInput = xss(req.body.emailAddressInput);
+    let passwordInput = xss(req.body.passwordInput);
+    // let {emailAddressInput, passwordInput} = xss(req.body);
+    // let {emailAddressInput, passwordInput} = req.body;
     if (!emailAddressInput || !passwordInput) {
       return res.status(400).render('login', {title: 'Login', error: true, info: "Email or Password not provided"});
     }
@@ -123,9 +134,11 @@ router.route('/tenant').get(async (req, res) => {
   //TODO fix when session is set up
   try {
     const apt = await getAptByUseriD(req.session.user._id)
-    const active = await getActiveWorkOrders(apt[0]._id)
+    // const active = await getActiveWorkOrders(apt[0]._id)
     const pastPays = await getPaymentsByUser(req.session.user._id)
-    return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt[0].rentRemaining, rentDate: apt[0].rentDate, numWorkOrders: active.length, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
+    // return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt[0].rentRemaining, rentDate: apt[0].rentDate, numWorkOrders: active.length, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
+    // after submiting a work order the tenant was not able to login again. found the root cause to be the active.length was not defined. fixed by adding a check for active.length I feel we can take out take out the work order box on the tenant page and just have the payment box.
+    return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt[0].rentRemaining, rentDate: apt[0].rentDate, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
   } catch (error) {
     return res.status(400).render('error', {title: "Error Page", info: error})
   }
@@ -140,13 +153,74 @@ router
       const apt = await getAptByUseriD(req.session.user._id)
       const amount = apt[0].rentRemaining
       const rent = apt[0].rentCost
+      // const amount = apt.rentRemaining
+      // const rent = apt.rentCost
       return res.status(200).render('pay', {title: "Payment Portal", amount: amount, rent: rent});
     })
     .post(async (req, res) => {
-        //adds to payment collection and subtracts from apt rent due.
-        //redirects to /payments
-    }
-);
+      //need to fix error checking
+      //adds to payment collection and subtracts from apt rent due.
+      //redirects to /payments
+      // tenantId, done
+      // apartmentId, done
+      // paymentAmount,
+      // cardNum,
+      // date
+      let tentantID = req.session.user._id;
+      let getApt = await getAptByUseriD(tentantID);
+      let aptID = getApt[0]._id
+      let date =  xss(req.body.rentDate);
+      let creditName = xss(req.body.cardname);
+      let creditNum = xss(req.body.cardnumber);
+      let expMonth = xss(req.body.expmonth);
+      let expYear = xss(req.body.expyear);
+      let cvv = xss(req.body.cvv);
+      let amount = Number(xss(req.body.amount));
+      
+      //add more error checking
+      if (!date || !creditName || !creditNum || !expMonth || !expYear || !cvv || !amount) {
+        return res.status(400).render('pay', { error: "Please fill out all fields" });
+        // return res.status(400).render('landlordCreateApt', { error: 'Required Fields Are Missing. Please Add them.'});
+
+      }
+      if (date === " ", creditName === " ", creditNum === " ", expMonth === " ", expYear === " ", cvv === " ", amount === " ") {
+        return res.status(400).render('pay',{error:"Please fill out all fields"});
+      }
+      if (amount < 0) {
+        return res.status(400).render('pay',{error:"Please enter a valid amount"});
+      }
+      if (creditNum.length !== 16) {
+        return res.status(400).render('pay',{error:"Please enter a valid credit card number"});
+      }
+      if (cvv.length !== 3) {
+        return res.status(400).render('pay',{error:"Please enter a valid cvv"});
+      }
+      if (expMonth.length !== 2) {
+        return res.status(400).render('pay',{error:"Please enter a valid expiration month"});
+      }
+      if (expYear.length !== 4) {
+        return res.status(400).render('pay',{error:"Please enter a valid expiration year"});
+      }
+      if (dateChecker(date)) {
+        return res.status(400).render('pay',{error:"Please enter a valid date"});
+      }
+   
+      try {
+        const payCheck = await payment.createpayment(tentantID, aptID, amount, creditNum, date);
+      
+        // console.log("Insert result:", payCheck);
+      
+        if(payCheck){
+          return res.redirect('/payments');
+        } else {
+          return res.status(500).render('pay',{error:true, error:"Internal Server Error"});
+        }
+      } catch(e){
+        console.error("Error occurred:", e);
+        return res.status(400).render('pay',{error:true, error: e});
+      }
+    });
+// );
 
 router.route('/myapt').get(async (req, res) => {
   //returns info on tenant's apt
@@ -160,11 +234,41 @@ router
   .get(async (req, res) => {
     //TODO
     //render submission page
+    return res.status(200).render('submitworkorder', {title: "Submit Work Order"});
   })
   .post(async (req, res) => {
     //TODO
     //add to work order collection and update apartment that work order is for
     //redirects to /workorders
+    // console.log(req.session.user._id);
+    // console.log(req.session.user.aptNum);
+    // const apt = await getAptByUseriD(req.session.user._id)
+    // console.log(apt);
+    if (req.session.user.accountType === 'tenant'){
+      let tentantID = req.session.user._id;
+      let getApt = await getAptByUseriD(tentantID);
+      let aptNum = getApt[0].aptNumber
+      let worktype = xss(req.body.workType);
+      let workstatus = xss(req.body.workStatus);
+      let notes = xss(req.body.notes);
+      let dateO = xss(req.body.dateOpened);
+      let dateC = xss(req.body.dateClosed);
+
+      try {
+        const workCheck = await workOrder.workCreate(aptNum, worktype, workstatus, notes, dateO, dateC);
+      
+        console.log("Insert result:", workCheck);
+      
+        if(workCheck){
+          return res.redirect('/viewtenantworkorders');
+        } else {
+          return res.status(500).render('submitworkorder',{error:true, error:"Internal Server Error"});
+        }
+      } catch(e){
+        console.error("Error occurred:", e);
+        return res.status(400).render('submitworkorder',{error:true, error: e});
+      }
+    }
   });
 
 //goes to all work order page
@@ -224,16 +328,16 @@ router.route('/editWorkOrders').get(async (req, res) => {
 })
 .put(async (req, res) => {
   //code here for PUT
-  console.log(req.body);
+  // console.log(req.body);
 })
 .post(async (req, res) => {
   //code here for POST
   //check if apt exist and then check if an apt exists with all that info
   //need to thing with specifc work order and add a comment
-  let aptNumber = req.body.aptNum;
-  let workType = req.body.workType;
-  let dateOpened = req.body.dateOpened;
-  let comment = req.body.comments;
+  let aptNumber = xss(req.body.aptNum);
+  let workType = xss(req.body.workType);
+  let dateOpened = xss(req.body.dateOpened);
+  let comment = xss(req.body.comments);
 
   if (aptNumber === "" && workType === "" && dateOpened === "" && comment === "" ){
     return res.status(400).render('editWorkOrders', { error: 'Required Fields Are Missing. Please Add them.'});
@@ -402,8 +506,8 @@ router.route('/landlordassignApt').get(async (req, res) => {
 })
 .post(async (req, res) => {
   //need to fix error checking
-  let tenantEmail = req.body.tenantEmail;
-  let apt = req.body.aptNum;
+  let tenantEmail = xss(req.body.tenantEmail);
+  let apt = xss(req.body.aptNum);
 
   if (apt === "" && tenantEmail === "" ){
     return res.status(400).render('landlordassignApt', {error: true, error: 'Required Fields Are Missing. Please Add them.'});
@@ -451,14 +555,15 @@ router.route('/landlordCreateApt').get(async (req, res) => {
 })
 .post(async (req, res) => {
   //need to fix error checking
-  let aptNumber = req.body.aptNum;
-  let rentCost = Number(req.body.rentCost);
-  let rentRemaining =  Number(req.body.rentRem);
-  let rentDate =  req.body.rentDate;
-  let size =  Number(req.body.size);
-  let bedNum =  Number(req.body.bed);
-  let bathNum =  Number(req.body.bath);
-  let description =  req.body.description;
+  // let aptNumber = xss(req.body.aptNum);
+  let aptNumber = xss(req.body.aptNum.toLowerCase());
+  let rentCost = Number(xss(req.body.rentCost));
+  let rentRemaining =  Number(xss(req.body.rentRem));
+  let rentDate =  xss(req.body.rentDate);
+  let size =  Number(xss(req.body.size));
+  let bedNum =  Number(xss(req.body.bed));
+  let bathNum =  Number(xss(req.body.bath));
+  let description =  xss(req.body.description);
   // let isVacant =  req.body.isVacant;
   let isVacant = false; 
 
@@ -471,7 +576,7 @@ router.route('/landlordCreateApt').get(async (req, res) => {
   if (aptNumber === "" && rentCost === "" && rentRemaining === "" && rentDate === "" && size === "" && bedNum === "" && bathNum === "" && description === "" ){
     return res.status(400).render('landlordCreateApt', { error: 'Required Fields Are Missing. Please Add them.'});
   }
-  if(!aptNumber || !rentCost || !rentRemaining || !rentDate || !size || !bedNum || !bathNum || !description || !isVacant){
+  if(!aptNumber || !rentCost || !rentRemaining || !rentDate || !size || !bedNum || !bathNum || !description){
     return res.status(400).render('landlordCreateApt', { error: 'Required Fields Are Missing. Please Add them.'});
   }
   
@@ -501,9 +606,9 @@ router.route('/landlordCreateApt').get(async (req, res) => {
   if (isNUllOrUndefined(description)) {
     return res.status(400).render('landlordCreateApt', { error: 'Description is missing.'});
   };
-  if (isNUllOrUndefined(isVacant)){
-    return res.status(400).render('landlordCreateApt', { error: 'Vacancy is missing.'});
-  };
+  // if (isNUllOrUndefined(isVacant)){
+  //   return res.status(400).render('landlordCreateApt', { error: 'Vacancy is missing.'});
+  // };
   // if (isNUllOrUndefined(tenants)) {
   //   return res.status(400).render('landlordCreateApt', { error: 'Tenants is missing.'});
   // };
@@ -625,7 +730,19 @@ router.route('/landlordAllTenants').get(async (req, res) => {
   
 });
 
+router.route('/viewtenantworkorders').get(async (req, res) => {
+try{
+  let tentantID = req.session.user._id;
+  let getApt = await getAptByUseriD(tentantID);
+  let aptNum = getApt[0].aptNumber
+  let work = await workOrder.getWorkOrderByAptNumber(aptNum);
+  return res.status(200).render('viewtenantworkorders', {title: 'View Tenant Work Orders', getAllWork: work});
 
+}
+  catch(e){
+    return res.status(400).render('viewtenantworkorders',{error:true, error: e});
+  }
+});
 
 
 

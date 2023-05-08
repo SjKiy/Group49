@@ -36,17 +36,17 @@ const create = async (
     if (isNUllOrUndefined(isVacant)) throw 'You must provide a vacancy status';
     if (isNUllOrUndefined(tenants)) throw 'You must provide a list of tenants';
     if (isNUllOrUndefined(workOrders)) throw 'You must provide a list of work orders';
-    let split = rentDate.split('/');
-    if (split.length != 3) throw 'rentDate should be YYYY/MM/DDDD format'
-    if (parseInt(split[1]) > 12 || parseInt(split[1]) < 1) {
-      throw 'Month of rentDate is invalid'
-    }
-    if (parseInt(split[2]) < 1 || parseInt(split[2]) > 31) {
-      throw "Day of rentDate is invalid"
-    }
-    if (parseInt(split[0]) < 1) {
-      throw "Year of rentDate is invalid"
-    }
+    // let split = rentDate.split('/');
+    // if (split.length != 3) throw 'rentDate should be YYYY/MM/DDDD format'
+    // if (parseInt(split[1]) > 12 || parseInt(split[1]) < 1) {
+    //   throw 'Month of rentDate is invalid'
+    // }
+    // if (parseInt(split[2]) < 1 || parseInt(split[2]) > 31) {
+    //   throw "Day of rentDate is invalid"
+    // }
+    // if (parseInt(split[0]) < 1) {
+    //   throw "Year of rentDate is invalid"
+    // }
 
     //error checking for aptNumber
     if (dateChecker(rentDate)) throw 'Rent due date must be a valid date';
@@ -86,7 +86,7 @@ const create = async (
     const aptCollection = await apartment();
 
     let newApt = {
-        aptNumber: aptNumber,
+        aptNumber: aptNumber.toLowerCase(),
         rentCost: rentCost,
         rentRemaining: rentRemaining,
         rentDate: rentDate,
@@ -126,7 +126,8 @@ const getActiveWorkOrders = async (aptId) => {
     const apt = await getAptbyId(aptId);
     let res = []
     for (const w of apt.workOrders) {
-      const temp = await getWorkById(w._id.toString());
+      // const temp = await getWorkById(w._id.toString());
+      const temp = await getWorkById(w._id);
       if (temp.workStatus === 'Open') res.push(temp);
     }
     return res;
