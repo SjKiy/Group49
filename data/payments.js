@@ -91,7 +91,7 @@ export const createpayment = async (
   
     let test = await users.get(tenantId);
     let APTS = await apt.getAptbyId(apartmentId);
-
+    if (APTS.rentRemaining < paymentAmount) throw 'Payment amount exceeds rent due';
     const payToCreate = {
         tenant : new ObjectId(test._id),
         apartmentId: new ObjectId(APTS._id),
@@ -107,8 +107,9 @@ export const createpayment = async (
       throw "Error: Payment was not able to be added";
     }
     const paymentId = insertPayInfo.insertedId.toString();
+    let update = await apt.updateAptRentRemaining(paymentId);
 
-    return { insertedPay: true, paymentId: paymentId };
+    return { insertedPay: true, paymentId: paymentId, updatedApt: update };
 };
 
 

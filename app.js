@@ -613,6 +613,19 @@ app.get('/landlordAllTenants', async (req, res, next) => {
     next()
 });
 
+app.get('/viewtenantworkorders', async (req, res, next) => {
+    if(!req.session.user){
+        return res.redirect('/login');
+    }
+    if(req.session.user && req.session.user.accountType == "landlord"){
+        return res.redirect('/landlord');
+    }
+    // if(req.session.user && req.session.user.accountType == "landlord"){
+    //     return res.redirect('/landlord');
+    // }
+    next()
+});
+
 app.get('/logout', async (req, res, next) => {
     if(!req.session.user){
         return res.redirect('/login');

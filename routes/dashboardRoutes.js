@@ -198,7 +198,7 @@ router
       if (expMonth.length !== 2) {
         return res.status(400).render('pay',{error:"Please enter a valid expiration month"});
       }
-      if (expYear.length !== 4) {
+      if (expYear.length !== 2) {
         return res.status(400).render('pay',{error:"Please enter a valid expiration year"});
       }
       if (dateChecker(date)) {
@@ -213,11 +213,11 @@ router
         if(payCheck){
           return res.redirect('/payments');
         } else {
-          return res.status(500).render('pay',{error:true, error:"Internal Server Error"});
+          return res.status(500).render('pay',{title: "Payment Portal",error:true, error:"Internal Server Error"});
         }
       } catch(e){
         console.error("Error occurred:", e);
-        return res.status(400).render('pay',{error:true, error: e});
+        return res.status(400).render('pay',{title: "Payment Portal",error:true, error: e});
       }
     });
 // );
@@ -262,11 +262,11 @@ router
         if(workCheck){
           return res.redirect('/viewtenantworkorders');
         } else {
-          return res.status(500).render('submitworkorder',{error:true, error:"Internal Server Error"});
+          return res.status(500).render('submitworkorder',{title: "Submit Work Order", error:true, error:"Internal Server Error"});
         }
       } catch(e){
         console.error("Error occurred:", e);
-        return res.status(400).render('submitworkorder',{error:true, error: e});
+        return res.status(400).render('submitworkorder',{title: "Submit Work Order", error:true, error: e});
       }
     }
   });
@@ -340,20 +340,20 @@ router.route('/editWorkOrders').get(async (req, res) => {
   let comment = xss(req.body.comments);
 
   if (aptNumber === "" && workType === "" && dateOpened === "" && comment === "" ){
-    return res.status(400).render('editWorkOrders', { error: 'Required Fields Are Missing. Please Add them.'});
+    return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
   }
   if(!aptNumber || !workType || !dateOpened || !comment){
-    return res.status(400).render('editWorkOrders', { error: 'Required Fields Are Missing. Please Add them.'});
+    return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
   }
 
   //add comment with apartment of that aptNUmber using updateone 
 
   const apt = await apartment.getAptbyAptNum(aptNumber);
   if (!apt) {
-    return res.status(400).render('editWorkOrders', { error: 'Apartment does not exist.'});
+    return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Apartment does not exist.'});
   }
   if (apt.workOrders.length === 0) {
-    return res.status(400).render('editWorkOrders', { error: 'Apartment does not have any work orders.'});
+    return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Apartment does not have any work orders.'});
   }
 
   const workOrderCollection = await workOrder();
@@ -418,11 +418,11 @@ router.route('/payments').get(async (req, res) => {
     }
     else {
       // get all payments for user
-      const p = await payment.getPaymentsByUser(req.session.user._id)
+      let p = await payment.getPaymentsByUser(req.session.user._id)
       // const apt = await getAptByUseriD(req.session.user._id)
       // console.log(req.session.user._id);
       // let specifcTenPay = awa
-
+      p = p.reverse();
       return res.status(200).render('paymentsTenant', {title: 'Previous Payments', payments: p})
     }
 });
@@ -740,7 +740,7 @@ try{
 
 }
   catch(e){
-    return res.status(400).render('viewtenantworkorders',{error:true, error: e});
+    return res.status(400).render('viewtenantworkorders',{title: 'View Tenant Work Orders', error:true, error: e});
   }
 });
 
