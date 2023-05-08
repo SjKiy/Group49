@@ -38,7 +38,8 @@ footer {
 }
 
 a {
-  color: rgb(180, 0, 204);
+  /* color: rgb(180, 0, 204); */
+  color:#d277e6;
   text-decoration: none;
   text-align: center;
 }
@@ -131,7 +132,8 @@ input[type="submit"]:hover {
 }
 
 .active {
-  background-color: #0084ff;
+  /* background-color: #0084ff; */
+  background-color: #0075e3;
   color: white;
 }
 
@@ -220,14 +222,16 @@ input[type="submit"]:hover {
   background-color: #04AA6D;
 }
 .workOrderBox {
-  background-color: #ffbc6f;
+  /* background-color: #ffbc6f; */
+  background-color: #ca8700;
 }
 .historyBox {
   background-color: #b06bff;
 }
 
 .logout {
-  background-color: rgb(238, 90, 90);
+  /* background-color: rgb(238, 90, 90); */
+  background-color: #e42929;
   color: white;
 }
 
