@@ -12,30 +12,22 @@
                 <li><a href="/workorders">View All Work Orders</a></li>
                 <li><a href="/viewallapartments">View All Apartments</a></li>
                 <li><a href="/landlordAllTenants">View All Tenants</a></li>
-                <li><a href="/landlordCreateApt">Create An Apartments</a></li>
+                <li><a href="/landlordCreateApt">Create An Apartment</a></li>
                 <li><a href="/landlordassignApt">Assign Apartment to Tenant</a></li>
                 <li><a href="/payments">View Apartments Payments</a></li>
-                <li><a href="/editWorkOrders">Edit WorkOrders</a></li>
+                <li><a href="/editWorkOrders">Edit Work Orders</a></li>
                 <li><a href="/logout" class="logout">Log Out</a></li>
             </ul>
         </div>
         <div class="infos">
             <ul>
                 <li class="rentDueBox">
-                    <p>Payments Due:</p>
+                    <p>Number of Payments Due:</p>
                     <p>{{numPayments}}</p>
                 </li>
                 <li class="workOrderBox">
                     <p>Active Work Orders:</p>
                     <p>{{numWorkOrders}}</p>
-                </li>
-                <li class="historyBox">
-                    <p>Apartments</p>
-                    <p>{{apt1}}</p>
-                    <p>{{apt2}}</p>
-                    {{#if apt2}}
-                    <p>...</p>
-                    {{/if}}
                 </li>
             </ul>
         </div>

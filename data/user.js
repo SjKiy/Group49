@@ -249,7 +249,7 @@ export const checkUser = async (emailAddress, password) => {
   }
   else{
     //the passwords match your function will return the following fields of the user: firstName, lastName, emailAddress, accountType which will be stored in the session from the route, (DO NOT RETURN THE PASSWORD!!!!)
-    let afterCheck = {_id: Email._id, firstName: Email.firstName, lastName: Email.lastName, emailAddress: Email.emailAddress, accountType: Email.accountType};
+    let afterCheck = {_id: Email._id.toString(), firstName: Email.firstName, lastName: Email.lastName, emailAddress: Email.emailAddress, accountType: Email.accountType};
     return afterCheck;
   }
 

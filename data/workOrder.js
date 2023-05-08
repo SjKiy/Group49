@@ -7,15 +7,10 @@ import * as apartments from './apartment.js';
 export const workCreate = async (
     aptNumber,
     workType,
-    workStatus,
-    notes,
-    // comments,
-    dateOpened,
-    dateClosed,
+    notes
 ) => {
     if (isNUllOrUndefined(aptNumber)) throw 'You must provide an apartment number';
     if (isNUllOrUndefined(workType)) throw 'You must provide a work type';
-    if (isNUllOrUndefined(workStatus)) throw 'You must provide a work status';
     if (isNUllOrUndefined(notes)) throw 'You must provide notes';
     // if (isNUllOrUndefined(comments)) throw 'You must provide a comment';
     // if (isNUllOrUndefined(dateOpened)) throw 'You must provide a date opened';
@@ -24,11 +19,6 @@ export const workCreate = async (
     workType = workType.trim();
     if(workType === "") throw 'You must provide a work type';
     if(workType.lenght > 26) throw 'Work type must be less than 100 characters';
-    //check workStatus
-    if(typeof workStatus !== 'string') throw 'Work status must be a string';
-    workStatus = workStatus.trim();
-    if(workStatus === "") throw 'You must provide a work status';
-    if(workStatus.lenght > 26) throw 'Work status must be less than 100 characters';
     if(typeof aptNumber !== 'string') throw 'Apartment number must be a string';
     aptNumber = aptNumber.trim();
     if(aptNumber === "") throw 'You must provide an apartment number';
@@ -50,12 +40,11 @@ export const workCreate = async (
     let newWorkOrder = {
         aptNumber: aptNumber,
         workType: workType,
-        workStatus: workStatus,
+        workStatus: 'Open',
         notes: notes,
         comments: [],
-        // comments: comments,
-        dateOpened: dateOpened,
-        dateClosed: dateClosed,
+        dateOpened: new Date().toLocaleDateString(),
+        dateClosed: "",
     };
 
     const insertInfo = await workOrderCollection.insertOne(newWorkOrder);
@@ -284,7 +273,8 @@ export const getWorkOrderByAptNumber = async (aptNumber) => {
       return workOrder;
     });
   };
-  export const getAllWork = async () => {
+
+export const getAllWork = async () => {
     const workOrderCollection = await workOrder();
     let workList = await workOrderCollection.find({}).toArray();
     if(workList.length === 0){
@@ -298,7 +288,7 @@ export const getWorkOrderByAptNumber = async (aptNumber) => {
     });
     return workList;
   //// need to 
-  };
+};
   
   
     // export {workCreate, getWorkById,  getWorkOrderByAptNumber, newNotes, updateProg};

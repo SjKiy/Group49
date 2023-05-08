@@ -13,10 +13,10 @@
                 <li><a href="/workorders">View All Work Orders</a></li>
                 <li><a href="/viewallapartments" class="active">View All Apartments</a></li>
                 <li><a href="/landlordAllTenants">View All Tenants</a></li>
-                <li><a href="/landlordCreateApt">Create An Apartments</a></li>
+                <li><a href="/landlordCreateApt">Create An Apartment</a></li>
                 <li><a href="/landlordassignApt">Assign Apartment to Tenant</a></li>
                 <li><a href="/payments">View Apartments Payments</a></li>
-                <li><a href="/editWorkOrders">Edit WorkOrders</a></li>
+                <li><a href="/editWorkOrders">Edit Work Orders</a></li>
                 <li><a href="/logout" class="logout">Log Out</a></li>
             </ul>
   </div>
@@ -33,16 +33,16 @@
       {{#each getAllApts}}
         <li>
           <p>Apartment Number: {{AptNum}}</p>
-          <p>Rent Cost: {{Rent}}</p>
-          <p>Rent Remaining: {{RentRemaining}}</p>
+          <p>Rent Cost: ${{Rent}}</p>
+          <p>Rent Remaining: ${{RentRemaining}}</p>
           <p>Rent Date: {{RentDate}}</p>
-          <p>Size: {{Size}}</p>
+          <p>Size: {{Size}} sqft</p>
           <p>Beds: {{Beds}}</p>
           <p>Baths: {{Baths}}</p>
           <p>Description: {{Description}}</p>
-          <p>Vacancies:{{Vacancies}}</p>
-          <p>Tenant: {{Tenants}}</p>
-          {{!-- <p>WorkOrders: {{WorkOrders}}</p> --}}
+          <p>Vacant?: {{Vacancies}}</p>
+          <p>Tenant(s): {{Tenants}}</p>
+          <p>WorkOrders: {{WorkOrders}}</p>
         </li>
       {{/each}}
     </ul>

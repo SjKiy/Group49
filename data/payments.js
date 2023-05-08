@@ -13,14 +13,13 @@ export const createpayment = async (
     tenantId,
     apartmentId,
     paymentAmount,
-    cardNum,
-    date
+    cardNum
   ) => {
     ///add the empty part. for all criteriassss!!!!!!!!!!!!!!!!!
-    if (tenantId === undefined || tenantId === null || apartmentId === undefined || apartmentId === null || paymentAmount === undefined || paymentAmount === null || date === undefined || date === null || cardNum === undefined || cardNum === null){
+    if (tenantId === undefined || tenantId === null || apartmentId === undefined || apartmentId === null || paymentAmount === undefined || paymentAmount === null || cardNum === undefined || cardNum === null){
       throw "Error: User field can't be undefined or null"
     }
-    if (!tenantId || !apartmentId || !paymentAmount || !cardNum || !date ){
+    if (!tenantId || !apartmentId || !paymentAmount || !cardNum){
       throw "Error: Missing info in either tenant, apartmentId, paymentAmount, cardNum, date Please add";
     }
     if (typeof tenantId !== "string"){
@@ -34,9 +33,6 @@ export const createpayment = async (
     }
     if (typeof cardNum !== "string"){
       throw "Error: cardNum must be a string"
-    }
-    if (typeof date !==  "string"){
-      throw "Error: date Must be a string.";
     }
    
     if (tenantId.trim === ' '){
@@ -60,9 +56,6 @@ export const createpayment = async (
     if (paymentAmount.length === 0){
         throw "Error: paymentAmount cannot be empty"
     }
-    if (date.trim === ' '){
-      throw "Error: datecannot be empty"
-    }
   
     if (tenantId.replaceAll(" ", "") === ''){
       throw "Error: First name cannot be empty";
@@ -73,9 +66,6 @@ export const createpayment = async (
     // if (paymentAmount.replaceAll(" ", "") === ''){
     //   throw "Error: email address cannot be empty";
     // }
-    if (date.replaceAll(" ", "") === ''){
-      throw "Error: date cannot be empty";
-    }
     //add date regex here
   
    // add card validator here... could npm install card-validator
@@ -87,7 +77,6 @@ export const createpayment = async (
     apartmentId = apartmentId.trim();
     // paymentAmount = paymentAmount.toLowerCase().trim();
     // password = password.trim();
-    date = date.trim();
   
     let test = await users.get(tenantId);
     let APTS = await apt.getAptbyId(apartmentId);
@@ -98,7 +87,7 @@ export const createpayment = async (
         paymentAmount: paymentAmount,
         cardNum: newHashCC,
         // cardNum: cardNum,
-        date: date
+        date: new Date().toLocaleDateString()
     }
 
     const paymentCollect = await payments();

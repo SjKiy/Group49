@@ -36,7 +36,7 @@ router
     let emailAddressInput = xss(req.body.emailAddressInput);
     let passwordInput = xss(req.body.passwordInput);
     let confirmPasswordInput = xss(req.body.confirmPasswordInput);
-    let roleInput = xss(req.body.role);
+    let roleInput = xss(req.body.roleInput);
 
     if (!firstNameInput) missing.push('Missing First Name');
     if (!lastNameInput) missing.push('Missing Last Name');
@@ -134,11 +134,12 @@ router.route('/tenant').get(async (req, res) => {
   //TODO fix when session is set up
   try {
     const apt = await getAptByUseriD(req.session.user._id)
-    // const active = await getActiveWorkOrders(apt[0]._id)
+    const active = await getActiveWorkOrders(apt[0]._id)
+    console.log(active)
     const pastPays = await getPaymentsByUser(req.session.user._id)
     // return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt[0].rentRemaining, rentDate: apt[0].rentDate, numWorkOrders: active.length, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
     // after submiting a work order the tenant was not able to login again. found the root cause to be the active.length was not defined. fixed by adding a check for active.length I feel we can take out take out the work order box on the tenant page and just have the payment box.
-    return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt[0].rentRemaining, rentDate: apt[0].rentDate, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
+    return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt[0].rentRemaining, rentDate: apt[0].rentDate, numWorkOrders: active.length, payment1: (pastPays[0] ? pastPays[0] : ''), payment2: (pastPays[1] ? pastPays[1] : '')});
   } catch (error) {
     return res.status(400).render('error', {title: "Error Page", info: error})
   }
@@ -169,7 +170,6 @@ router
       let tentantID = req.session.user._id;
       let getApt = await getAptByUseriD(tentantID);
       let aptID = getApt[0]._id
-      let date =  xss(req.body.rentDate);
       let creditName = xss(req.body.cardname);
       let creditNum = xss(req.body.cardnumber);
       let expMonth = xss(req.body.expmonth);
@@ -178,12 +178,12 @@ router
       let amount = Number(xss(req.body.amount));
       
       //add more error checking
-      if (!date || !creditName || !creditNum || !expMonth || !expYear || !cvv || !amount) {
+      if (!creditName || !creditNum || !expMonth || !expYear || !cvv || !amount) {
         return res.status(400).render('pay', { error: "Please fill out all fields" });
         // return res.status(400).render('landlordCreateApt', { error: 'Required Fields Are Missing. Please Add them.'});
 
       }
-      if (date === " ", creditName === " ", creditNum === " ", expMonth === " ", expYear === " ", cvv === " ", amount === " ") {
+      if (creditName === " ", creditNum === " ", expMonth === " ", expYear === " ", cvv === " ", amount === " ") {
         return res.status(400).render('pay',{error:"Please fill out all fields"});
       }
       if (amount < 0) {
@@ -201,12 +201,9 @@ router
       if (expYear.length !== 2) {
         return res.status(400).render('pay',{error:"Please enter a valid expiration year"});
       }
-      if (dateChecker(date)) {
-        return res.status(400).render('pay',{error:"Please enter a valid date"});
-      }
    
       try {
-        const payCheck = await payment.createpayment(tentantID, aptID, amount, creditNum, date);
+        const payCheck = await payment.createpayment(tentantID, aptID, amount, creditNum);
       
         // console.log("Insert result:", payCheck);
       
@@ -249,13 +246,10 @@ router
       let getApt = await getAptByUseriD(tentantID);
       let aptNum = getApt[0].aptNumber
       let worktype = xss(req.body.workType);
-      let workstatus = xss(req.body.workStatus);
       let notes = xss(req.body.notes);
-      let dateO = xss(req.body.dateOpened);
-      let dateC = xss(req.body.dateClosed);
 
       try {
-        const workCheck = await workOrder.workCreate(aptNum, worktype, workstatus, notes, dateO, dateC);
+        const workCheck = await workOrder.workCreate(aptNum, worktype, notes);
       
         console.log("Insert result:", workCheck);
       
@@ -430,12 +424,17 @@ router.route('/payments').get(async (req, res) => {
 
 //goes to landlord dashboard
 router.route('/landlord').get(async (req, res) => {
-    // const apts = await getAllAptLandlord(req.session.user._id)
-    // //need function to get all the work orders for all the apts of the landlord
-    // const active = 0
-    // let paymentsDue = 0;
-    // paymentsDue ++ for every apt in apts that has pending rent due
-    return res.status(200).render('landlord', {title: 'Landlord Dashboard', today: new Date().toLocaleDateString(), numWorkOrders: 0, numPayments: 0});
+    const works = await workOrder.getAllWork();
+    const apts = await user.getAllAptLandlord(req.session.user._id);
+    let active = 0;
+    for (const w of works) {
+      if (w.workStatus === 'Open') active++;
+    }
+    let numDue = 0;
+    for (const a of apts) {
+      if (a.rentRemaining > 0) numDue++;
+    }
+    return res.status(200).render('landlord', {title: 'Landlord Dashboard', today: new Date().toLocaleDateString(), numWorkOrders: active, numPayments: numDue});
 
   
 });
@@ -450,14 +449,15 @@ router.route('/viewallapartments').get(async (req, res) => {
   let ten = [];
   for (let i = 0; i < getAllAp.length; i++) {
     let allTenants = [];
-  
     for (let j = 0; j < getAllAp[i].tenants.length; j++) {
       let makeString = [getAllAp[i].tenants[j].toString()];
-      let userName = await user.get(makeString[j]);
+      let userName = await user.get(makeString[0]);
+
       let userNam = userName.firstName + " " + userName.lastName;
       // console.log(userNam);
       allTenants.push(userNam);
     }
+    
       const newTotal = {
         AptNum: getAllAp[i].aptNumber,
         Rent: getAllAp[i].rentCost,
@@ -510,23 +510,23 @@ router.route('/landlordassignApt').get(async (req, res) => {
   let apt = xss(req.body.aptNum);
 
   if (apt === "" && tenantEmail === "" ){
-    return res.status(400).render('landlordassignApt', {error: true, error: 'Required Fields Are Missing. Please Add them.'});
+    return res.status(400).render('landlordassignApt', {title: 'Assign Tenant to Apartment', error: true, error: 'Required Fields Are Missing. Please Add them.'});
   }
   if (typeof apt !== 'string'){
-    return res.status(400).render('landlordassignApt', { error: 'Apartment Number Must Be A String'});
+    return res.status(400).render('landlordassignApt', {title: 'Assign Tenant to Apartment', error: 'Apartment Number Must Be A String'});
   }
   if (typeof tenantEmail !== 'string'){
-    return res.status(400).render('landlordassignApt', { error: 'Tenant Email Must Be A String'});
+    return res.status(400).render('landlordassignApt', {title: 'Assign Tenant to Apartment', error: 'Tenant Email Must Be A String'});
   }
   if (!EmailValidator.validate(tenantEmail)){
-    return res.status(400).render('landlordassignApt', { error: 'Tenant Email Must Be A Valid Email'});
+    return res.status(400).render('landlordassignApt', {title: 'Assign Tenant to Apartment', error: 'Tenant Email Must Be A Valid Email'});
   }
   
   if (apt.length === 0){
-    return res.status(400).render('landlordassignApt', { error: 'Apartment Number Cannot Be Empty'});
+    return res.status(400).render('landlordassignApt', {title: 'Assign Tenant to Apartment', error: 'Apartment Number Cannot Be Empty'});
   }
   if (tenantEmail.length === 0){
-    return res.status(400).render('landlordassignApt', { error: 'Tenant Email Cannot Be Empty'});
+    return res.status(400).render('landlordassignApt', {title: 'Assign Tenant to Apartment', error: 'Tenant Email Cannot Be Empty'});
   }
   try {
     const AssignCheck = await user.assignApt(tenantEmail, apt);
@@ -536,11 +536,11 @@ router.route('/landlordassignApt').get(async (req, res) => {
     if(AssignCheck){
       return res.redirect('/viewallapartments');
     } else {
-      return res.status(500).render('landlordassignApt',{error:true, error:"Internal Server Error"});
+      return res.status(500).render('landlordassignApt',{title: 'Assign Tenant to Apartment',error:true, error:"Internal Server Error"});
     }
   } catch(e){
     console.error("Error occurred:", e);
-    return res.status(400).render('landlordassignApt',{error:true, error: e});
+    return res.status(400).render('landlordassignApt',{title: 'Assign Tenant to Apartment',error:true, error: e});
   }
 
 
@@ -558,11 +558,11 @@ router.route('/landlordCreateApt').get(async (req, res) => {
   // let aptNumber = xss(req.body.aptNum);
   let aptNumber = xss(req.body.aptNum.toLowerCase());
   let rentCost = Number(xss(req.body.rentCost));
-  let rentRemaining =  Number(xss(req.body.rentRem));
+  let rentRemaining =  rentCost;
   let rentDate =  xss(req.body.rentDate);
   let size =  Number(xss(req.body.size));
-  let bedNum =  Number(xss(req.body.bed));
-  let bathNum =  Number(xss(req.body.bath));
+  let bedNum =  Number(xss(req.body.bedNum));
+  let bathNum =  Number(xss(req.body.bathNum));
   let description =  xss(req.body.description);
   // let isVacant =  req.body.isVacant;
   let isVacant = false; 
@@ -574,37 +574,37 @@ router.route('/landlordCreateApt').get(async (req, res) => {
   // let {aptNumber, rentCost, rentRemaining, rentDate, size, bedNum, bathNum, description, isVacant} = req.body;
 
   if (aptNumber === "" && rentCost === "" && rentRemaining === "" && rentDate === "" && size === "" && bedNum === "" && bathNum === "" && description === "" ){
-    return res.status(400).render('landlordCreateApt', { error: 'Required Fields Are Missing. Please Add them.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment', error: 'Required Fields Are Missing. Please Add them.'});
   }
   if(!aptNumber || !rentCost || !rentRemaining || !rentDate || !size || !bedNum || !bathNum || !description){
-    return res.status(400).render('landlordCreateApt', { error: 'Required Fields Are Missing. Please Add them.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Required Fields Are Missing. Please Add them.'});
   }
   
   if (isNUllOrUndefined(aptNumber)){
-    return res.status(400).render('landlordCreateApt', { error: 'Apartment Number is missing.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Apartment Number is missing.'});
 
   }
   if (isNUllOrUndefined(rentCost)){
-    return res.status(400).render('landlordCreateApt', { error: 'Rent Cost is missing.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Rent Cost is missing.'});
 
   }
   if (isNUllOrUndefined(rentRemaining)){
-    return res.status(400).render('landlordCreateApt', { error: 'Rent Remaining is missing.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Rent Remaining is missing.'});
   }
   if (isNUllOrUndefined(rentDate)){
-    return res.status(400).render('landlordCreateApt', { error: 'Rent Date is missing.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Rent Date is missing.'});
   }
   if (isNUllOrUndefined(size)){
-    return res.status(400).render('landlordCreateApt', { error: 'Size is missing.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Size is missing.'});
   }
   if (isNUllOrUndefined(bedNum)) {
-    return res.status(400).render('landlordCreateApt', { error: 'Number of Beds is missing.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Number of Beds is missing.'});
   };
   if (isNUllOrUndefined(bathNum)){
-    return res.status(400).render('landlordCreateApt', { error: 'Number of Baths is missing.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Number of Baths is missing.'});
   };
   if (isNUllOrUndefined(description)) {
-    return res.status(400).render('landlordCreateApt', { error: 'Description is missing.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Description is missing.'});
   };
   // if (isNUllOrUndefined(isVacant)){
   //   return res.status(400).render('landlordCreateApt', { error: 'Vacancy is missing.'});
@@ -617,64 +617,64 @@ router.route('/landlordCreateApt').get(async (req, res) => {
   // };
   //error checking for aptNumber
   if(typeof aptNumber !== 'string') {
-    return res.status(400).render('landlordCreateApt', { error: 'Apartment Number must be a string.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Apartment Number must be a string.'});
   };
   aptNumber = aptNumber.trim();
   if(aptNumber === "") {
-    return res.status(400).render('landlordCreateApt', { error: 'Apartment Number must not be an empty string.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Apartment Number must not be an empty string.'});
   };
   if(aptNumber.lenght > 26) {
-    return res.status(400).render('landlordCreateApt', { error: 'Apartment Number must be less than 26 characters.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Apartment Number must be less than 26 characters.'});
   };
   //other then checking for nums should there be any other constaints?
   if(typeof rentCost !== 'number') {
-    return res.status(400).render('landlordCreateApt', { error: 'Rent Cost must be a number.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Rent Cost must be a number.'});
   };
   if(typeof rentRemaining !== 'number') {
-    return res.status(400).render('landlordCreateApt', { error: 'Rent Remaining must be a number.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Rent Remaining must be a number.'});
   };
   if(typeof size !== 'number') {
-    return res.status(400).render('landlordCreateApt', { error: 'Size must be a number.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Size must be a number.'});
   };
   if(typeof bedNum !== 'number') {
-    return res.status(400).render('landlordCreateApt', { error: 'Number of Beds must be a number.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Number of Beds must be a number.'});
   };
   if(typeof bathNum !== 'number') {
-    return res.status(400).render('landlordCreateApt', { error: 'Number of Baths must be a number.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Number of Baths must be a number.'});
   };
   if(bedNum < 0) {
-    return res.status(400).render('landlordCreateApt', { error: 'Number of beds must be positive.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Number of beds must be positive.'});
   };
   if(bathNum < 0) {
-    return res.status(400).render('landlordCreateApt', { error: 'Number of baths must be positive.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Number of baths must be positive.'});
   };
   if(size < 0) {
-    return res.status(400).render('landlordCreateApt', { error: 'Size must be positive.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Size must be positive.'});
   };
   if(rentCost < 0) {
-    return res.status(400).render('landlordCreateApt', { error: 'Rent Cost must be positive.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Rent Cost must be positive.'});
   };
   if(rentRemaining < 0) {
-    return res.status(400).render('landlordCreateApt', { error: 'Rent Remaining must be positive.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Rent Remaining must be positive.'});
   };
   if (dateChecker(rentDate)){
-    return res.status(400).render('landlordCreateApt', { error: 'Rent Date must be a date.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Rent Date must be a date.'});
   }
   //error checking for rentDate
   //error checking for description
   if(typeof description !== 'string') {
-    return res.status(400).render('landlordCreateApt', { error: 'Description must be a string.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Description must be a string.'});
   };
   description = description.trim();
   if(description === "") {
-    return res.status(400).render('landlordCreateApt', { error: 'Description must not be an empty string.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Description must not be an empty string.'});
   };
   if(description.lenght > 100) {
-    return res.status(400).render('landlordCreateApt', { error: 'Description must be less than 100 characters.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Description must be less than 100 characters.'});
   };
   //error checking for isVacant
   if(typeof isVacant !== 'boolean') {
-    return res.status(400).render('landlordCreateApt', { error: 'Vacancy must be true or false.'});
+    return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Vacancy must be true or false.'});
   };
   //error checking for tenants, for tentants and workorders should I check if they exist or no since the only way to update is on the user side
   // if(!Array.isArray(tenants)) throw 'Tenants must be an array';
@@ -698,17 +698,17 @@ router.route('/landlordCreateApt').get(async (req, res) => {
 
   try {
     const LoginCheck = await apartment.create(aptNumber, rentCost, rentRemaining, rentDate, size, bedNum, bathNum, description, isVacant, [], []);
-  
+    const assigned = await apartment.assignAptToLord(req.session.user._id, LoginCheck._id)
     console.log("Insert result:", LoginCheck);
   
     if(LoginCheck){
       return res.redirect('/viewallapartments');
     } else {
-      return res.status(500).render('landlordCreateApt',{error:true, error:"Internal Server Error"});
+      return res.status(500).render('landlordCreateApt',{title: 'Create An Apartment', error:true, error:"Internal Server Error"});
     }
   } catch(e){
     console.error("Error occurred:", e);
-    return res.status(400).render('landlordCreateApt',{error:true, error: e});
+    return res.status(400).render('landlordCreateApt',{title: 'Create An Apartment', error:true, error: e});
   }
 
 });

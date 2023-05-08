@@ -1,10 +1,11 @@
 //need a create, find user, get user info
-import { apartment } from '../config/mongoCollections.js';
+import { apartment, user } from '../config/mongoCollections.js';
 import { payments } from '../config/mongoCollections.js';
 import { getWorkById } from './workOrder.js';
 
  import * as pay from './payments.js';
 import { get } from './payments.js';
+import * as userData from './user.js'
 
 import { ObjectId } from 'mongodb';
 import { isNUllOrUndefined } from './dataHelper.js';
@@ -119,6 +120,78 @@ const create = async (
 
 };
 
+const assignAptToLord = async (id, aptId) => {
+  if (!id){
+    throw "Error: Id does not exist";
+  }
+  if (!aptId){
+    throw "Error: Id does not exist";
+  }
+  if (typeof id !== "string"){
+    throw "Error: Id has to be a string";
+  }
+  if (typeof aptId !== "string"){
+    throw "Error: Id has to be a string";
+  }
+  if (id.trim() === ' '){
+    throw "Error: Id can be empty";
+  }
+    if (aptId.trim() === ' '){
+    throw "Error: Id can be empty";
+  }
+  if (id.replaceAll(" ", "") === ''){
+    throw "Error: Id cannot be empty";
+  }
+  if (aptId.replaceAll(" ", "") === ''){
+    throw "Error: Id cannot be empty";
+  }
+  if (id.length === ''){
+    throw "Error: Id can't be empty";
+  }
+  if (aptId.length === ''){
+    throw "Error: Id can't be empty";
+  }
+  for (let i = 0; i < id.length; i++){
+    if (!id && typeof id !== "string" ){
+      throw "Error: Id must exist and be a string";
+    }
+  }
+  for (let i = 0; i < aptId.length; i++){
+    if (!aptId && typeof aptId !== "string" ){
+      throw "Error: Id must exist and be a string";
+    }
+  }
+  id = id.trim();
+  aptId = aptId.trim();
+  if (!ObjectId.isValid(id)){
+    throw "Error: Invalid Object Id";
+  }
+  if (!ObjectId.isValid(aptId)){
+    throw "Error: Invalid Apt Object Id";
+  }
+  const getUser = await userData.get(id);
+  const getApt = await getAptbyId(aptId);
+
+  if(!getUser){
+    throw "Error: User not found with that id";
+  }
+  if(!getApt){
+    throw "Error: Apartment not found with that id";
+  }
+
+  let userCollected = await user();
+  const updateUser = await userCollected.updateOne(
+    { _id: new ObjectId(id) },
+    { $addToSet: { apartments: new ObjectId(aptId) } } 
+  );
+
+  if (updateUser.modifiedCount === 0 ) {
+    throw "Error: Could not assign the apartment to the user";
+  }
+  // console.log(updateUser.modifiedCount)
+  return {insertedUser: true};
+}
+
 
 const getActiveWorkOrders = async (aptId) => {
     //returns active work orders for given apt
@@ -127,7 +200,7 @@ const getActiveWorkOrders = async (aptId) => {
     let res = []
     for (const w of apt.workOrders) {
       // const temp = await getWorkById(w._id.toString());
-      const temp = await getWorkById(w._id);
+      const temp = await getWorkById(w.toString());
       if (temp.workStatus === 'Open') res.push(temp);
     }
     return res;
@@ -263,7 +336,7 @@ const getAptbyId = async (aptId) => {
 
 
 
-export { create, getActiveWorkOrders, getAptbyId, updateAptRentRemaining, getAptbyName}
+export { create, getActiveWorkOrders, getAptbyId, updateAptRentRemaining, getAptbyName, assignAptToLord}
 
 
 

@@ -31,9 +31,13 @@
                 </li>
                 <li class="historyBox">
                     <p>Previous Payments:</p>
+                    {{#if payment1}}
                     <p>${{payment1.paymentAmount}} {{payment1.date}}</p>
-                    <p>${{payment2.paymentAmount}} {{payment2.date}}</p>
+                    {{else}}
+                    <p>None</p>
+                    {{/if}}
                     {{#if payment2}}
+                    <p>${{payment2.paymentAmount}} {{payment2.date}}</p>
                     <p>...</p>
                     {{/if}}
                 </li>
