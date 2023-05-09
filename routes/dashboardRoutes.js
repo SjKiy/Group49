@@ -473,57 +473,57 @@ router.route('/workorders').get(async (req, res) => {
 
 ;
 
-router.route('/editWorkOrders').get(async (req, res) => {
-  //code here for GET
-  let getAllWork = await workOrder.getAllWork();
-  if(getAllWork.length === 0){
-    return res.status(200).render('editWorkOrders', {title: 'Edit Work Orders', none: true});
-  }
-  return res.status(200).render('editWorkOrders', {title: 'Edit Work Orders', none: false});
-})
-.post(async (req, res) => {
-  //code here for POST
-  let aptNumber = xss(req.body.aptNum);
-  let workType = xss(req.body.workType);
-  let dateOpened = xss(req.body.dateOpened);
-  let comment = xss(req.body.comments);
-  let dateClosed = xss(req.body.dateClosed);
-  if(!aptNumber || !workType || !dateOpened){
-    return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
-  }
-  if(typeof aptNumber !== 'string' || typeof workType !== 'string' || typeof dateOpened !== 'string'){
-    return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
-  }
-  aptNumber = aptNumber.trim();
-  workType = workType.trim();
-  dateOpened = dateOpened.trim();
-  if (aptNumber === "" && workType === "" && dateOpened === ""){
-    return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
-  }
-  //check if an apartment with these attributes exists
-  const apt = await getAptbyName(aptNumber);
-  console.log(apt);
+// router.route('/editWorkOrders').get(async (req, res) => {
+//   //code here for GET
+//   let getAllWork = await workOrder.getAllWork();
+//   if(getAllWork.length === 0){
+//     return res.status(200).render('editWorkOrders', {title: 'Edit Work Orders', none: true});
+//   }
+//   return res.status(200).render('editWorkOrders', {title: 'Edit Work Orders', none: false});
+// })
+// .post(async (req, res) => {
+//   //code here for POST
+//   let aptNumber = xss(req.body.aptNum);
+//   let workType = xss(req.body.workType);
+//   let dateOpened = xss(req.body.dateOpened);
+//   let comment = xss(req.body.comments);
+//   let dateClosed = xss(req.body.dateClosed);
+//   if(!aptNumber || !workType || !dateOpened){
+//     return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
+//   }
+//   if(typeof aptNumber !== 'string' || typeof workType !== 'string' || typeof dateOpened !== 'string'){
+//     return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
+//   }
+//   aptNumber = aptNumber.trim();
+//   workType = workType.trim();
+//   dateOpened = dateOpened.trim();
+//   if (aptNumber === "" && workType === "" && dateOpened === ""){
+//     return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
+//   }
+//   //check if an apartment with these attributes exists
+//   const apt = await getAptbyName(aptNumber);
+//   console.log(apt);
   
 
   
-  //update dateClosed
-  if(dateClosed){
+//   //update dateClosed
+//   if(dateClosed){
 
-  }
-  //add comment
-  if(comment){
+//   }
+//   //add comment
+//   if(comment){
     
-  }
-  //need to get id of work order from input somehow to update it
-  //make an update comment fucntion in workorder db?
-  // const updateComment = await workOrderCollection.findOneAndUpdate(
-  //   {_id: new ObjectId(workId)},
-  //   {$push: {comments: newComment}},
-  //   {returnDocument: 'after'}
-  // );
+//   }
+//   //need to get id of work order from input somehow to update it
+//   //make an update comment fucntion in workorder db?
+//   // const updateComment = await workOrderCollection.findOneAndUpdate(
+//   //   {_id: new ObjectId(workId)},
+//   //   {$push: {comments: newComment}},
+//   //   {returnDocument: 'after'}
+//   // );
 
-  return res.status(200).render('workOrder', {title: 'Work Order'});
-});
+//   return res.status(200).render('workOrder', {title: 'Work Order'});
+// });
 
 
 
