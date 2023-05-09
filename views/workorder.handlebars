@@ -57,17 +57,17 @@
             <p>Apartment Number: {{AptNum}}</p>
             <p>Work Type: {{workType}}</p>
             <input type="hidden" name="id" value={{workId}}>
-            <label for="workStatus">Status:</label>
-            <select name="workStatus" id="workStatus">
+            <label>Status: <select name="workStatus">
                 <option value="Open">Open</option>
                 <option value="Closed">Closed</option>
-            </select>   
+            </select></label>
+               
 
-            <label for="notes">Notes:</label>
-            <input type="text" name="notes" value="{{notes}}">
+            <label>Notes: <input type="text" name="notes" value="{{notes}}"></label>
+            
 
-            <label for="comment">Add Comment (not required):</label>
-            <input type="text" name="comment" placeholder="Write comment here...">
+            <label>Add Comment (not required): <input type="text" name="comment" placeholder="Write comment here..."></label>
+            
           </form>
         </div>
         {{#if dateClosed}}
