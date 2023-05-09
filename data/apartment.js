@@ -286,7 +286,7 @@ const getAptbyName = async (aptNumber) => {
   }
 
   const aptCollected = await apartment();
-  const specficApt = await aptCollected.findOne({aptNumber: "Apt 1"});
+  const specficApt = await aptCollected.findOne({aptNumber: aptNumber});
   if(!specficApt){
       throw "Error: Apartment not found with that id";
   }
