@@ -85,8 +85,8 @@ input[type="submit"]:hover {
 }
 
 #error {
-  background-color: #fdd;
-  color: #f00;
+  background-color:#ffdddd;
+  color: #d00000;
   padding: 1em;
   margin: 1em 0;
 }
