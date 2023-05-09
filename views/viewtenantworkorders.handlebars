@@ -16,19 +16,49 @@
     {{#if getAllWork.length}}
     <ul>
       {{#each getAllWork}}
-        <li>
+      <li id="edit">
         {{!-- <p>Apartment Number: {{aptNumber}}</p> --}}
-        {{!-- <p>Apartment Number: {{aptNum}}</p> --}}
-        <p>Work Type: {{workType}}</p>
-        <p>Status: {{workStatus}}</p>
-        <p>Notes: {{notes}}</p>
-        <p>Date Opened: {{dateOpened}}</p>
-        <p>Date Closed: {{dateClosed}}</p>
-        <p>Comments: {{comments}}</p>
+        <div class="workEditInfo">
+          <p>Work Type: {{workType}}</p>
+          <p>Status: {{workStatus}}</p>
+          <p>Notes: {{notes}}</p>
+          <p>Date Opened: {{dateOpened}}</p>
+          <p>Date Closed: {{dateClosed}}</p>
+          <p class="comments">Comments: 
+            {{#if comments}}
+              {{#each comments}}
+              <br>{{this.[0]}} {{this.[2]}}:<br>{{this.[1]}}<br>
+              {{/each}}
+            {{else}}
+              <br>None
+            {{/if}}
+          </p>
+        </div>
+        <div class="workEditEdit hidden">
+          <form action="/workorders" method="post" class="new-workOrder-form">
+            <p>Apartment Number: {{AptNum}}</p>
+            <p>Work Type: {{workType}}</p>
+            <input type="hidden" id="id" name="id" value={{workId}}>
+            <p>Status: {{workStatus}}</p>
+
+
+            <label for="notes">Notes:</label>
+            <input type="text" id="notes" name="notes" value="{{notes}}">
+
+            <label for="comment">Add Comment (not required):</label>
+            <input type="text" id="comment" name="comment" placeholder="Write comment here...">
+          </form>
+        </div>
+        {{#if dateClosed}}
+        {{else}}
+        <button type='submit' class="edit-button">Edit</button>
+        <button type="submit" class="end-button hidden">Save</button>
+        {{/if}}
         </li>
       {{/each}}
     </ul>
   {{else}}
+   
     <p>No Work Orders found.</p>
   {{/if}}
   </div>

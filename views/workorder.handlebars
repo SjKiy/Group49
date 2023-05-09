@@ -1,5 +1,8 @@
 <h1>{{title}}</h1>
 {{!-- <main> --}}
+  {{#if error}}
+    <p id="CreatAPTERROR">{{error}}</p>
+    {{/if}}
   <div class="nav">
             <ul>
                 {{!-- <li><a href="/landlord">Dashboard</a></li>
@@ -16,7 +19,6 @@
                 <li><a href="/landlordCreateApt">Create An Apartment</a></li>
                 <li><a href="/landlordassignApt">Assign Apartment to Tenant</a></li>
                 <li><a href="/payments">View Apartments Payments</a></li>
-                <li><a href="/editWorkOrders">Edit Work Orders</a></li>
                 <li><a href="/logout" class="logout">Log Out</a></li>
             </ul>
   </div>
@@ -31,19 +33,48 @@
     {{#if work.length}}
     <ul>
       {{#each work}}
-        <li>
+        <li id="edit">
         {{!-- <p>Apartment Number: {{aptNumber}}</p> --}}
-        <p>Apartment Number: {{AptNum}}</p>
-        <p>Work Type: {{workType}}</p>
-        <p>Status: {{workStatus}}</p>
-        <p>Notes: {{notes}}</p>
-        <p>Date Opened: {{dateOpened}}</p>
-        <p>Date Closed: {{dateClosed}}</p>
-        <p class="comments">Comments: 
-          {{#each comments}}
-            <br>{{content}}
-          {{/each}}
-        </p>
+        <div class="workEditInfo">
+          <p>Apartment Number: {{AptNum}}</p>
+          <p>Work Type: {{workType}}</p>
+          <p>Status: {{workStatus}}</p>
+          <p>Notes: {{notes}}</p>
+          <p>Date Opened: {{dateOpened}}</p>
+          <p>Date Closed: {{dateClosed}}</p>
+          <p class="comments">Comments: 
+            {{#if comments}}
+              {{#each comments}}
+              <br>{{this.[0]}} {{this.[2]}}:<br>{{this.[1]}}<br>
+              {{/each}}
+            {{else}}
+              <br>None
+            {{/if}}
+          </p>
+        </div>
+        <div class="workEditEdit hidden">
+          <form action="/workorders" method="post" class="new-workOrder-form">
+            <p>Apartment Number: {{AptNum}}</p>
+            <p>Work Type: {{workType}}</p>
+            <input type="hidden" id="id" name="id" value={{workId}}>
+            <label for="workStatus">Status:</label>
+            <select name="workStatus" id="workStatus">
+                <option value="Open">Open</option>
+                <option value="Closed">Closed</option>
+            </select>   
+
+            <label for="notes">Notes:</label>
+            <input type="text" id="notes" name="notes" value="{{notes}}">
+
+            <label for="comment">Add Comment (not required):</label>
+            <input type="text" id="comment" name="comment" placeholder="Write comment here...">
+          </form>
+        </div>
+        {{#if dateClosed}}
+        {{else}}
+        <button type='submit' class="edit-button">Edit</button>
+        <button type="submit" class="end-button hidden">Save</button>
+        {{/if}}
         </li>
       {{/each}}
     </ul>

@@ -43,7 +43,7 @@ export const workCreate = async (
         workStatus: 'Open',
         notes: notes,
         comments: [],
-        dateOpened: new Date().toLocaleDateString(),
+        dateOpened: new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}),
         dateClosed: "",
     };
 
@@ -127,19 +127,19 @@ export const workCreate = async (
       throw "Error: Invalid Object Id";
     }
     if(!newNote){
-      throw "Error: New Name was not provided"
+      throw "Error: New Note was not provided"
     }
     if (typeof newNote !== "string"){
-      throw "Error: New Name has to be a string";
+      throw "Error: New Note has to be a string";
     }
     if (newNote.trim === ' '){
-      throw "Error: New Name can be empty";
+      throw "Error: New Note can be empty";
     }
     if (newNote.replaceAll(" ", "") === ''){
-      throw "Error: New Name cannot be empty";
+      throw "Error: New Note cannot be empty";
     }
     if (newNote.length === ''){
-      throw "Error: New Name can't be empty";
+      throw "Error: New Note can't be empty";
     }
     for (let i = 0; i < newNote.length; i++){
       if (!newNote && typeof newNote !== "string" ){
@@ -154,9 +154,7 @@ export const workCreate = async (
     const GetID = await getWorkById(workId);
 
     const workOrderCollection = await workOrder();
-    if (GetID.notes === newNote){
-      throw "Error: New note cannot be the same as the current note"
-    }
+    
      const updateSpecficWo = await workOrderCollection.findOneAndUpdate(
       {_id: new ObjectId(workId)},
       {$set: updatedWork},
@@ -225,9 +223,6 @@ export const updateProg = async (workId, newProg) => {
     const GetID = await getWorkById(workId);
 
     const workOrderCollection = await workOrder();
-    if (GetID.workStatus === newProg){
-      throw "Error: New note cannot be the same as the current note"
-    }
      const updateSpecficWo = await workOrderCollection.findOneAndUpdate(
       {_id: new ObjectId(workId)},
       {$set: updatedWork},
@@ -244,6 +239,53 @@ export const updateProg = async (workId, newProg) => {
   
   };
 
+  export const closeWork = async (workId) => {
+    if (!workId){
+      throw "Error: Id does not exist";
+    }
+    if (typeof workId !== "string"){
+      throw "Error: Id has to be a string";
+    }
+    if (workId.trim === ' '){
+      throw "Error: Id can be empty";
+    }
+    if (workId.replaceAll(" ", "") === ''){
+      throw "Error: Id cannot be empty";
+    }
+    if (workId.length === ''){
+      throw "Error: Id can't be empty";
+    }
+    for (let i = 0; i < workId.length; i++){
+      if (!workId && typeof workId !== "string" ){
+        throw "Error: Id must exist and be a string";
+      }
+    }
+    workId = workId.trim();
+    if (!ObjectId.isValid(workId)){
+      throw "Error: Invalid Object Id";
+    }
+    
+    const updatedWork = {
+      dateClosed: new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"})
+    }
+    const GetID = await getWorkById(workId);
+
+    const workOrderCollection = await workOrder();
+     const updateSpecficWo = await workOrderCollection.findOneAndUpdate(
+      {_id: new ObjectId(workId)},
+      {$set: updatedWork},
+      {returnDocument: 'after'}
+    );
+  
+    
+    if (updateSpecficWo.lastErrorObject.n === 0) {
+      throw "Error: Note could not be update successfully";
+    }
+    updateSpecficWo.value._id = updateSpecficWo.value._id.toString();
+    return updateSpecficWo.value;
+  
+  
+  };
 
   //getting a can not get workorder before initalization error when testing but logid seems sound
 // export const getWorkOrderByAptNumber = async (aptNumber) => {
