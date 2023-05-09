@@ -33,7 +33,7 @@
     {{#if work.length}}
     <ul>
       {{#each work}}
-        <li id="edit">
+        <li>
         {{!-- <p>Apartment Number: {{aptNumber}}</p> --}}
         <div class="workEditInfo">
           <p>Apartment Number: {{AptNum}}</p>
@@ -56,18 +56,18 @@
           <form action="/workorders" method="post" class="new-workOrder-form">
             <p>Apartment Number: {{AptNum}}</p>
             <p>Work Type: {{workType}}</p>
-            <input type="hidden" id="id" name="id" value={{workId}}>
-            <label for="workStatus">Status:</label>
-            <select name="workStatus" id="workStatus">
+            <input type="hidden" name="id" value={{workId}}>
+            <label>Status: <select name="workStatus">
                 <option value="Open">Open</option>
                 <option value="Closed">Closed</option>
-            </select>   
+            </select></label>
+               
 
-            <label for="notes">Notes:</label>
-            <input type="text" id="notes" name="notes" value="{{notes}}">
+            <label>Notes: <input type="text" name="notes" value="{{notes}}"></label>
+            
 
-            <label for="comment">Add Comment (not required):</label>
-            <input type="text" id="comment" name="comment" placeholder="Write comment here...">
+            <label>Add Comment (not required): <input type="text" name="comment" placeholder="Write comment here..."></label>
+            
           </form>
         </div>
         {{#if dateClosed}}
