@@ -9,6 +9,7 @@
     <h1>{{title}}</h1>
     {{!-- <main> --}}
         <div id="errorLogInCS"></div>
+        <div id="errorLoginAjax"></div>
         {{#if error}}
             <div id="error">{{info}}</div>
         {{/if}}
@@ -18,7 +19,12 @@
             <br>
             <label for="passwordInput">Password:</label>
             <input id ="passwordInput" type="password" name="passwordInput" placeholder="Password..." >
-            <input type="submit">
+            <input id="loginSubmit" type="submit">
         </form>
+    
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="/public/js/login.js"></script>
+
     {{!-- </main>
 </body> --}}
