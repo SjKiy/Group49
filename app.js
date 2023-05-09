@@ -659,6 +659,20 @@ app.get('/logout', async (req, res, next) => {
     }
     next()
 });
+
+app.get('/error', async (req, res, next) => {
+    if(!req.session.user){
+        return res.redirect('/login');
+    }
+    if (req.session.user.role == "landlord") {
+      return res.redirect('/landlord');
+    }
+    if (req.session.user.role == "tenant") {
+      return res.redirect('/tenant');
+    }
+    next()
+});
+
 app.get('/', (req, res, next) => {
   if (!req.session.user) {
       return res.status(403).redirect('/login');
@@ -669,7 +683,7 @@ app.get('/', (req, res, next) => {
   if (req.session.user.role == "tenant") {
       return res.redirect('/tenant');
   }
-  console.log("dkkk")
+  
 
   next();
 });

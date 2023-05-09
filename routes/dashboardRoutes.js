@@ -317,9 +317,7 @@ router.route('/workorders').get(async (req, res) => {
         let comment = xss(req.body.comment);
   
         console.log(aptNum, notes, id, workStatus, comment);
-        console.log("here")
         if (notes !== "") {
-          console.log("here2")
           note = notes.trim();
           if(note === "") {
             return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
