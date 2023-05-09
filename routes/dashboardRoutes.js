@@ -324,6 +324,9 @@ router.route('/workorders').get(async (req, res) => {
         if (workStatus==='Closed') {
           const close = await workOrder.closeWork(id)
         }
+        if (comment) {
+          const newComm = await comments.create(id, req.session.user._id, comment, new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}));
+        }
   
         let getAllWork = await workOrder.getAllWork();
         let updateWork = [];
@@ -352,9 +355,6 @@ router.route('/workorders').get(async (req, res) => {
         // console.log(aptPaySearch);
         if(aptPaySearch){
           updateWork = updateWork.filter((apt) => apt.AptNum.toLowerCase() === aptPaySearch.toLowerCase());
-        }
-        if (comment) {
-          const newComm = await comments.create(id, req.session.user._id, comment, new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}));
         }
         return res.status(200).render('workorder', {title: 'View All Work Orders', work: updateWork, error: false})
       } 
@@ -362,12 +362,11 @@ router.route('/workorders').get(async (req, res) => {
         let tentantID = req.session.user._id;
         let getApt = await getAptByUseriD(tentantID);
         let aptNum = getApt[0].aptNumber
-        let notes = xss(req.body.notes);
         let id = xss(req.body.id);
         let comment = xss(req.body.comment);
   
-        if (notes !== "") {
-          const newNotes = await workOrder.newNotes(id, notes);
+        if (comment) {
+          const newComm = await comments.create(id, req.session.user._id, comment, new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}));
         }
   
         let getAllWork = await workOrder.getAllWork();
@@ -397,9 +396,6 @@ router.route('/workorders').get(async (req, res) => {
         // console.log(aptPaySearch);
         if(aptPaySearch){
           updateWork = updateWork.filter((apt) => apt.AptNum.toLowerCase() === aptPaySearch.toLowerCase());
-        }
-        if (comment) {
-          const newComm = await comments.create(id, req.session.user._id, comment, new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}));
         }
         return res.status(200).redirect('/viewtenantworkorders')
       }
