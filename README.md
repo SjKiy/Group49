@@ -9,7 +9,7 @@ Go to the root directory. Open the terminal and run the following commands :
 1) `npm install`
 (Installs all Necessary Packages)
 
-2) `node ./seed.js`
+2) `node seed.js`
 (Populates the Database)
 
 3) `npm start`
