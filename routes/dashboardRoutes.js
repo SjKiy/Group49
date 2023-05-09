@@ -318,7 +318,7 @@ router.route('/workorders').get(async (req, res) => {
   
         console.log(aptNum, notes, id, workStatus, comment);
         if (notes !== "") {
-          note = notes.trim();
+          let note = notes.trim();
           if(note === "") {
             return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
           }

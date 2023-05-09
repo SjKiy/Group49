@@ -664,10 +664,10 @@ app.get('/error', async (req, res, next) => {
     if(!req.session.user){
         return res.redirect('/login');
     }
-    if (req.session.user.role == "landlord") {
+    if (req.session.user.accountType == "landlord") {
       return res.redirect('/landlord');
     }
-    if (req.session.user.role == "tenant") {
+    if (req.session.user.accountType == "tenant") {
       return res.redirect('/tenant');
     }
     next()
@@ -677,10 +677,10 @@ app.get('/', (req, res, next) => {
   if (!req.session.user) {
       return res.status(403).redirect('/login');
   }
-  if (req.session.user.role == "landlord") {
+  if (req.session.user.accountType == "landlord") {
       return res.redirect('/landlord');
   }
-  if (req.session.user.role == "tenant") {
+  if (req.session.user.accountType == "tenant") {
       return res.redirect('/tenant');
   }
   
