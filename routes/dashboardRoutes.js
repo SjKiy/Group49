@@ -139,7 +139,7 @@ router.route('/tenant').get(async (req, res) => {
     const pastPays = await getPaymentsByUser(req.session.user._id)
     // return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt[0].rentRemaining, rentDate: apt[0].rentDate, numWorkOrders: active.length, payment1: (pastPays[0] ? pastPays[0] : 'None'), payment2: (pastPays[1] ? pastPays[1] : '')});
     // after submiting a work order the tenant was not able to login again. found the root cause to be the active.length was not defined. fixed by adding a check for active.length I feel we can take out take out the work order box on the tenant page and just have the payment box.
-    return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString(), rentDue: apt[0].rentRemaining, rentDate: apt[0].rentDate, numWorkOrders: active.length, payment1: (pastPays[0] ? pastPays[0] : ''), payment2: (pastPays[1] ? pastPays[1] : '')});
+    return res.status(200).render('tenant', {title: 'Tenant Dashboard', today: new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}), rentDue: apt[0].rentRemaining, rentDate: apt[0].rentDate, numWorkOrders: active.length, payment1: (pastPays[0] ? pastPays[0] : ''), payment2: (pastPays[1] ? pastPays[1] : '')});
   } catch (error) {
     return res.status(400).render('error', {title: "Error Page", info: error})
   }
@@ -285,6 +285,7 @@ router.route('/workorders').get(async (req, res) => {
         }
       const updatedWorkOrder = {
         AptNum: getAllWork[i].aptNumber,
+        workId: getAllWork[i]._id,
         workType: getAllWork[i].workType,
         workStatus: getAllWork[i].workStatus,
         notes: getAllWork[i].notes,
@@ -303,11 +304,138 @@ router.route('/workorders').get(async (req, res) => {
     return res.status(200).render('workorder', {title: 'View All Work Orders', work: updateWork});
   }
 
-  })
-  .put(async (req, res) => {
-    //TODO
-    //only for landlord: updates workorder collection, to add notes and such
-    //renders workorders
+  //edits workorder on page
+  }).post(async (req, res) => {
+    try {
+      if (req.session.user.accountType === 'landlord') {
+        let tentantID = req.session.user._id;
+        let getApt = await getAptByUseriD(tentantID);
+        let aptNum = getApt[0].aptNumber
+        let notes = xss(req.body.notes);
+        let id = xss(req.body.id);
+        let workStatus = xss(req.body.workStatus)
+        let comment = xss(req.body.comment);
+  
+        console.log(aptNum, notes, id, workStatus, comment);
+        if (notes !== "") {
+          const newNotes = await workOrder.newNotes(id, notes);
+        }
+        const updatedProg = await workOrder.updateProg(id, workStatus);
+        if (workStatus==='Closed') {
+          const close = await workOrder.closeWork(id)
+        }
+  
+        let getAllWork = await workOrder.getAllWork();
+        let updateWork = [];
+        for (let i = 0; i < getAllWork.length; i++) {
+          let allComments = [];
+          for (let j = 0; j < getAllWork[i].comments.length; j++) {
+            let userName = await user.get(getAllWork[i].comments[j].userId);
+            let userNam = userName.firstName + " " + userName.lastName;
+            allComments.push([userNam, 
+              getAllWork[i].comments[j].content, 
+              getAllWork[i].comments[j].date]);
+          }
+          const updatedWorkOrder = {
+            AptNum: getAllWork[i].aptNumber,
+            workId: getAllWork[i]._id,
+            workType: getAllWork[i].workType,
+            workStatus: getAllWork[i].workStatus,
+            notes: getAllWork[i].notes,
+            comments: allComments,
+            dateOpened: getAllWork[i].dateOpened,
+            dateClosed: getAllWork[i].dateClosed,
+          };
+          updateWork.push(updatedWorkOrder);
+        }
+        let aptPaySearch = req.query.aptNum;
+        // console.log(aptPaySearch);
+        if(aptPaySearch){
+          updateWork = updateWork.filter((apt) => apt.AptNum.toLowerCase() === aptPaySearch.toLowerCase());
+        }
+        if (comment) {
+          const newComm = await comments.create(id, req.session.user._id, comment, new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}));
+        }
+        return res.status(200).render('workorder', {title: 'View All Work Orders', work: updateWork, error: false})
+      } 
+      else if (req.session.user.accountType === 'tenant') {
+        let tentantID = req.session.user._id;
+        let getApt = await getAptByUseriD(tentantID);
+        let aptNum = getApt[0].aptNumber
+        let notes = xss(req.body.notes);
+        let id = xss(req.body.id);
+        let comment = xss(req.body.comment);
+  
+        if (notes !== "") {
+          const newNotes = await workOrder.newNotes(id, notes);
+        }
+  
+        let getAllWork = await workOrder.getAllWork();
+        let updateWork = [];
+        for (let i = 0; i < getAllWork.length; i++) {
+          let allComments = [];
+          for (let j = 0; j < getAllWork[i].comments.length; j++) {
+            let userName = await user.get(getAllWork[i].comments[j].userId);
+            let userNam = userName.firstName + " " + userName.lastName;
+            allComments.push([userNam, 
+              getAllWork[i].comments[j].content, 
+              getAllWork[i].comments[j].date]);
+          }
+          const updatedWorkOrder = {
+            AptNum: getAllWork[i].aptNumber,
+            workId: getAllWork[i]._id,
+            workType: getAllWork[i].workType,
+            workStatus: getAllWork[i].workStatus,
+            notes: getAllWork[i].notes,
+            comments: allComments,
+            dateOpened: getAllWork[i].dateOpened,
+            dateClosed: getAllWork[i].dateClosed,
+          };
+          updateWork.push(updatedWorkOrder);
+        }
+        let aptPaySearch = req.query.aptNum;
+        // console.log(aptPaySearch);
+        if(aptPaySearch){
+          updateWork = updateWork.filter((apt) => apt.AptNum.toLowerCase() === aptPaySearch.toLowerCase());
+        }
+        if (comment) {
+          const newComm = await comments.create(id, req.session.user._id, comment, new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}));
+        }
+        return res.status(200).redirect('/viewtenantworkorders')
+      }
+    } catch (error) {
+      let getAllWork = await workOrder.getAllWork();
+        let updateWork = [];
+        for (let i = 0; i < getAllWork.length; i++) {
+          let allComments = [];
+          for (let j = 0; j < getAllWork[i].comments.length; j++) {
+            let userName = await user.get(getAllWork[i].comments[j].userId);
+            let userNam = userName.firstName + " " + userName.lastName;
+            allComments.push([userNam, 
+              getAllWork[i].comments[j].content, 
+              getAllWork[i].comments[j].date]);
+          }
+        const updatedWorkOrder = {
+          AptNum: getAllWork[i].aptNumber,
+          workId: getAllWork[i]._id,
+          workType: getAllWork[i].workType,
+          workStatus: getAllWork[i].workStatus,
+          notes: getAllWork[i].notes,
+          comments: allComments,
+          dateOpened: getAllWork[i].dateOpened,
+          dateClosed: getAllWork[i].dateClosed,
+        };
+        updateWork.push(updatedWorkOrder);
+      }
+      let aptPaySearch = req.query.aptNum;
+      // console.log(aptPaySearch);
+      if(aptPaySearch){
+        updateWork = updateWork.filter((apt) => apt.AptNum.toLowerCase() === aptPaySearch.toLowerCase());
+      }
+      return res.status(400).render('workorder', {title: 'View All Work Orders', work: updateWork, error: error});
+      
+    }
+    
   })
 
 ;
@@ -361,13 +489,6 @@ router.route('/editWorkOrders').get(async (req, res) => {
     {$push: {comments: newComment}},
     {returnDocument: 'after'}
   );
-
-  
-
-
-
-    
-
 
   return res.status(200).render('workOrder', {title: 'Work Order'});
 });
@@ -434,7 +555,7 @@ router.route('/landlord').get(async (req, res) => {
     for (const a of apts) {
       if (a.rentRemaining > 0) numDue++;
     }
-    return res.status(200).render('landlord', {title: 'Landlord Dashboard', today: new Date().toLocaleDateString(), numWorkOrders: active, numPayments: numDue});
+    return res.status(200).render('landlord', {title: 'Landlord Dashboard', today: new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}), numWorkOrders: active, numPayments: numDue});
 
   
 });
@@ -794,8 +915,30 @@ try{
   let tentantID = req.session.user._id;
   let getApt = await getAptByUseriD(tentantID);
   let aptNum = getApt[0].aptNumber
-  let work = await workOrder.getWorkOrderByAptNumber(aptNum);
-  return res.status(200).render('viewtenantworkorders', {title: 'View Tenant Work Orders', getAllWork: work});
+  let getAllWork = await workOrder.getWorkOrderByAptNumber(aptNum);
+  let updateWork = [];
+  for (let i = 0; i < getAllWork.length; i++) {
+    let allComments = [];
+    for (let j = 0; j < getAllWork[i].comments.length; j++) {
+      let userName = await user.get(getAllWork[i].comments[j].userId);
+      let userNam = userName.firstName + " " + userName.lastName;
+      allComments.push([userNam, 
+        getAllWork[i].comments[j].content, 
+        getAllWork[i].comments[j].date]);
+    }
+    const updatedWorkOrder = {
+      AptNum: getAllWork[i].aptNumber,
+      workId: getAllWork[i]._id,
+      workType: getAllWork[i].workType,
+      workStatus: getAllWork[i].workStatus,
+      notes: getAllWork[i].notes,
+      comments: allComments,
+      dateOpened: getAllWork[i].dateOpened,
+      dateClosed: getAllWork[i].dateClosed,
+    };
+    updateWork.push(updatedWorkOrder);
+  }
+  return res.status(200).render('viewtenantworkorders', {title: 'View Tenant Work Orders', getAllWork: updateWork});
 
 }
   catch(e){

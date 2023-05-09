@@ -394,3 +394,35 @@ if(assignAptform){
     });
 
 };
+
+const paragraph = document.getElementsByClassName("workEditInfo");
+
+if (paragraph) {
+    const editButtons = document.querySelectorAll('.edit-button');
+    editButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const editInfo = button.parentNode.querySelector('.workEditInfo');
+        const editEdit = button.parentNode.querySelector('.workEditEdit');
+        editInfo.classList.add('hidden');
+        editEdit.classList.remove('hidden');
+        button.classList.add('hidden');
+        button.parentNode.querySelector('.end-button').classList.remove('hidden');
+    });
+    });
+
+    // Add event listeners to all the save buttons
+    const saveButtons = document.querySelectorAll('.end-button');
+    saveButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const editInfo = button.parentNode.querySelector('.workEditInfo');
+        const editEdit = button.parentNode.querySelector('.workEditEdit');
+        const form = editEdit.querySelector('form');
+        editEdit.classList.add('hidden');
+        editInfo.classList.remove('hidden');
+        button.classList.add('hidden');
+        button.parentNode.querySelector('.edit-button').classList.remove('hidden');
+        form.submit(); // Submit the form
+    });
+});
+
+}

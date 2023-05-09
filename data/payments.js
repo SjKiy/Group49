@@ -87,7 +87,7 @@ export const createpayment = async (
         paymentAmount: paymentAmount,
         cardNum: newHashCC,
         // cardNum: cardNum,
-        date: new Date().toLocaleDateString()
+        date: new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"})
     }
 
     const paymentCollect = await payments();
