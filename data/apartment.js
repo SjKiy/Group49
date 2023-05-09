@@ -113,7 +113,7 @@ const create = async (
     if (insertInfo.insertedCount === 0) throw 'Could not add apartment';
 
     const newId = insertInfo.insertedId;
-    let x = await getAptbyId(newId.toString());
+    let x = newId.toString();
 
     return x
 
@@ -286,7 +286,7 @@ const getAptbyName = async (aptNumber) => {
   }
 
   const aptCollected = await apartment();
-  const specficApt = await aptCollected.findOne({aptNumber: "Apt 1"});
+  const specficApt = await aptCollected.findOne({aptNumber: aptNumber});
   if(!specficApt){
       throw "Error: Apartment not found with that id";
   }
