@@ -910,7 +910,7 @@ router.route('/landlordCreateApt').get(async (req, res) => {
 
   try {
     const LoginCheck = await apartment.create(aptNumber, rentCost, rentRemaining, rentDate, size, bedNum, bathNum, description, isVacant, [], []);
-    const assigned = await apartment.assignAptToLord(req.session.user._id, LoginCheck)
+    const assigned = await apartment.assignAptToLord(req.session.user._id, LoginCheck._id)
   
     if(LoginCheck){
       return res.redirect('/viewallapartments');
