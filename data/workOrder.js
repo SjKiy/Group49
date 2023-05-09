@@ -61,7 +61,7 @@ export const workCreate = async (
     }
 
     const newId = insertInfo.insertedId;
-    const work = newId.toString();
+    const work = await getWorkById(newId.toString());
     return work;
 };
 
