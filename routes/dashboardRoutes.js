@@ -309,7 +309,7 @@ router.route('/workorders').get(async (req, res) => {
     try {
       if (req.session.user.accountType === 'landlord') {
         let tentantID = req.session.user._id;
-        let getApt = await getAptByUseriD(tentantID);
+        let getApt = await user.getAllAptLandlord(tentantID);
         let aptNum = getApt[0].aptNumber
         let notes = xss(req.body.notes);
         let id = xss(req.body.id);
@@ -318,8 +318,8 @@ router.route('/workorders').get(async (req, res) => {
   
         console.log(aptNum, notes, id, workStatus, comment);
         if (notes !== "") {
-          note = notes.trim();
-          if(note === "") {
+          notes = notes.trim();
+          if(notes === "") {
             return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
           }
           if(notes.length > 100){
@@ -835,7 +835,7 @@ router.route('/landlordCreateApt').get(async (req, res) => {
   if(aptNumber === "") {
     return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Apartment Number must not be an empty string.'});
   };
-  if(aptNumber.lenght > 26) {
+  if(aptNumber.length > 26) {
     return res.status(400).render('landlordCreateApt', {title: 'Create An Apartment',  error: 'Apartment Number must be less than 26 characters.'});
   };
   //other then checking for nums should there be any other constaints?

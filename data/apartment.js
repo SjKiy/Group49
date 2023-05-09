@@ -26,6 +26,7 @@ const create = async (
     workOrders,
 ) => {
     //checking null for all inputs
+    aptNumber = aptNumber.toLowerCase();
     if (isNUllOrUndefined(aptNumber)) throw 'You must provide an apartment number';
     if (isNUllOrUndefined(rentCost)) throw 'You must provide a rent cost';
     if (isNUllOrUndefined(rentRemaining)) throw 'You must provide a rent remaining';
