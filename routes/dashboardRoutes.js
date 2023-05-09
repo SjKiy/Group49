@@ -318,14 +318,41 @@ router.route('/workorders').get(async (req, res) => {
   
         console.log(aptNum, notes, id, workStatus, comment);
         if (notes !== "") {
+          note = notes.trim();
+          if(note === "") {
+            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
+          }
+          if(notes.length > 100){
+            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Notes must be less than 100 characters.'});
+          }
           const newNotes = await workOrder.newNotes(id, notes);
+          if(!newNotes){
+            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Error adding notes.'});
+          }
         }
         const updatedProg = await workOrder.updateProg(id, workStatus);
+        if(!updatedProg){
+          return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Error updating work order status.'});
+        }
         if (workStatus==='Closed') {
           const close = await workOrder.closeWork(id)
+          if(!close){
+            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Error closing work order.'});
+          }
         }
         if (comment) {
+          comment = comment.trim();
+          if(comment === "") {
+            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
+          }
+          if(comment.length > 100){
+            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Comments must be less than 100 characters.'});
+          }
           const newComm = await comments.create(id, req.session.user._id, comment, new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}));
+          if(!newComm){
+            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Error adding comment.'});
+          }
+          
         }
   
         let getAllWork = await workOrder.getAllWork();
