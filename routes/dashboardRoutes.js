@@ -3,7 +3,7 @@ import EmailValidator from 'email-validator';
 import xss from 'xss';
 import { createUser, getAptByUseriD, checkUser } from '../data/user.js';
 import { getPaymentsByUser } from '../data/payments.js';
-import { create, getActiveWorkOrders } from '../data/apartment.js';
+import { create, getActiveWorkOrders, getAptbyName } from '../data/apartment.js';
 import { isNUllOrUndefined } from '../data/dataHelper.js';
 import { dateChecker } from '../data/dataHelper.js';
 import * as user from '../data/user.js';
@@ -444,47 +444,46 @@ router.route('/editWorkOrders').get(async (req, res) => {
   }
   return res.status(200).render('editWorkOrders', {title: 'Edit Work Orders', none: false});
 })
-.put(async (req, res) => {
-  //code here for PUT
-  // console.log(req.body);
-})
 .post(async (req, res) => {
   //code here for POST
-  //check if apt exist and then check if an apt exists with all that info
-  //need to thing with specifc work order and add a comment
   let aptNumber = xss(req.body.aptNum);
   let workType = xss(req.body.workType);
   let dateOpened = xss(req.body.dateOpened);
   let comment = xss(req.body.comments);
-
-  if (aptNumber === "" && workType === "" && dateOpened === "" && comment === "" ){
+  let dateClosed = xss(req.body.dateClosed);
+  if(!aptNumber || !workType || !dateOpened){
     return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
   }
-  if(!aptNumber || !workType || !dateOpened || !comment){
+  if(typeof aptNumber !== 'string' || typeof workType !== 'string' || typeof dateOpened !== 'string'){
     return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
   }
-
-  //add comment with apartment of that aptNUmber using updateone 
-
-  const apt = await apartment.getAptbyAptNum(aptNumber);
-  if (!apt) {
-    return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Apartment does not exist.'});
+  aptNumber = aptNumber.trim();
+  workType = workType.trim();
+  dateOpened = dateOpened.trim();
+  if (aptNumber === "" && workType === "" && dateOpened === ""){
+    return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
   }
-  if (apt.workOrders.length === 0) {
-    return res.status(400).render('editWorkOrders', {title: 'Edit Work Orders', error: 'Apartment does not have any work orders.'});
-  }
+  //check if an apartment with these attributes exists
+  const apt = await getAptbyName(aptNumber);
+  console.log(apt);
+  
 
-  const workOrderCollection = await workOrder();
-  if (GetID.workStatus === newProg){
-      throw "Error: New note cannot be the same as the current note"
+  
+  //update dateClosed
+  if(dateClosed){
+
+  }
+  //add comment
+  if(comment){
+    
   }
   //need to get id of work order from input somehow to update it
   //make an update comment fucntion in workorder db?
-  const updateComment = await workOrderCollection.findOneAndUpdate(
-    {_id: new ObjectId(workId)},
-    {$push: {comments: newComment}},
-    {returnDocument: 'after'}
-  );
+  // const updateComment = await workOrderCollection.findOneAndUpdate(
+  //   {_id: new ObjectId(workId)},
+  //   {$push: {comments: newComment}},
+  //   {returnDocument: 'after'}
+  // );
 
   return res.status(200).render('workOrder', {title: 'Work Order'});
 });

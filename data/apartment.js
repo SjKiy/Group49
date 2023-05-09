@@ -269,24 +269,24 @@ const getAptbyName = async (aptNumber) => {
   if (typeof aptNumber !== "string"){
     throw "Error: Apartment Number has to be a string";
   }
-  aptNumber = aptNumber.trim();
-  if (aptNumber === ' '){
+  let aptNumberCheck = aptNumber.trim();
+  if (aptNumberCheck === ' '){
     throw "Error: Apartment Number can be empty";
   }
-  if (aptNumber.replaceAll(" ", "") === ''){
+  if (aptNumberCheck.replaceAll(" ", "") === ''){
     throw "Error: Apartment Number cannot be empty";
   }
-  if (aptNumber.length === ''){
+  if (aptNumberCheck.length === ''){
     throw "Error: Apartment Number can't be empty";
   }
-  for (let i = 0; i < aptNumber.length; i++){
-    if (!aptNumber && typeof aptNumber !== "string" ){
+  for (let i = 0; i < aptNumberCheck.length; i++){
+    if (!aptNumberCheck && typeof aptNumberCheck !== "string" ){
       throw "Error: Apartment Number must exist and be a string";
     }
   }
 
   const aptCollected = await apartment();
-  const specficApt = await aptCollected.findOne({aptNumber: aptNumber});
+  const specficApt = await aptCollected.findOne({aptNumber: "Apt 1"});
   if(!specficApt){
       throw "Error: Apartment not found with that id";
   }
