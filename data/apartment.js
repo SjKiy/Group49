@@ -114,7 +114,7 @@ const create = async (
     if (insertInfo.insertedCount === 0) throw 'Could not add apartment';
 
     const newId = insertInfo.insertedId;
-    let x = newId.toString();
+    let x = await getAptbyId(newId.toString());
 
     return x
 
