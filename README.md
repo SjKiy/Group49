@@ -17,6 +17,6 @@ Go to the root directory. Open the terminal and run the following commands :
 
 Go to page `localhost:3000` on a web browser
 
-Login with Email Address `PatrickHill@Stevens.edu` Password `1MyPass123!` to access the landlord's dashboard
+Login with Email Address `PatrickHill@Stevens.edu` and Password `1MyPass123!` to access the landlord's dashboard
 OR
-Login with Email Address `IsabelleFirst@stevens.edu` Password `2MyPass123!` to access a tenant's Dashboard
+Login with Email Address `IsabelleFirst@stevens.edu` and Password `2MyPass123!` to access a tenant's Dashboard
