@@ -1,6 +1,9 @@
 {{!-- <body> --}}
     <h1>{{title}}</h1>
     {{!-- <main> --}}
+      {{#if error}}
+        <p id="CreatAPTERROR">{{error}}</p>
+      {{/if}}
         <div class="nav">
             <ul>
                 <li><a href="/tenant">Dashboard</a></li>

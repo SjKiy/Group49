@@ -70,7 +70,7 @@ export const createpayment = async (
   
    // add card validator here... could npm install card-validator
  
-   const saltRounds = await bcrpytjs.genSalt(5);
+   const saltRounds = await bcrpytjs.genSalt(16);
    let newHashCC = await bcrpytjs.hash(cardNum, saltRounds);
 
     tenantId = tenantId.trim();

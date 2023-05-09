@@ -127,7 +127,7 @@ export const createUser = async (
 
   // const saltRounds = await bcrpytjs.genSalt(16);
   //change 5
-  const saltRounds = await bcrpytjs.genSalt(5);
+  const saltRounds = await bcrpytjs.genSalt(16);
   let newHashPassword = await bcrpytjs.hash(password, saltRounds);
 
   firstName = firstName.trim();

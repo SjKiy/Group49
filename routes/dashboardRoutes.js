@@ -317,7 +317,9 @@ router.route('/workorders').get(async (req, res) => {
         let comment = xss(req.body.comment);
   
         console.log(aptNum, notes, id, workStatus, comment);
+        console.log("here")
         if (notes !== "") {
+          console.log("here2")
           note = notes.trim();
           if(note === "") {
             return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
@@ -343,10 +345,10 @@ router.route('/workorders').get(async (req, res) => {
         if (comment) {
           comment = comment.trim();
           if(comment === "") {
-            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
+            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Required Fields Are Missing. Please Add them'});
           }
           if(comment.length > 100){
-            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Comments must be less than 100 characters.'});
+            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Comments must be less than 100 characters, try again'});
           }
           const newComm = await comments.create(id, req.session.user._id, comment, new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}));
           if(!newComm){
@@ -395,14 +397,14 @@ router.route('/workorders').get(async (req, res) => {
         if (comment) {
           comment = comment.trim();
           if(comment === "") {
-            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
+            return res.status(400).render('viewtenantworkorders', {title: 'View All Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
           }
           if(comment.length > 100){
-            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Comments must be less than 100 characters.'});
+            return res.status(400).render('viewtenantworkorders', {title: 'View All Work Orders', error: 'Comments must be less than 100 characters, try again'});
           }
           const newComm = await comments.create(id, req.session.user._id, comment, new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}));
           if(!newComm){
-            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Error adding comment.'});
+            return res.status(400).render('viewtenantworkorders', {title: 'View All Work Orders', error: 'Error adding comment, try again'});
           }
         }
   
