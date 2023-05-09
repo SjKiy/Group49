@@ -14,7 +14,7 @@ async function main() {
 
     ///landlord
     try {
-    const Landlord = await user.createUser(
+    const Landlord = await user.createUserSeed(
         "Patrick",
         "Hill", 
         "PatrickHill@Stevens.edu", 
@@ -22,7 +22,7 @@ async function main() {
          "landlord");
 
     ///tenant 1
-    const Tenant1 = await user.createUser(
+    const Tenant1 = await user.createUserSeed(
         "Isabelle",
         "First", 
         "IsabelleFirst@stevens.edu", 
@@ -31,7 +31,7 @@ async function main() {
 
 
     ///tenant 2
-    const Tenant2 = await user.createUser(
+    const Tenant2 = await user.createUserSeed(
         "Micheal",
          "Second", 
           "MichealSecond@stevens.edu", 
@@ -39,15 +39,21 @@ async function main() {
           "tenant");
 
     ///tenant3
-    const Tenant3 = await user.createUser(
+    const Tenant3 = await user.createUserSeed(
         "Tyler",
          "Third", 
           "TylerThird@stevens.edu", 
         "4MyPass123!",
         "tenant");
     
+      const Tenant4 = await user.createUserSeed(
+        "Jerry",
+         "Shoe", 
+          "JerryShoe@stevens.edu", 
+          "5MyPass123!",
+          "tenant");
     ///apartment 1
-    const apartment1 = await apartments.create(
+    const apartment1 = await apartments.createSeed(
         "Apt 1",
         1500, 
         16500, 
@@ -61,7 +67,7 @@ async function main() {
         []);
   
     ///apartment2
-    const apartment2 = await apartments.create(
+    const apartment2 = await apartments.createSeed(
         "Apt 2", 
         2200, 
         18000, 
@@ -75,7 +81,7 @@ async function main() {
         []);
 
     ///apartment 3
-     const apartment3 = await apartments.create(
+     const apartment3 = await apartments.createSeed(
         "Apt 3", 
         2500, 
         20000, 
@@ -88,6 +94,21 @@ async function main() {
         [], 
          []);
 
+
+         const apartment4 = await apartments.createSeed(
+          "Apt 4", 
+          3000, 
+          24000, 
+          "05/29/2023", 
+          1600, 
+          4,
+          4, 
+          "Luxury Aparment", 
+          false, 
+          [], 
+           []);
+
+         
     ///assign apartment1 to Tenant1
      const assign1 = await user.assignAptToUser(
         Tenant1, 
@@ -104,19 +125,19 @@ async function main() {
         apartment3);
 
     ///work order for apartment 1
-    const WorkOrder1 = await workOrder.workCreate(
+    const WorkOrder1 = await workOrder.workCreateSeed(
         "apt 1",
         "Bathroom", 
         "Bathroom toilet is broken")
 
     ///work order for apartment 2
-     const WorkOrder2 = await workOrder.workCreate(
+     const WorkOrder2 = await workOrder.workCreateSeed(
         "apt 2",
         "Kitchen", 
         "Water leaking into kitchen")
     
     ///work order for apartment 2
-    const WorkOrder3 = await workOrder.workCreate(
+    const WorkOrder3 = await workOrder.workCreateSeed(
         "apt 3",
         "Kitchen", 
         "Dishwasher is broken")

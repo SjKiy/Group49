@@ -719,3 +719,161 @@ export const getAllTenantLandlord = async (id) => {
 };
 
 
+export const createUserSeed = async (
+  firstName,
+  lastName,
+  emailAddress,
+  password,
+  accountType
+) => {
+  ///add the empty part. for all criteriassss!!!!!!!!!!!!!!!!!
+  if (firstName === undefined || firstName === null || lastName === undefined || lastName === null || emailAddress === undefined || emailAddress === null || password === undefined || password === null || accountType === undefined || accountType === null ){
+    throw "Error: User field can't be undefined or null"
+  }
+  if (!firstName || !lastName || !emailAddress || !password || !accountType){
+    throw "Error: Missing info in either firstName, lastName, emailAddress, password, accountType Please add";
+  }
+  if (typeof firstName !== "string"){
+    throw "Error: First Name Must be a string.";
+
+  }
+  if (typeof lastName !== "string"){
+    throw "Error: Last Name Must be a string.";
+  }
+  if (typeof emailAddress !== "string"){
+    throw "Error: Email Must be a string.";
+  }
+  if (typeof password !== "string"){
+    throw "Error: Password Must be a string.";
+  }
+  if (typeof accountType !== "string"){
+    throw "Error: accountType Must be a string.";
+  }
+
+  if (firstName.trim === ' '){
+    throw "Error: first name cannot be empty"
+  }
+  if (lastName.trim === ' '){
+    throw "Error: Last name cannot be empty"
+  }
+  if (emailAddress.trim === ' '){
+    throw "Error: email address cannot be empty"
+  }
+  if (password.trim === ' '){
+    throw "Error: password cannot be empty"
+  }
+  if (accountType.trim === ' '){
+    throw "Error: accountTypecannot be empty"
+  }
+
+  if (firstName.replaceAll(" ", "") === ''){
+    throw "Error: First name cannot be empty";
+  }
+  if (lastName.replaceAll(" ", "") === ''){
+    throw "Error: Last name cannot be empty";
+  }
+  if (emailAddress.replaceAll(" ", "") === ''){
+    throw "Error: email address cannot be empty";
+  }
+  if (password.replaceAll(" ", "") === ''){
+    throw "Error: Password cannot be empty";
+  }
+  if (accountType.replaceAll(" ", "") === ''){
+    throw "Error: accountType cannot be empty";
+  }
+
+
+  if (firstName.trim().length < 2 || firstName.trim().length > 25){
+    throw "Error: First Name has to have max of 25 characters.";
+
+  }
+  if (lastName.trim().length < 2 || lastName.trim().length > 25){
+    throw "Error: Last Name has to have max of 25 characters.";
+
+  }
+  // let nameREg =/^[a-zA-Z]/;
+  let firstSpace = /\s/;
+  if (firstName.match(firstSpace)){
+    throw "Error: First Name cannot have spaces in name";
+  }
+  let lastSpace = /\s/;
+  if (lastName.match(lastSpace)){
+    throw "Error: Last Name cannot have spaces in name";
+  }
+  let firstNum = /[0-9]/;
+  if (firstName.match(firstNum)){
+    throw "Error: First Name cannot have numbers in name";
+  }
+  let lastNum = /[0-9]/;
+  if (lastName.match(lastNum)){
+    throw "Error: Last Name cannot have numbers in name";
+  }
+
+  // if (!emailAddress.toLowerCase().includes(("@"))){
+  //   throw "Error: Not valid email";
+  //   //adjust this for all .coms, edu, etc
+
+  // }
+  //Provided from npm email-validate
+  let emailReg = /^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
+  if (!emailAddress.match(emailReg)){
+    throw "Error: Email is not valid.";
+  }
+
+  ///this using mongodb keyword comeback
+  let passReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!password.match(passReg)){
+    throw "Error: Password is minimum of 8 characters.  Needs to be at least one uppercase character, there has to be at least one number and there has to be at least one special character";
+  }
+
+
+
+  if (accountType.toLowerCase() !== "landlord" && accountType.toLowerCase() !== "tenant"){
+    throw "Error: accountType can be either landlord or tenant.";
+  }
+ 
+
+
+
+  // const saltRounds = await bcrpytjs.genSalt(16);
+  //change 5
+  const saltRounds = await bcrpytjs.genSalt(5);
+  let newHashPassword = await bcrpytjs.hash(password, saltRounds);
+
+  firstName = firstName.trim();
+  lastName = lastName.trim();
+  emailAddress = emailAddress.toLowerCase().trim();
+  password = password.trim();
+  accountType = accountType.trim();
+
+  const userToCreate = {
+    firstName: firstName,
+    lastName: lastName,
+    emailAddress: emailAddress.toLowerCase(),
+    password: newHashPassword,
+    // password: password,
+    accountType: accountType.toLowerCase(),
+    apartments: []
+    // apartments: [] i took this out for now cause the update one process in the end
+  }
+  let emailCheck = await user();
+  let dupEmail = await emailCheck.findOne({emailAddress})
+  if (dupEmail){
+    throw "Error: Duplicate email."
+  }
+  
+  const userCollected = await user();
+  let insertUserInfo = await userCollected.insertOne(userToCreate);
+  if (!insertUserInfo.acknowledged || !insertUserInfo.insertedId ){
+    throw "Error: User was not able to be added";
+  }
+  const UserID = insertUserInfo.insertedId.toString();
+  // const USER =  await get(UserID);
+  // const userACollected = await user();
+
+  return UserID;
+
+
+
+
+};
