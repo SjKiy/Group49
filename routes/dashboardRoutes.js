@@ -352,7 +352,7 @@ router.route('/workorders').get(async (req, res) => {
           if(!newComm){
             return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Error adding comment.'});
           }
-          
+
         }
   
         let getAllWork = await workOrder.getAllWork();
@@ -393,7 +393,17 @@ router.route('/workorders').get(async (req, res) => {
         let comment = xss(req.body.comment);
   
         if (comment) {
+          comment = comment.trim();
+          if(comment === "") {
+            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Required Fields Are Missing. Please Add them.'});
+          }
+          if(comment.length > 100){
+            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Comments must be less than 100 characters.'});
+          }
           const newComm = await comments.create(id, req.session.user._id, comment, new Date().toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"}));
+          if(!newComm){
+            return res.status(400).render('workorder', {title: 'View All Work Orders', error: 'Error adding comment.'});
+          }
         }
   
         let getAllWork = await workOrder.getAllWork();
